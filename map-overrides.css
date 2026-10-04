@@ -1,0 +1,179 @@
+/* Visual lock for approved Romantiverse artwork.
+   The approved town art is expected at assets/romantiverse-town.jpg.
+   Existing HTML remains interactive through invisible hotspots layered over the artwork. */
+
+.hero {
+  min-height: 0;
+  aspect-ratio: 1536 / 798;
+  background: #1479c9 url("assets/romantiverse-town.jpg") center top / cover no-repeat;
+  border-bottom: 0;
+}
+
+.hero::before,
+.hero-backdrop,
+.town::before,
+.town::after,
+.town-hint,
+.hero-copy .eyebrow,
+.hero-copy h1,
+.hero-copy .tagline,
+.landmark::before {
+  display: none !important;
+}
+
+.hero-copy {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  pointer-events: none;
+}
+
+.hero-actions {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+.hero-actions .button {
+  position: absolute;
+  opacity: 0;
+  pointer-events: auto;
+  padding: 0;
+  min-height: 0;
+  border: 0;
+  box-shadow: none;
+  background: transparent;
+}
+
+.hero-actions .button-primary {
+  left: 34.0%;
+  top: 31.9%;
+  width: 16.8%;
+  height: 5.8%;
+}
+
+.hero-actions .button-paper {
+  left: 50.8%;
+  top: 31.9%;
+  width: 17.3%;
+  height: 5.8%;
+}
+
+.town {
+  position: absolute;
+  inset: 0;
+  z-index: 9;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  pointer-events: none;
+}
+
+.landmark {
+  min-height: 0;
+  padding: 0;
+  width: auto;
+  height: auto;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: transparent;
+  opacity: 0;
+  transform: none;
+  pointer-events: auto;
+}
+
+.landmark:hover {
+  transform: none;
+  filter: none;
+}
+
+.landmark span,
+.landmark strong {
+  display: none;
+}
+
+/* Hotspots matched to the approved artwork. */
+.landmark-about {
+  left: 7.8%;
+  top: 42.7%;
+  width: 16.7%;
+  height: 6.2%;
+}
+
+.landmark-episodes {
+  left: 81.8%;
+  top: 60.9%;
+  width: 13.2%;
+  height: 6.5%;
+}
+
+.landmark-movies {
+  left: 43.8%;
+  top: 62.6%;
+  width: 13.9%;
+  height: 6.2%;
+}
+
+.landmark-bingo {
+  left: 64.3%;
+  top: 50.5%;
+  width: 15.1%;
+  height: 6.3%;
+}
+
+.landmark-cocktails {
+  left: 25.9%;
+  top: 56.0%;
+  width: 13.5%;
+  height: 6.3%;
+}
+
+.landmark-rules {
+  left: 24.6%;
+  top: 87.4%;
+  width: 19.1%;
+  height: 6.0%;
+}
+
+.landmark-shop {
+  left: 64.7%;
+  top: 89.1%;
+  width: 11.2%;
+  height: 5.8%;
+}
+
+/* Make invisible hotspots visible to keyboard users without altering the art. */
+.hero a:focus-visible {
+  opacity: 1;
+  outline: 4px solid #fff8e8;
+  outline-offset: 2px;
+  background: rgba(11, 64, 56, .82);
+  border-radius: 10px;
+}
+
+@media (max-width: 800px) {
+  /* Mobile gets a taller crop rather than shrinking the whole map to postage-stamp size. */
+  .hero {
+    aspect-ratio: auto;
+    height: 720px;
+    background-size: auto 720px;
+    background-position: 50% top;
+  }
+
+  /* Keep the key weekly actions usable on phones; fine-tuning follows after desktop visual lock. */
+  .hero-actions .button-primary {
+    left: 26%;
+    top: 31.9%;
+    width: 23%;
+  }
+
+  .hero-actions .button-paper {
+    left: 51%;
+    top: 31.9%;
+    width: 25%;
+  }
+}
