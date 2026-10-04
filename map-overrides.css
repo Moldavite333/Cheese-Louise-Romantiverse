@@ -4,8 +4,13 @@
 
 .hero {
   min-height: 0;
-  aspect-ratio: 1536 / 798;
-  background: #1479c9 url("romantiverse-town.jpg") center top / cover no-repeat;
+  /* Match the current replacement artwork exactly so the browser does not crop it. */
+  aspect-ratio: 1734 / 907;
+  background-color: #1479c9;
+  background-image: url("romantiverse-town.jpg");
+  background-size: contain;
+  background-position: center top;
+  background-repeat: no-repeat;
   border-bottom: 0;
 }
 
@@ -156,24 +161,23 @@
 }
 
 @media (max-width: 800px) {
-  /* Mobile gets a taller crop rather than shrinking the whole map to postage-stamp size. */
+  /* Do not zoom/crop the artwork on phones. Keep the complete illustrated map visible. */
   .hero {
-    aspect-ratio: auto;
-    height: 720px;
-    background-size: auto 720px;
-    background-position: 50% top;
+    height: auto;
+    aspect-ratio: 1734 / 907;
+    background-size: contain;
+    background-position: center top;
   }
 
-  /* Keep the key weekly actions usable on phones; fine-tuning follows after desktop visual lock. */
   .hero-actions .button-primary {
-    left: 26%;
+    left: 34.0%;
     top: 31.9%;
-    width: 23%;
+    width: 16.8%;
   }
 
   .hero-actions .button-paper {
-    left: 51%;
+    left: 50.8%;
     top: 31.9%;
-    width: 25%;
+    width: 17.3%;
   }
 }
