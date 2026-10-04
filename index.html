@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0b4038" />
+  <meta name="description" content="Visit the Romantiverse with Cheese Louise — podcast episodes, weekly Romantiverse Bingo, the Rules, upcoming movies, and cocktails from the show." />
+  <title>Cheese Louise — Visit the Romantiverse</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Oswald:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header" data-header>
+    <a class="brand-mark" href="#home" aria-label="Cheese Louise home">CL</a>
+    <button class="menu-button" type="button" aria-label="Open menu" aria-expanded="false" data-menu-button>MENU</button>
+    <nav class="main-nav" data-nav aria-label="Main navigation">
+      <a class="active" href="#home">Home</a>
+      <a href="#episodes">Episodes</a>
+      <a href="#bingo">Bingo</a>
+      <a href="#rules">The Rules</a>
+      <a href="#movies">Upcoming Movies</a>
+      <a href="#cocktails">Cocktail Lounge</a>
+      <a href="#shop">Shop</a>
+      <a href="#about">About</a>
+    </nav>
+    <a class="support-button" href="#support">Support the Show <span aria-hidden="true">♥</span></a>
+  </header>
+
+  <main id="home">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-backdrop" aria-hidden="true"></div>
+      <div class="hero-copy">
+        <p class="eyebrow">♥ &nbsp; Visit the Romantiverse &nbsp; ♥</p>
+        <h1 id="hero-title">Cheese Louise</h1>
+        <p class="tagline">The podcast where we unravel the mysteries<br class="desktop-only" /> of the Romantiverse… one rule at a time.</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#episodes"><span aria-hidden="true">▶</span> Listen to the Show</a>
+          <a class="button button-paper" href="#town">Enter the Romantiverse <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+
+      <section class="town" id="town" aria-label="Explore the Romantiverse town">
+        <p class="town-hint">Explore the town</p>
+        <a class="landmark landmark-about" href="#about"><span>Sweet Peaks Bakery</span><strong>About the Podcast</strong></a>
+        <a class="landmark landmark-episodes" href="#episodes"><span>Meet Cute Café</span><strong>Episodes</strong></a>
+        <a class="landmark landmark-movies" href="#movies"><span>Third Act Square</span><strong>Upcoming Movies</strong></a>
+        <a class="landmark landmark-bingo" href="#bingo"><span>The Ski Lodge</span><strong>Romantiverse Bingo</strong></a>
+        <a class="landmark landmark-cocktails" href="#cocktails"><span>Mistletoe Inn</span><strong>Cocktail Lounge</strong></a>
+        <a class="landmark landmark-rules" href="#rules"><span>Second Chance Bookshop</span><strong>The Rules</strong></a>
+        <a class="landmark landmark-shop" href="#shop"><span>Handsome Handyman Hardware</span><strong>Shop Merch</strong></a>
+      </section>
+    </section>
+
+    <section class="weekly-strip" aria-label="This week in the Romantiverse">
+      <article class="feature-card bingo-card" id="bingo">
+        <p class="card-kicker">This Week’s</p>
+        <h2>Romantiverse Bingo</h2>
+        <div class="mini-bingo" aria-hidden="true">
+          <span>♥</span><span>★</span><span>☕</span><span>❄</span><span>♥</span>
+          <span>★</span><span>♥</span><span>☕</span><span>♥</span><span>★</span>
+          <span>☕</span><span>★</span><span>FREE</span><span>★</span><span>☕</span>
+          <span>♥</span><span>☕</span><span>★</span><span>♥</span><span>❄</span>
+          <span>★</span><span>♥</span><span>☕</span><span>★</span><span>♥</span>
+        </div>
+        <p>Everyone gets a unique card randomized from Nick & Jenny’s selected trope pool for this week’s movie.</p>
+        <button class="button button-primary full" type="button" data-bingo-placeholder>Play This Week’s Card →</button>
+      </article>
+
+      <article class="feature-card" id="episodes">
+        <p class="card-kicker">Latest Episode</p>
+        <p class="meta">Episode coming soon</p>
+        <h2>Your next trip into the Romantiverse</h2>
+        <p>New episodes, featured movies, guests, and episode notes will appear here when published from Cheese Louise HQ.</p>
+        <a class="button button-primary full" href="#episodes">Listen Now →</a>
+      </article>
+
+      <article class="feature-card movies-card" id="movies">
+        <div class="card-heading-row">
+          <div>
+            <p class="card-kicker">Coming Up</p>
+            <h2>Upcoming Movies</h2>
+          </div>
+          <a href="#movies">View all →</a>
+        </div>
+        <div class="movie-list">
+          <div><time>TBD</time><strong>Next Cheese Louise watch</strong><small>Movie selection coming soon</small></div>
+          <div><time>TBD</time><strong>On the radar</strong><small>Upcoming Romantiverse candidate</small></div>
+          <div><time>TBD</time><strong>Future watch</strong><small>More suspiciously predictable romance</small></div>
+        </div>
+      </article>
+
+      <article class="feature-card" id="cocktails">
+        <p class="card-kicker">From the Show</p>
+        <h2>Cocktail Lounge</h2>
+        <div class="cocktail-illustration" aria-hidden="true"><span>🍸</span></div>
+        <p>Recipes for the drinks Nick & Jenny actually make and drink on the show — linked back to their movies and episodes.</p>
+        <a class="button button-primary full" href="#cocktails">View Recipes →</a>
+      </article>
+
+      <article class="feature-card" id="rules">
+        <p class="card-kicker">Rule of the Week</p>
+        <h2>The Rules</h2>
+        <blockquote>“When you’re a single dad, you will fall in love with anyone who takes care of your children.”</blockquote>
+        <a class="button button-primary full" href="#rules">See All the Rules →</a>
+      </article>
+    </section>
+
+    <section class="content-section concept-section" id="about">
+      <p class="section-kicker">So what is this place?</p>
+      <h2>Welcome to the Romantiverse.</h2>
+      <p>Cheese Louise is a husband-and-wife podcast about the wonderfully predictable rules, characters, careers, towns, misunderstandings, festivals, and third acts of made-for-TV romance movies.</p>
+      <p>Every episode, Nick and Jenny watch another movie, test the Rules of the Romantiverse, make a cocktail, and determine just how much cheese one story can hold.</p>
+    </section>
+
+    <section class="content-section shop-placeholder" id="shop">
+      <p class="section-kicker">Handsome Handyman Hardware</p>
+      <h2>The Romantiverse General Store</h2>
+      <p>Merch is coming. We’re building the town before we start selling you commemorative lumber.</p>
+    </section>
+
+    <section class="support-section" id="support">
+      <p class="section-kicker">Help keep the lights on at Mistletoe Inn</p>
+      <h2>Support Cheese Louise</h2>
+      <p>Membership, voting, live watch-alongs, and the Cocktail Lounge will live here as the show launches.</p>
+    </section>
+  </main>
+
+  <footer>
+    <strong>Cheese Louise</strong>
+    <span>Visit the Romantiverse.</span>
+    <span>© <span data-year></span> Cheese Louise</span>
+  </footer>
+
+  <div class="toast" role="status" aria-live="polite" data-toast></div>
+  <script src="app.js"></script>
+</body>
+</html>
