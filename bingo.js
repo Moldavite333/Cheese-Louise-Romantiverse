@@ -95,6 +95,12 @@
     return WIN_LINES.filter(line => line.every(index => marked.has(index)));
   }
 
+  function traitIcon(square) {
+    if (typeof window.romantiverseTraitIconDataUri !== 'function') return '';
+    const src = window.romantiverseTraitIconDataUri(square);
+    return `<img class="bingo-trait-icon" src="${src}" alt="" aria-hidden="true">`;
+  }
+
   function render() {
     const wins = winningLines(card);
     const winningIndexes = new Set(wins.flat());
@@ -104,8 +110,8 @@
     card.squares.forEach((square, index) => {
       const button = document.createElement('button');
       button.type = 'button';
-      button.className = 'bingo-square';
-      button.textContent = square.label;
+      button.className = 'bingo-square bingo-square-illustrated';
+      button.innerHTML = `${traitIcon(square)}<span class="bingo-trait-label">${escapeHtml(square.label)}</span>`;
       button.setAttribute('aria-label', index === FREE_INDEX ? `${square.label}, free space` : square.label);
       button.setAttribute('aria-pressed', marked.has(index) ? 'true' : 'false');
       if (marked.has(index)) button.classList.add('marked');
@@ -118,6 +124,15 @@
 
     cardCodeEl.textContent = card.code;
     markedCountEl.textContent = new Set(card.marked).size;
+  }
+
+  function escapeHtml(value) {
+    return String(value ?? '')
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#039;');
   }
 
   function toggleSquare(index) {
