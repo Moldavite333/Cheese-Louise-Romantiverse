@@ -29,8 +29,14 @@ function showToast(message) {
   showToast.timer = window.setTimeout(() => toast.classList.remove('show'), 3200);
 }
 
+// Bingo now has its own playable page. Keep the illustrated Town Hall hotspot,
+// top navigation, and weekly feature card all pointed to the same game.
+document.querySelectorAll('a[href="#bingo"]').forEach((link) => {
+  link.setAttribute('href', 'bingo.html');
+});
+
 document.querySelector('[data-bingo-placeholder]')?.addEventListener('click', () => {
-  showToast('Bingo is next: weekly curated trope pool, randomized card for every visitor.');
+  window.location.href = 'bingo.html';
 });
 
 const sections = [...document.querySelectorAll('main section[id]')];
