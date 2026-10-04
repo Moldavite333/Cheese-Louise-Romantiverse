@@ -3,6 +3,7 @@
   if (!config) return;
 
   const FREE_INDEX = 12;
+  const TRAITS_PER_CARD = 24;
   const STORAGE_KEY = `cheese-louise:bingo:${config.id}`;
   const WIN_LINES = [
     [0,1,2,3,4],[5,6,7,8,9],[10,11,12,13,14],[15,16,17,18,19],[20,21,22,23,24],
@@ -24,20 +25,8 @@
   function randomCode() {
     const bytes = new Uint8Array(4);
     if (window.crypto?.getRandomValues) window.crypto.getRandomValues(bytes);
-    else bytes.forEach((_, i) => bytes[i] = Math.floor(Math.random() * 256));
+    else for (let i = 0; i < bytes.length; i++) bytes[i] = Math.floor(Math.random() * 256);
     return [...bytes].map(n => n.toString(36).padStart(2, '0')).join('').slice(0, 6).toUpperCase();
-  }
-
-  function weightedSample(items, count) {
-    const weighted = new Set(config.weighted || []);
-    return items
-      .map(item => {
-        const weight = weighted.has(item.id) ? 2.4 : 1;
-        return { item, key: Math.pow(Math.random(), 1 / weight) };
-      })
-      .sort((a, b) => b.key - a.key)
-      .slice(0, count)
-      .map(row => row.item);
   }
 
   function shuffle(items) {
@@ -49,23 +38,102 @@
     return out;
   }
 
-  function buildCard() {
-    if (!Array.isArray(config.pool) || config.pool.length < 24) {
-      throw new Error('Romantiverse Bingo needs at least 24 eligible traits.');
+  function uniquePool() {
+    const seen = new Set();
+    return (Array.isArray(config.pool) ? config.pool : []).filter(item => {
+      if (!item?.id || seen.has(item.id)) return false;
+      seen.add(item.id);
+      return true;
+    });
+  }
+
+  function weightedSample(items, count) {
+    if (count <= 0) return [];
+    const weighted = new Set(config.weighted || []);
+    return items
+      .map(item => {
+        const weight = weighted.has(item.id) ? 2.4 : 1;
+        return { item, key: Math.pow(Math.random(), 1 / weight) };
+      })
+      .sort((a, b) => b.key - a.key)
+      .slice(0, count)
+      .map(row => row.item);
+  }
+
+  function cardTraitIds(card) {
+    return new Set(
+      (card?.squares || [])
+        .filter(square => square?.id && square.id !== 'free')
+        .map(square => square.id)
+    );
+  }
+
+  function chooseTraits(previousCard = null) {
+    const pool = uniquePool();
+    if (pool.length < TRAITS_PER_CARD) {
+      throw new Error(`Romantiverse Bingo needs at least ${TRAITS_PER_CARD} unique eligible traits.`);
     }
-    const picks = shuffle(weightedSample(config.pool, 24));
+
+    const byId = new Map(pool.map(item => [item.id, item]));
+    const requiredIds = [...new Set(config.required || [])]
+      .filter(id => byId.has(id))
+      .slice(0, TRAITS_PER_CARD);
+    const requiredTraits = requiredIds.map(id => byId.get(id));
+    const requiredSet = new Set(requiredIds);
+    const candidates = pool.filter(item => !requiredSet.has(item.id));
+    const randomSlots = TRAITS_PER_CARD - requiredTraits.length;
+
+    if (candidates.length < randomSlots) {
+      throw new Error('The weekly Bingo pool does not contain enough non-required traits.');
+    }
+
+    // First card for a visitor: sample a genuine subset of the weekly pool.
+    if (!previousCard) {
+      return shuffle([
+        ...requiredTraits,
+        ...weightedSample(candidates, randomSlots)
+      ]);
+    }
+
+    // New Card: force actual TRAIT changes, not merely a different arrangement.
+    const previousIds = cardTraitIds(previousCard);
+    const neverOnPreviousCard = candidates.filter(item => !previousIds.has(item.id));
+    const requestedChanges = Math.max(1, Number(config.minTraitChanges || 6));
+    const guaranteedChanges = Math.min(requestedChanges, randomSlots, neverOnPreviousCard.length);
+
+    const forcedNewTraits = weightedSample(neverOnPreviousCard, guaranteedChanges);
+    const forcedNewIds = new Set(forcedNewTraits.map(item => item.id));
+    const remainingCandidates = candidates.filter(item => !forcedNewIds.has(item.id));
+    const remainingSlots = randomSlots - forcedNewTraits.length;
+    const rest = weightedSample(remainingCandidates, remainingSlots);
+
+    return shuffle([
+      ...requiredTraits,
+      ...forcedNewTraits,
+      ...rest
+    ]);
+  }
+
+  function buildCard(previousCard = null) {
+    const picks = chooseTraits(previousCard);
     const squares = [];
     let pickIndex = 0;
+
     for (let i = 0; i < 25; i++) {
-      if (i === FREE_INDEX) squares.push({ id: 'free', label: config.freeSpace || 'CHEESE LOUISE!' });
-      else squares.push(picks[pickIndex++]);
+      if (i === FREE_INDEX) {
+        squares.push({ id: 'free', label: config.freeSpace || 'CHEESE LOUISE!' });
+      } else {
+        squares.push(picks[pickIndex++]);
+      }
     }
+
     return {
       movieId: config.id,
       code: randomCode(),
       squares,
       marked: [FREE_INDEX],
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
+      generatorVersion: 2
     };
   }
 
@@ -151,7 +219,8 @@
   function newCard() {
     const meaningfulMarks = card.marked.filter(i => i !== FREE_INDEX).length;
     if (meaningfulMarks && !window.confirm('Generate a new randomized card? Your current marks will be cleared.')) return;
-    card = buildCard();
+    const previousCard = card;
+    card = buildCard(previousCard);
     saveCard(card);
     render();
   }
