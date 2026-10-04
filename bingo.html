@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0b4038" />
+  <meta name="description" content="Play this week's randomized Cheese Louise Romantiverse Bingo card." />
+  <title>Romantiverse Bingo — Cheese Louise</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Oswald:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="bingo.css" />
+</head>
+<body class="bingo-page">
+  <header class="site-header bingo-header">
+    <a class="brand-mark" href="index.html" aria-label="Cheese Louise home">CL</a>
+    <nav class="main-nav bingo-nav" aria-label="Main navigation">
+      <a href="index.html">Home</a>
+      <a href="index.html#episodes">Episodes</a>
+      <a class="active" href="bingo.html">Bingo</a>
+      <a href="index.html#rules">The Rules</a>
+      <a href="index.html#movies">Upcoming Movies</a>
+      <a href="index.html#cocktails">Cocktail Lounge</a>
+    </nav>
+    <a class="support-button" href="index.html#support">Support the Show <span aria-hidden="true">♥</span></a>
+  </header>
+
+  <main class="bingo-shell">
+    <section class="bingo-intro">
+      <a class="back-to-town" href="index.html">← Back to the Romantiverse</a>
+      <p class="bingo-kicker" data-week-label>This week in the Romantiverse</p>
+      <h1>Romantiverse Bingo</h1>
+      <div class="movie-plaque">
+        <span>Featured Movie</span>
+        <strong data-movie-title>Pumpkin Regatta Romance</strong>
+        <small><span data-season>Fall</span> · <span data-holiday>Halloween</span></small>
+      </div>
+      <p class="bingo-description" data-description></p>
+      <div class="bingo-explainer">
+        <strong>Your card is yours.</strong>
+        <span>Each visitor gets a different 5×5 card randomized from Nick & Jenny's selected pool for this movie.</span>
+      </div>
+    </section>
+
+    <section class="bingo-game" aria-label="Romantiverse Bingo game">
+      <div class="bingo-toolbar">
+        <div class="bingo-status">
+          <span class="status-label">Card</span>
+          <strong data-card-code>—</strong>
+          <span class="status-label">Marked</span>
+          <strong><span data-marked-count>1</span>/25</strong>
+        </div>
+        <div class="bingo-actions">
+          <button class="secondary" type="button" data-new-card>New Card</button>
+          <button class="secondary" type="button" data-clear-marks>Clear Marks</button>
+        </div>
+      </div>
+
+      <div class="bingo-board-wrap">
+        <div class="bingo-title-row" aria-hidden="true">
+          <span>B</span><span>I</span><span>N</span><span>G</span><span>O</span>
+        </div>
+        <div class="bingo-board" data-board></div>
+      </div>
+
+      <p class="tap-note">Tap a square when it happens. Your card and marks are saved automatically on this device.</p>
+    </section>
+
+    <section class="pool-note">
+      <div>
+        <p class="bingo-kicker">Weekly settings</p>
+        <h2>Curated first. Randomized second.</h2>
+      </div>
+      <p>This test card uses the Cheese Traits already in Cheese Louise HQ, filtered away from Christmas and royalty nonsense, with extra weight on traits already attached to <em>Pumpkin Regatta Romance</em>. Later, the weekly pool will publish directly from HQ.</p>
+    </section>
+  </main>
+
+  <div class="bingo-win" data-win hidden>
+    <div class="bingo-win-card" role="dialog" aria-modal="true" aria-labelledby="win-title">
+      <p>♥ ♥ ♥</p>
+      <h2 id="win-title">CHEESE LOUISE!</h2>
+      <span>You hit Romantiverse Bingo.</span>
+      <button class="button button-primary" type="button" data-close-win>Keep Playing</button>
+    </div>
+  </div>
+
+  <script src="bingo-week.js"></script>
+  <script src="bingo.js"></script>
+</body>
+</html>
