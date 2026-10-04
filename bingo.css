@@ -1,0 +1,279 @@
+body.bingo-page {
+  min-height: 100vh;
+  background:
+    linear-gradient(rgba(8,46,41,.78), rgba(8,46,41,.82)),
+    url('romantiverse-town.jpg') center top / cover fixed no-repeat;
+}
+
+.bingo-header { position: sticky; }
+.bingo-shell {
+  width: min(1180px, calc(100% - 28px));
+  margin: 0 auto;
+  padding: 38px 0 72px;
+}
+
+.bingo-intro,
+.bingo-game,
+.pool-note {
+  background: rgba(255,248,232,.97);
+  border: 1px solid #d8bc7c;
+  box-shadow: 0 18px 45px rgba(0,0,0,.26), inset 0 0 0 2px rgba(255,255,255,.55);
+}
+
+.bingo-intro {
+  position: relative;
+  text-align: center;
+  padding: 34px 28px 30px;
+  border-radius: 18px 18px 10px 10px;
+  overflow: hidden;
+}
+.bingo-intro::before,
+.bingo-intro::after {
+  content: '';
+  position: absolute;
+  width: 180px;
+  height: 180px;
+  border: 2px solid rgba(11,64,56,.10);
+  transform: rotate(45deg);
+}
+.bingo-intro::before { left: -115px; top: -110px; }
+.bingo-intro::after { right: -115px; bottom: -110px; }
+.back-to-town {
+  display: inline-block;
+  margin-bottom: 14px;
+  font: 700 .78rem/1 Oswald, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  text-decoration: none;
+  color: var(--forest);
+}
+.bingo-kicker {
+  margin: 0;
+  color: var(--red);
+  font: 700 .86rem/1 Oswald, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: .14em;
+}
+.bingo-intro h1 {
+  margin: 4px 0 18px;
+  color: var(--red);
+  font: 400 clamp(3.2rem, 8vw, 6.7rem)/.92 'DM Serif Display', Georgia, serif;
+  letter-spacing: -.045em;
+  text-shadow: 0 3px 0 #f1d18e;
+}
+.movie-plaque {
+  width: min(620px, 100%);
+  margin: 0 auto;
+  padding: 14px 22px 13px;
+  color: var(--ink);
+  background: #f5dfb4;
+  border: 2px solid #9b6a32;
+  border-radius: 10px;
+  box-shadow: 0 5px 0 #745027;
+}
+.movie-plaque span,
+.movie-plaque small {
+  display: block;
+  font: 700 .72rem/1.2 Oswald, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: .11em;
+}
+.movie-plaque strong {
+  display: block;
+  margin: 4px 0;
+  color: var(--forest);
+  font: italic 400 clamp(1.65rem, 4vw, 2.6rem)/1 'DM Serif Display', Georgia, serif;
+}
+.bingo-description {
+  max-width: 760px;
+  margin: 22px auto 0;
+  font-size: 1.05rem;
+  line-height: 1.55;
+}
+.bingo-explainer {
+  max-width: 780px;
+  margin: 18px auto 0;
+  padding: 13px 18px;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  border-top: 1px solid #dcc79e;
+  color: #5b584f;
+}
+.bingo-explainer strong { color: var(--forest); }
+
+.bingo-game {
+  margin-top: 18px;
+  padding: 22px;
+  border-radius: 10px;
+}
+.bingo-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+.bingo-status,
+.bingo-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.status-label {
+  color: #7e7769;
+  font: 700 .72rem/1 Oswald, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: .09em;
+}
+.secondary {
+  min-height: 38px;
+  padding: 9px 14px;
+  border: 2px solid #9b6a32;
+  border-radius: 7px;
+  background: #fff5df;
+  color: var(--forest);
+  cursor: pointer;
+  font: 700 .75rem/1 Oswald, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+.secondary:hover { transform: translateY(-1px); }
+
+.bingo-board-wrap {
+  width: min(860px, 100%);
+  margin: 0 auto;
+  padding: 14px;
+  background: #f0cf8b;
+  border: 3px solid #8d5a2b;
+  border-radius: 14px;
+  box-shadow: 0 7px 0 #68401e, 0 18px 34px rgba(53,31,15,.18);
+}
+.bingo-title-row,
+.bingo-board {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 7px;
+}
+.bingo-title-row { margin-bottom: 7px; }
+.bingo-title-row span {
+  display: grid;
+  place-items: center;
+  min-height: 54px;
+  background: var(--red);
+  color: #fff8e8;
+  border: 2px solid #8b1713;
+  font: 700 clamp(1.5rem, 5vw, 2.4rem)/1 Oswald, sans-serif;
+  box-shadow: inset 0 0 0 2px rgba(255,255,255,.16);
+}
+.bingo-square {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  min-width: 0;
+  display: grid;
+  place-items: center;
+  padding: 8px;
+  border: 2px solid #c49b56;
+  border-radius: 7px;
+  background: #fff9e9;
+  color: #173c35;
+  cursor: pointer;
+  text-align: center;
+  font: 600 clamp(.72rem, 1.45vw, 1.03rem)/1.18 'Source Serif 4', Georgia, serif;
+  transition: transform .1s ease, background .12s ease, color .12s ease;
+}
+.bingo-square:hover { transform: translateY(-2px); }
+.bingo-square.marked {
+  background: var(--forest);
+  color: #fff8e8;
+  border-color: #062a25;
+}
+.bingo-square.marked::after {
+  content: '♥';
+  position: absolute;
+  right: 6px;
+  bottom: 4px;
+  color: #ef493e;
+  font-size: 1.05rem;
+}
+.bingo-square.free {
+  background: var(--red);
+  color: white;
+  border-color: #8b1713;
+  font-family: Oswald, sans-serif;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+.bingo-square.winner {
+  outline: 4px solid #d7a843;
+  outline-offset: -5px;
+}
+.tap-note {
+  margin: 20px auto 0;
+  text-align: center;
+  color: #6e695d;
+  font-size: .9rem;
+}
+
+.pool-note {
+  margin-top: 18px;
+  padding: 24px 28px;
+  display: grid;
+  grid-template-columns: .75fr 1.25fr;
+  gap: 28px;
+  border-radius: 10px 10px 18px 18px;
+}
+.pool-note h2 {
+  margin: 5px 0 0;
+  color: var(--forest);
+  font: 400 clamp(1.8rem, 4vw, 3rem)/1 'DM Serif Display', Georgia, serif;
+}
+.pool-note > p { margin: 0; line-height: 1.6; }
+
+.bingo-win {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  padding: 22px;
+  background: rgba(5,31,27,.84);
+  backdrop-filter: blur(5px);
+}
+.bingo-win[hidden] { display: none; }
+.bingo-win-card {
+  width: min(560px, 100%);
+  padding: 38px 28px;
+  text-align: center;
+  background: #fff7e4;
+  border: 4px solid #d7a843;
+  border-radius: 18px;
+  box-shadow: 0 25px 80px rgba(0,0,0,.45);
+}
+.bingo-win-card > p { margin: 0; color: var(--red); letter-spacing: .7em; }
+.bingo-win-card h2 {
+  margin: 8px 0;
+  color: var(--red);
+  font: 400 clamp(3.4rem, 12vw, 6.2rem)/.9 'DM Serif Display', Georgia, serif;
+  text-shadow: 0 3px 0 #e2bd73;
+}
+.bingo-win-card span { display: block; margin-bottom: 22px; font-size: 1.05rem; }
+
+@media (max-width: 920px) {
+  .bingo-nav { display: none; }
+  .bingo-header { grid-template-columns: auto 1fr auto; }
+  .bingo-toolbar { align-items: flex-start; flex-direction: column; }
+  .pool-note { grid-template-columns: 1fr; gap: 12px; }
+}
+
+@media (max-width: 620px) {
+  .bingo-shell { width: min(100% - 14px, 1180px); padding-top: 12px; }
+  .bingo-intro { padding: 24px 14px 22px; }
+  .bingo-game { padding: 11px; }
+  .bingo-board-wrap { padding: 7px; }
+  .bingo-title-row,
+  .bingo-board { gap: 4px; }
+  .bingo-title-row span { min-height: 38px; }
+  .bingo-square { padding: 4px; border-width: 1px; font-size: clamp(.55rem, 2.7vw, .8rem); }
+  .bingo-actions { width: 100%; }
+  .bingo-actions button { flex: 1; }
+  .support-button { font-size: .66rem; padding: 8px 9px; }
+}
