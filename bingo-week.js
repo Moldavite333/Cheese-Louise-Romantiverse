@@ -7,14 +7,28 @@ window.CHEESE_BINGO_CONFIG = {
   subtitle: 'This week in the Romantiverse',
   description: 'Nadine, daughter of a boat shop owner, and Ethan, a pumpkin farmer, team up to heal a family feud and revive the town’s Pumpkin Regatta.',
   freeSpace: 'CHEESE LOUISE!',
-  weighted: [
+
+  // These movie-defining traits appear on every card.
+  required: [
     'family-farm-or-ranch',
     'family-feud',
     'festival',
-    'contest-or-competition',
-    'wholesome-labor-montage',
-    'town-knows-before-they-do'
+    'contest-or-competition'
   ],
+
+  // These are more likely to appear, but are NOT guaranteed.
+  weighted: [
+    'wholesome-labor-montage',
+    'town-knows-before-they-do',
+    'save-family-business',
+    'small-town-return',
+    'grand-romantic-gesture'
+  ],
+
+  // When someone taps New Card, replace at least this many non-free traits
+  // whenever the weekly pool is large enough to allow it.
+  minTraitChanges: 8,
+
   pool: [
     { id:'big-promotion-vs-hometown', label:'Big promotion vs hometown' },
     { id:'career-or-love-ultimatum', label:'Career-or-love ultimatum' },
