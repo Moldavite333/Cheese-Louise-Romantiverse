@@ -167,8 +167,11 @@ body.bingo-page {
   position: relative;
   aspect-ratio: 1 / 1;
   min-width: 0;
-  display: grid;
-  place-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
   padding: 8px;
   border: 2px solid #c49b56;
   border-radius: 7px;
@@ -176,14 +179,40 @@ body.bingo-page {
   color: #173c35;
   cursor: pointer;
   text-align: center;
-  font: 600 clamp(.72rem, 1.45vw, 1.03rem)/1.18 'Source Serif 4', Georgia, serif;
+  font: 600 clamp(.66rem, 1.25vw, .92rem)/1.12 'Source Serif 4', Georgia, serif;
   transition: transform .1s ease, background .12s ease, color .12s ease;
+  overflow: hidden;
 }
 .bingo-square:hover { transform: translateY(-2px); }
+.bingo-trait-icon {
+  display: block;
+  width: 52%;
+  height: 52%;
+  max-width: 76px;
+  max-height: 76px;
+  min-width: 0;
+  min-height: 0;
+  object-fit: cover;
+  border-radius: 9px;
+  border: 1px solid rgba(23,63,54,.2);
+  box-shadow: 0 1px 4px rgba(0,0,0,.12);
+  flex: 0 1 auto;
+}
+.bingo-trait-label {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  max-width: 100%;
+}
 .bingo-square.marked {
   background: var(--forest);
   color: #fff8e8;
   border-color: #062a25;
+}
+.bingo-square.marked .bingo-trait-icon {
+  opacity: .25;
+  filter: grayscale(.65) contrast(.85);
 }
 .bingo-square.marked::after {
   content: '♥';
@@ -201,6 +230,16 @@ body.bingo-page {
   font-weight: 700;
   letter-spacing: .04em;
   text-transform: uppercase;
+}
+.bingo-square.free .bingo-trait-icon {
+  width: 47%;
+  height: 47%;
+  border: 0;
+  box-shadow: none;
+}
+.bingo-square.free.marked .bingo-trait-icon {
+  opacity: 1;
+  filter: none;
 }
 .bingo-square.winner {
   outline: 4px solid #d7a843;
@@ -272,7 +311,8 @@ body.bingo-page {
   .bingo-title-row,
   .bingo-board { gap: 4px; }
   .bingo-title-row span { min-height: 38px; }
-  .bingo-square { padding: 4px; border-width: 1px; font-size: clamp(.55rem, 2.7vw, .8rem); }
+  .bingo-square { padding: 3px; gap: 3px; border-width: 1px; font-size: clamp(.43rem, 2vw, .68rem); }
+  .bingo-trait-icon { width: 46%; height: 46%; border-radius: 5px; }
   .bingo-actions { width: 100%; }
   .bingo-actions button { flex: 1; }
   .support-button { font-size: .66rem; padding: 8px 9px; }
