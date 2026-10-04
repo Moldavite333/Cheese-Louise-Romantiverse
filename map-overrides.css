@@ -3,13 +3,15 @@
    Existing HTML remains interactive through invisible hotspots layered over the artwork. */
 
 .hero {
+  --map-scale: 92%;
+  --map-gutter: 4%;
   min-height: 0;
-  /* Match the current replacement artwork exactly so the browser does not crop it. */
+  /* Keep the full map visible, but inset it slightly so it reads like a complete illustrated map instead of a full-bleed crop. */
   aspect-ratio: 1734 / 907;
-  background-color: #1479c9;
+  background-color: #eadfc8;
   background-image: url("romantiverse-town.jpg");
-  background-size: contain;
-  background-position: center top;
+  background-size: var(--map-scale) auto;
+  background-position: center center;
   background-repeat: no-repeat;
   border-bottom: 0;
 }
@@ -26,9 +28,13 @@
   display: none !important;
 }
 
+/* Scale the invisible interactive overlay by the exact same amount as the artwork. */
 .hero-copy {
   position: absolute;
-  inset: 0;
+  left: var(--map-gutter);
+  top: var(--map-gutter);
+  width: var(--map-scale);
+  height: var(--map-scale);
   z-index: 10;
   max-width: none;
   margin: 0;
@@ -69,10 +75,11 @@
 
 .town {
   position: absolute;
-  inset: 0;
+  left: var(--map-gutter);
+  top: var(--map-gutter);
   z-index: 9;
-  width: 100%;
-  height: 100%;
+  width: var(--map-scale);
+  height: var(--map-scale);
   margin: 0;
   pointer-events: none;
 }
@@ -161,12 +168,14 @@
 }
 
 @media (max-width: 800px) {
-  /* Do not zoom/crop the artwork on phones. Keep the complete illustrated map visible. */
+  /* Keep a little framing on phones without making the labels too tiny. */
   .hero {
+    --map-scale: 96%;
+    --map-gutter: 2%;
     height: auto;
     aspect-ratio: 1734 / 907;
-    background-size: contain;
-    background-position: center top;
+    background-size: var(--map-scale) auto;
+    background-position: center center;
   }
 
   .hero-actions .button-primary {
