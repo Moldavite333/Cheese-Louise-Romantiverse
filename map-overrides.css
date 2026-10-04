@@ -1,11 +1,11 @@
 /* Visual lock for approved Romantiverse artwork.
-   The approved town art is expected at assets/romantiverse-town.jpg.
+   The approved town art currently lives at the repository root as romantiverse-town.jpg.
    Existing HTML remains interactive through invisible hotspots layered over the artwork. */
 
 .hero {
   min-height: 0;
   aspect-ratio: 1536 / 798;
-  background: #1479c9 url("assets/romantiverse-town.jpg") center top / cover no-repeat;
+  background: #1479c9 url("romantiverse-town.jpg") center top / cover no-repeat;
   border-bottom: 0;
 }
 
