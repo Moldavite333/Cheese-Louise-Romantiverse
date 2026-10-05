@@ -11,6 +11,17 @@
     [0,6,12,18,24],[4,8,12,16,20]
   ];
 
+  const FALL_SYMBOLS = {
+    pumpkins:'🎃','pumpkin-patch':'🎃','pumpkin-carving':'🎃','pumpkin-food':'🧁',
+    'fall-festival':'🎪','town-event':'🎪',hayride:'🚜','corn-maze':'🌽','apple-picking':'🍎','candy-apples':'🍎','apple-cider':'🍎',
+    'cozy-drink':'☕','coffee-shop':'☕',bakery:'🥧','plaid-flannel':'👕','cozy-sweater':'🧶','scarf-weather':'🧣',boots:'🥾',
+    'scenic-leaves':'🍂','leaf-pile':'🍁','fall-decor':'🍂',wreath:'🍁','string-lights':'✨',
+    'small-town':'🏘️','hometown-return':'🧳','big-city-job':'🏙️','city-vs-home':'↔️','family-business':'🏪','save-business':'🏪','family-farm':'🌾','inn-bnb':'🏡','main-street':'🏘️',
+    'old-flame':'❤️','childhood-sweetheart':'💘','rivals-to-lovers':'⚔️','friends-to-lovers':'💕','competitive-flirting':'🏆','forced-together':'🤝','town-matchmaking':'💞','family-matchmaking':'💞','shared-blanket':'🧣',
+    'almost-kiss':'💋','interrupted-kiss':'💋',misunderstanding:'💬','career-or-love':'↔️','grand-gesture':'🎁','community-saves-day':'🤝','family-legacy':'🌳','town-knows':'👀','wholesome-work':'🧹',
+    'empty-coffee-cup':'🥤','perfect-weather':'☀️','outdoor-date':'🧺','bonfire-firepit':'🔥',barn:'🛖',dog:'🐕','farmers-market':'🧺','pie-contest':'🥧','friendly-competition':'🏆','festival-crisis':'🚨'
+  };
+
   const boardEl = document.querySelector('[data-board]');
   const cardCodeEl = document.querySelector('[data-card-code]');
   const markedCountEl = document.querySelector('[data-marked-count]');
@@ -87,7 +98,6 @@
       throw new Error('The weekly Bingo pool does not contain enough non-required traits.');
     }
 
-    // First card for a visitor: sample a genuine subset of the weekly pool.
     if (!previousCard) {
       return shuffle([
         ...requiredTraits,
@@ -95,7 +105,6 @@
       ]);
     }
 
-    // New Card: force actual TRAIT changes, not merely a different arrangement.
     const previousIds = cardTraitIds(previousCard);
     const neverOnPreviousCard = candidates.filter(item => !previousIds.has(item.id));
     const requestedChanges = Math.max(1, Number(config.minTraitChanges || 6));
@@ -133,7 +142,7 @@
       squares,
       marked: [FREE_INDEX],
       createdAt: new Date().toISOString(),
-      generatorVersion: 2
+      generatorVersion: 3
     };
   }
 
@@ -163,10 +172,26 @@
     return WIN_LINES.filter(line => line.every(index => marked.has(index)));
   }
 
+  function symbolFor(square) {
+    if (square?.id === 'free') return '🧀';
+    if (FALL_SYMBOLS[square?.id]) return FALL_SYMBOLS[square.id];
+    const s = String(square?.label || '').toLowerCase();
+    if (s.includes('pumpkin')) return '🎃';
+    if (s.includes('apple')) return '🍎';
+    if (s.includes('coffee') || s.includes('drink') || s.includes('cider')) return '☕';
+    if (s.includes('leaf') || s.includes('fall') || s.includes('autumn')) return '🍂';
+    if (s.includes('festival') || s.includes('event')) return '🎪';
+    if (s.includes('farm') || s.includes('barn') || s.includes('orchard')) return '🌾';
+    if (s.includes('town') || s.includes('street')) return '🏘️';
+    if (s.includes('kiss')) return '💋';
+    if (s.includes('love') || s.includes('romance') || s.includes('flirt')) return '❤️';
+    if (s.includes('dog')) return '🐕';
+    if (s.includes('fire')) return '🔥';
+    return '🧀';
+  }
+
   function traitIcon(square) {
-    if (typeof window.romantiverseTraitIconDataUri !== 'function') return '';
-    const src = window.romantiverseTraitIconDataUri(square);
-    return `<img class="bingo-trait-icon" src="${src}" alt="" aria-hidden="true">`;
+    return `<span class="bingo-trait-symbol" aria-hidden="true">${symbolFor(square)}</span>`;
   }
 
   function render() {
