@@ -184,19 +184,19 @@ body.bingo-page {
   overflow: hidden;
 }
 .bingo-square:hover { transform: translateY(-2px); }
-.bingo-trait-icon {
-  display: block;
+.bingo-trait-symbol {
+  display: grid;
+  place-items: center;
   width: 52%;
-  height: 52%;
+  aspect-ratio: 1 / 1;
   max-width: 76px;
-  max-height: 76px;
-  min-width: 0;
-  min-height: 0;
-  object-fit: cover;
-  border-radius: 9px;
-  border: 1px solid rgba(23,63,54,.2);
-  box-shadow: 0 1px 4px rgba(0,0,0,.12);
-  flex: 0 1 auto;
+  border-radius: 12px;
+  border: 1px solid rgba(23,63,54,.18);
+  background: rgba(255,255,255,.46);
+  box-shadow: 0 1px 4px rgba(0,0,0,.10);
+  font-size: clamp(1.35rem, 4.5vw, 2.9rem);
+  line-height: 1;
+  flex: 0 0 auto;
 }
 .bingo-trait-label {
   display: -webkit-box;
@@ -210,9 +210,9 @@ body.bingo-page {
   color: #fff8e8;
   border-color: #062a25;
 }
-.bingo-square.marked .bingo-trait-icon {
-  opacity: .25;
-  filter: grayscale(.65) contrast(.85);
+.bingo-square.marked .bingo-trait-symbol {
+  opacity: .35;
+  filter: grayscale(.45);
 }
 .bingo-square.marked::after {
   content: '♥';
@@ -231,13 +231,13 @@ body.bingo-page {
   letter-spacing: .04em;
   text-transform: uppercase;
 }
-.bingo-square.free .bingo-trait-icon {
+.bingo-square.free .bingo-trait-symbol {
   width: 47%;
-  height: 47%;
   border: 0;
   box-shadow: none;
+  background: transparent;
 }
-.bingo-square.free.marked .bingo-trait-icon {
+.bingo-square.free.marked .bingo-trait-symbol {
   opacity: 1;
   filter: none;
 }
@@ -312,7 +312,7 @@ body.bingo-page {
   .bingo-board { gap: 4px; }
   .bingo-title-row span { min-height: 38px; }
   .bingo-square { padding: 3px; gap: 3px; border-width: 1px; font-size: clamp(.43rem, 2vw, .68rem); }
-  .bingo-trait-icon { width: 46%; height: 46%; border-radius: 5px; }
+  .bingo-trait-symbol { width: 46%; font-size: clamp(1.05rem, 6vw, 2rem); border-radius: 6px; }
   .bingo-actions { width: 100%; }
   .bingo-actions button { flex: 1; }
   .support-button { font-size: .66rem; padding: 8px 9px; }
