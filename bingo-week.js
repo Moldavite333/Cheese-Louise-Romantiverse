@@ -90,7 +90,7 @@ window.CHEESE_BINGO_CONFIG = {
     { id:'perfect-weather', label:'Impossibly perfect fall weather' },
     { id:'outdoor-date', label:'Outdoor fall date' },
     { id:'bonfire-firepit', label:'Bonfire or fire pit' },
-    { id:'barn', label:'Barn appears for no reason' },
+    { id:'barn', label:'Barn or rustic setting' },
     { id:'dog', label:'Adorable dog gets screen time' },
     { id:'farmers-market', label:'Farmers market or craft booths' },
     { id:'pie-contest', label:'Pie, baking, or food contest' },
