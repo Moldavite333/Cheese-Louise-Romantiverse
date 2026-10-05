@@ -168,14 +168,52 @@
 }
 
 @media (max-width: 800px) {
-  /* Keep a little framing on phones without making the labels too tiny. */
+  /*
+     Mobile uses the map like an actual map instead of shrinking the entire town
+     down to fit a narrow screen. The artwork is rendered on a wider canvas and
+     the hero becomes a horizontal swipe/pan window. Hotspots scale with it.
+  */
   .hero {
-    --map-scale: 96%;
-    --map-gutter: 2%;
+    --mobile-map-width: min(900px, 230vw);
+    width: 100%;
+    height: auto;
+    aspect-ratio: auto;
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    background-color: #eadfc8;
+    background-image: none;
+    touch-action: pan-x pan-y;
+  }
+
+  .hero::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Reuse the existing backdrop element as the mobile map canvas so it creates
+     real scrollable width; this keeps the artwork and all hotspots in sync. */
+  .hero-backdrop {
+    display: block !important;
+    position: relative;
+    inset: auto;
+    width: var(--mobile-map-width);
+    max-width: none;
+    aspect-ratio: 1734 / 907;
+    background: url("romantiverse-town.jpg") center / 100% 100% no-repeat;
+    opacity: 1;
+    mix-blend-mode: normal;
+    pointer-events: none;
+  }
+
+  .hero-copy,
+  .town {
+    left: 0;
+    top: 0;
+    width: var(--mobile-map-width);
     height: auto;
     aspect-ratio: 1734 / 907;
-    background-size: var(--map-scale) auto;
-    background-position: center center;
   }
 
   .hero-actions .button-primary {
