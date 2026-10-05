@@ -39,6 +39,22 @@ document.querySelector('[data-bingo-placeholder]')?.addEventListener('click', ()
   window.location.href = 'bingo.html';
 });
 
+// On phones the Romantiverse is intentionally wider than the viewport so it can
+// be explored like a real map. Start centered on the Cheese Louise title/town,
+// then let the visitor swipe left or right to explore the rest.
+const heroMap = document.querySelector('.hero');
+const mobileMapQuery = window.matchMedia('(max-width: 800px)');
+
+function centerMobileMap() {
+  if (!heroMap || !mobileMapQuery.matches) return;
+  window.requestAnimationFrame(() => {
+    heroMap.scrollLeft = Math.max(0, (heroMap.scrollWidth - heroMap.clientWidth) / 2);
+  });
+}
+
+centerMobileMap();
+window.addEventListener('load', centerMobileMap, { once: true });
+
 const sections = [...document.querySelectorAll('main section[id]')];
 const navLinks = [...document.querySelectorAll('.main-nav a[href^="#"]')];
 
