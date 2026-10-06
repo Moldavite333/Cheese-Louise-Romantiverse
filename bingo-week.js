@@ -53,7 +53,6 @@ window.CHEESE_BINGO_CONFIG = {
     { id:'plaid-flannel', label:'Plaid or flannel' },
     { id:'cozy-sweater', label:'Cozy sweater' },
     { id:'scarf-weather', label:'Decorative scarf weather' },
-    { id:'boots', label:'Fall boots' },
     { id:'scenic-leaves', label:'Gorgeous leaf shot' },
     { id:'leaf-pile', label:'Leaves used as scenery' },
     { id:'fall-decor', label:'Autumn décor overload' },
