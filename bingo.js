@@ -14,7 +14,7 @@
   const FALL_SYMBOLS = {
     pumpkins:'🎃','pumpkin-patch':'🎃','pumpkin-carving':'🎃','pumpkin-food':'🧁',
     'fall-festival':'🎪','town-event':'🎪',hayride:'🚜','corn-maze':'🌽','apple-picking':'🍎','candy-apples':'🍎','apple-cider':'🍎',
-    'cozy-drink':'☕','coffee-shop':'☕',bakery:'🥧','plaid-flannel':'👕','cozy-sweater':'🧶','scarf-weather':'🧣',boots:'🥾',
+    'cozy-drink':'☕','coffee-shop':'☕',bakery:'🥧','cozy-sweater':'🧶','scarf-weather':'🧣',
     'scenic-leaves':'🍂','leaf-pile':'🍁','fall-decor':'🍂',wreath:'🍁','string-lights':'✨',
     'small-town':'🏘️','hometown-return':'🧳','big-city-job':'🏙️','city-vs-home':'↔️','family-business':'🏪','save-business':'🏪','family-farm':'🌾','inn-bnb':'🏡','main-street':'🏘️',
     'old-flame':'❤️','childhood-sweetheart':'💘','rivals-to-lovers':'⚔️','friends-to-lovers':'💕','competitive-flirting':'🏆','forced-together':'🤝','town-matchmaking':'💞','family-matchmaking':'💞','shared-blanket':'🧣',
@@ -142,14 +142,27 @@
       squares,
       marked: [FREE_INDEX],
       createdAt: new Date().toISOString(),
-      generatorVersion: 3
+      generatorVersion: 4
     };
+  }
+
+  function savedCardUsesCurrentPool(saved) {
+    const allowed = new Set(uniquePool().map(item => item.id));
+    return saved.squares.every((square, index) => {
+      if (index === FREE_INDEX) return square?.id === 'free';
+      return allowed.has(square?.id);
+    });
   }
 
   function loadCard() {
     try {
       const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
-      if (saved?.movieId === config.id && Array.isArray(saved.squares) && saved.squares.length === 25) {
+      if (
+        saved?.movieId === config.id &&
+        Array.isArray(saved.squares) &&
+        saved.squares.length === 25 &&
+        savedCardUsesCurrentPool(saved)
+      ) {
         saved.marked = Array.isArray(saved.marked) ? saved.marked : [FREE_INDEX];
         if (!saved.marked.includes(FREE_INDEX)) saved.marked.push(FREE_INDEX);
         return saved;
@@ -190,7 +203,20 @@
     return '🧀';
   }
 
+  function flannelShirtSvg() {
+    return `<svg viewBox="0 0 64 64" width="86%" height="86%" aria-hidden="true" focusable="false">
+      <path d="M22 9 28 6 32 11 36 6 42 9 54 16 48 27 43 24 43 56 21 56 21 24 16 27 10 16Z" fill="#b62d2d" stroke="#5f211d" stroke-width="2.5" stroke-linejoin="round"/>
+      <path d="M21 20h22M21 31h22M21 42h22M21 51h22M27 11v45M37 11v45" stroke="#f2d1a0" stroke-width="2" opacity=".95"/>
+      <path d="M21 25h22M21 46h22M24 11v45M40 11v45" stroke="#263e38" stroke-width="1.8" opacity=".9"/>
+      <path d="m27 8 5 7 5-7M32 15v41" fill="none" stroke="#fff2d9" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="32" cy="24" r="1.15" fill="#fff2d9"/><circle cx="32" cy="34" r="1.15" fill="#fff2d9"/><circle cx="32" cy="44" r="1.15" fill="#fff2d9"/>
+    </svg>`;
+  }
+
   function traitIcon(square) {
+    if (square?.id === 'plaid-flannel') {
+      return `<span class="bingo-trait-symbol" aria-hidden="true">${flannelShirtSvg()}</span>`;
+    }
     return `<span class="bingo-trait-symbol" aria-hidden="true">${symbolFor(square)}</span>`;
   }
 
