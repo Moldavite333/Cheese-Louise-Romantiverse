@@ -19,7 +19,7 @@
     'small-town':'🏘️','hometown-return':'🧳','big-city-job':'🏙️','city-vs-home':'↔️','family-business':'🏪','save-business':'🏪','family-farm':'🌾','inn-bnb':'🏡','main-street':'🏘️',
     'old-flame':'❤️','childhood-sweetheart':'💘','rivals-to-lovers':'⚔️','friends-to-lovers':'💕','competitive-flirting':'🏆','forced-together':'🤝','town-matchmaking':'💞','family-matchmaking':'💞','shared-blanket':'🧣',
     'almost-kiss':'💋','interrupted-kiss':'💋',misunderstanding:'💬','career-or-love':'↔️','grand-gesture':'🎁','community-saves-day':'🤝','family-legacy':'🌳','town-knows':'👀','wholesome-work':'🧹',
-    'empty-coffee-cup':'🥤','perfect-weather':'☀️','outdoor-date':'🧺','bonfire-firepit':'🔥',barn:'🛖',dog:'🐕','farmers-market':'🧺','pie-contest':'🥧','friendly-competition':'🏆','festival-crisis':'🚨'
+    'empty-coffee-cup':'🥤','perfect-weather':'☀️','outdoor-date':'🧺','bonfire-firepit':'🔥',barn:'🚜',dog:'🐕','farmers-market':'🧺','pie-contest':'🥧','friendly-competition':'🏆','festival-crisis':'🚨'
   };
 
   const boardEl = document.querySelector('[data-board]');
@@ -213,9 +213,26 @@
     </svg>`;
   }
 
+  function barnSvg() {
+    return `<svg viewBox="0 0 64 64" width="88%" height="88%" aria-hidden="true" focusable="false">
+      <path d="M9 28 17 17 24 13h16l7 4 8 11v28H9Z" fill="#b9342d" stroke="#68241f" stroke-width="2.4" stroke-linejoin="round"/>
+      <path d="M9 28 17 17h30l8 11" fill="#7b2923" stroke="#68241f" stroke-width="2.6" stroke-linejoin="round"/>
+      <path d="M17 17 24 8h16l7 9" fill="#9d3029" stroke="#68241f" stroke-width="2.6" stroke-linejoin="round"/>
+      <rect x="23" y="34" width="18" height="22" rx="1" fill="#f4dfb7" stroke="#68241f" stroke-width="2.2"/>
+      <path d="M23 34 32 26 41 34M32 26v30M23 45h18" fill="none" stroke="#68241f" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="m24 35 16 20M40 35 24 55" fill="none" stroke="#b9342d" stroke-width="2.2"/>
+      <rect x="14" y="32" width="6" height="7" fill="#f6e6c5" stroke="#68241f" stroke-width="1.7"/>
+      <rect x="44" y="32" width="6" height="7" fill="#f6e6c5" stroke="#68241f" stroke-width="1.7"/>
+      <path d="M7 56h50" stroke="#82602f" stroke-width="2.5" stroke-linecap="round"/>
+    </svg>`;
+  }
+
   function traitIcon(square) {
     if (square?.id === 'plaid-flannel') {
       return `<span class="bingo-trait-symbol" aria-hidden="true">${flannelShirtSvg()}</span>`;
+    }
+    if (square?.id === 'barn') {
+      return `<span class="bingo-trait-symbol" aria-hidden="true">${barnSvg()}</span>`;
     }
     return `<span class="bingo-trait-symbol" aria-hidden="true">${symbolFor(square)}</span>`;
   }
