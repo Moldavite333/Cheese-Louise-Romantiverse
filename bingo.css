@@ -179,7 +179,7 @@ body.bingo-page {
   color: #173c35;
   cursor: pointer;
   text-align: center;
-  font: 600 clamp(.66rem, 1.25vw, .92rem)/1.12 'Source Serif 4', Georgia, serif;
+  font: 600 clamp(.56rem, 1vw, .78rem)/1.08 'Source Serif 4', Georgia, serif;
   transition: transform .1s ease, background .12s ease, color .12s ease;
   overflow: hidden;
 }
@@ -199,11 +199,14 @@ body.bingo-page {
   flex: 0 0 auto;
 }
 .bingo-trait-label {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
-  overflow: hidden;
+  display: block;
   max-width: 100%;
+  overflow: visible;
+  text-overflow: clip;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: normal;
+  line-height: 1.05;
 }
 .bingo-square.marked {
   background: var(--forest);
@@ -311,8 +314,8 @@ body.bingo-page {
   .bingo-title-row,
   .bingo-board { gap: 4px; }
   .bingo-title-row span { min-height: 38px; }
-  .bingo-square { padding: 3px; gap: 3px; border-width: 1px; font-size: clamp(.43rem, 2vw, .68rem); }
-  .bingo-trait-symbol { width: 46%; font-size: clamp(1.05rem, 6vw, 2rem); border-radius: 6px; }
+  .bingo-square { padding: 2px; gap: 2px; border-width: 1px; font-size: clamp(.36rem, 1.55vw, .56rem); overflow: visible; }
+  .bingo-trait-symbol { width: 38%; font-size: clamp(.88rem, 5vw, 1.6rem); border-radius: 6px; }
   .bingo-actions { width: 100%; }
   .bingo-actions button { flex: 1; }
   .support-button { font-size: .66rem; padding: 8px 9px; }
@@ -368,4 +371,10 @@ body.bingo-page {
 @media (max-width:760px){
   .bingo-generator-grid{grid-template-columns:1fr;}
   .bingo-generator{padding:16px;}
+}
+
+@media (max-width: 420px) {
+  .bingo-square { font-size: .34rem; line-height: 1.02; padding: 1px; gap: 1px; }
+  .bingo-trait-symbol { width: 34%; font-size: .82rem; }
+  .bingo-trait-label { line-height: 1.02; }
 }
