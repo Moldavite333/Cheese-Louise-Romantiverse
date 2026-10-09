@@ -41,6 +41,27 @@
         <strong>Your card is yours.</strong>
         <span>Each visitor gets a different 5×5 card randomized from the Cheese Louise fall trope pool.</span>
       </div>
+      <div class="bingo-generator card">
+        <p class="bingo-kicker">Build a custom card</p>
+        <div class="bingo-generator-grid">
+          <label>Movie
+            <input type="text" data-generator-movie value="Fall Romantiverse Bingo" placeholder="Love, Fall & Order" />
+          </label>
+          <label>Season
+            <select data-generator-season>
+              <option>Fall</option>
+              <option>Winter</option>
+              <option>Spring</option>
+              <option>Summer</option>
+            </select>
+          </label>
+          <label>Holiday / special <span>(optional)</span>
+            <input type="text" data-generator-holiday placeholder="Halloween, Christmas, etc." />
+          </label>
+        </div>
+        <button class="button button-primary" type="button" data-generate-movie-season>Generate Movie + Season Card</button>
+        <p class="tap-note">Known movie titles can add movie-specific traits. Every card also pulls from the selected season and universal Romantiverse tropes.</p>
+      </div>
     </section>
 
     <section class="bingo-game" aria-label="Romantiverse Bingo game">
@@ -86,6 +107,7 @@
   </div>
 
   <script src="bingo-week.js?v=fall-romantiverse-20261005b"></script>
-  <script src="bingo.js?v=20261005e"></script>
+  <script src="bingo.js?v=20261008a"></script>
+  <script src="bingo-public-generator.js?v=20261008a"></script>
 </body>
 </html>
