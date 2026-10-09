@@ -4,7 +4,7 @@
 
   const FREE_INDEX = 12;
   const TRAITS_PER_CARD = 24;
-  const STORAGE_KEY = `cheese-louise:bingo:${config.id}`;
+  function storageKey() { return `cheese-louise:bingo:${config.id}`; }
   const WIN_LINES = [
     [0,1,2,3,4],[5,6,7,8,9],[10,11,12,13,14],[15,16,17,18,19],[20,21,22,23,24],
     [0,5,10,15,20],[1,6,11,16,21],[2,7,12,17,22],[3,8,13,18,23],[4,9,14,19,24],
@@ -27,11 +27,14 @@
   const markedCountEl = document.querySelector('[data-marked-count]');
   const winEl = document.querySelector('[data-win]');
 
-  document.querySelector('[data-week-label]').textContent = config.subtitle || 'This week in the Romantiverse';
-  document.querySelector('[data-movie-title]').textContent = config.movie;
-  document.querySelector('[data-season]').textContent = config.season || '';
-  document.querySelector('[data-holiday]').textContent = config.holiday || '';
-  document.querySelector('[data-description]').textContent = config.description || '';
+  function refreshConfigLabels() {
+    document.querySelector('[data-week-label]').textContent = config.subtitle || 'This week in the Romantiverse';
+    document.querySelector('[data-movie-title]').textContent = config.movie;
+    document.querySelector('[data-season]').textContent = config.season || '';
+    document.querySelector('[data-holiday]').textContent = config.holiday || '';
+    document.querySelector('[data-description]').textContent = config.description || '';
+  }
+  refreshConfigLabels();
 
   function randomCode() {
     const bytes = new Uint8Array(4);
@@ -156,7 +159,7 @@
 
   function loadCard() {
     try {
-      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+      const saved = JSON.parse(localStorage.getItem(storageKey()));
       if (
         saved?.movieId === config.id &&
         Array.isArray(saved.squares) &&
@@ -176,7 +179,7 @@
   }
 
   function saveCard(card) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(card));
+    localStorage.setItem(storageKey(), JSON.stringify(card));
   }
 
   function winningLines(card) {
@@ -305,6 +308,17 @@
   winEl?.addEventListener('click', event => {
     if (event.target === winEl) winEl.hidden = true;
   });
+
+  window.CHEESE_BINGO_SET_CONFIG = function(nextConfig) {
+    const meaningfulMarks = card?.marked?.filter(i => i !== FREE_INDEX).length || 0;
+    if (meaningfulMarks && !window.confirm('Generate a card for a different movie or season? Your current marks will be cleared.')) return false;
+    Object.assign(config, nextConfig || {});
+    refreshConfigLabels();
+    card = buildCard();
+    saveCard(card);
+    render();
+    return true;
+  };
 
   let card = loadCard();
   render();
