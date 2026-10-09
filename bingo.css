@@ -317,3 +317,55 @@ body.bingo-page {
   .bingo-actions button { flex: 1; }
   .support-button { font-size: .66rem; padding: 8px 9px; }
 }
+
+
+/* Movie + Season generator */
+.bingo-generator{
+  margin:24px auto 0;
+  max-width:920px;
+  padding:20px;
+  background:rgba(255,248,232,.96);
+  border:2px solid rgba(77,44,30,.18);
+  border-radius:18px;
+  box-shadow:0 12px 28px rgba(46,28,19,.12);
+}
+.bingo-generator-grid{
+  display:grid;
+  grid-template-columns:2fr 1fr 1.4fr;
+  gap:12px;
+  margin:10px 0 14px;
+}
+.bingo-generator label{
+  display:grid;
+  gap:6px;
+  font-family:'Oswald',sans-serif;
+  font-weight:600;
+  letter-spacing:.02em;
+  color:#173f36;
+}
+.bingo-generator label span{
+  font-family:'Source Serif 4',serif;
+  font-weight:400;
+  font-size:.85em;
+  color:#6b5a4e;
+}
+.bingo-generator input,
+.bingo-generator select{
+  width:100%;
+  box-sizing:border-box;
+  min-height:46px;
+  padding:10px 12px;
+  border:1px solid rgba(23,63,54,.28);
+  border-radius:10px;
+  background:#fffdf7;
+  color:#1f2f2a;
+  font:600 16px 'Source Serif 4',serif;
+}
+.bingo-generator .button{
+  width:100%;
+  margin-top:2px;
+}
+@media (max-width:760px){
+  .bingo-generator-grid{grid-template-columns:1fr;}
+  .bingo-generator{padding:16px;}
+}
