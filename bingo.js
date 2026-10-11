@@ -1,6 +1,10 @@
 (() => {
-  const config = window.CHEESE_BINGO_CONFIG;
-  if (!config) return;
+  const boot = async () => {
+    if (window.CHEESE_BINGO_CONFIG_READY?.then) {
+      try { await window.CHEESE_BINGO_CONFIG_READY; } catch (_) {}
+    }
+    const config = window.CHEESE_BINGO_CONFIG;
+    if (!config) return;
 
   const FREE_INDEX = 12;
   const TRAITS_PER_CARD = 24;
@@ -322,4 +326,6 @@
 
   let card = loadCard();
   render();
+  };
+  boot();
 })();
