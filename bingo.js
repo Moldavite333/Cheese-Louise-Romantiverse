@@ -195,19 +195,55 @@
   function symbolFor(square) {
     if (square?.id === 'free') return '🧀';
     if (FALL_SYMBOLS[square?.id]) return FALL_SYMBOLS[square.id];
+
     const s = String(square?.label || '').toLowerCase();
-    if (s.includes('pumpkin')) return '🎃';
-    if (s.includes('apple')) return '🍎';
-    if (s.includes('coffee') || s.includes('drink') || s.includes('cider')) return '☕';
-    if (s.includes('leaf') || s.includes('fall') || s.includes('autumn')) return '🍂';
-    if (s.includes('festival') || s.includes('event')) return '🎪';
-    if (s.includes('farm') || s.includes('barn') || s.includes('orchard')) return '🌾';
-    if (s.includes('town') || s.includes('street')) return '🏘️';
-    if (s.includes('kiss')) return '💋';
-    if (s.includes('love') || s.includes('romance') || s.includes('flirt')) return '❤️';
-    if (s.includes('dog')) return '🐕';
-    if (s.includes('fire')) return '🔥';
-    return '🧀';
+
+    const rules = [
+      [/pumpkin/, '🎃'],
+      [/apple|cider/, '🍎'],
+      [/coffee|hot chocolate|cocoa|drink/, '☕'],
+      [/leaf|fall|autumn/, '🍂'],
+      [/festival|event|fair|parade/, '🎪'],
+      [/farm|barn|orchard|vineyard|winery|ranch/, '🌾'],
+      [/seaside|beach|coast|ocean|lake/, '🌊'],
+      [/mountain|ski|lodge/, '🏔️'],
+      [/town|street|hometown/, '🏘️'],
+      [/bookstore|book shop/, '📚'],
+      [/restaurant|diner|bakery|cafe|café/, '🍽️'],
+      [/prince|princess|royal|castle|crown|commoner/, '👑'],
+      [/developer|villain|antagonist/, '🏗️'],
+      [/dead parent|dead grandparent|sick parent|sick grandparent|family tragedy/, '🕯️'],
+      [/family feud|estranged family/, '👪'],
+      [/childhood sweetheart|old flame|rivals to lovers|friends to lovers/, '❤️'],
+      [/fake engagement|fake dating|fake relationship/, '💍'],
+      [/breakup|ex appears|ex reappears/, '💔'],
+      [/amnesia|memory/, '❓'],
+      [/promotion|corporate|big-city|big city|career|boss|work assignment|event planner/, '💼'],
+      [/interrupted kiss|almost kiss|kiss/, '💋'],
+      [/mistaken identity|accidental roommate|roommate/, '🎭'],
+      [/tree-lighting|christmas|holiday|mistletoe|ornament|carol|santa/, '🎄'],
+      [/snow|blizzard|ice skating|sleigh/, '❄️'],
+      [/magic|magical|wish/, '✨'],
+      [/dog|pet|animal/, '🐕'],
+      [/fire|bonfire|fireplace/, '🔥'],
+      [/wedding|bride|groom/, '💒'],
+      [/inherit|family business|business/, '🏪'],
+      [/one bed|shared bed/, '🛏️'],
+      [/deadline|last-minute|last minute/, '⏰'],
+      [/misunderstanding|miscommunication/, '💬'],
+      [/dance/, '💃'],
+      [/gift/, '🎁'],
+      [/airport|train|travel|road trip/, '🧳'],
+      [/homecoming|returns home|comes home/, '🏠'],
+      [/romance|love|flirt/, '❤️']
+    ];
+
+    for (const [re, icon] of rules) {
+      if (re.test(s)) return icon;
+    }
+
+    // Unknown published traits get a neutral Romantiverse marker, not a cheese wedge.
+    return '🎬';
   }
 
   function flannelShirtSvg() {
