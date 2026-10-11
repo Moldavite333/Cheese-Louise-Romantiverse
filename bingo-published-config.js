@@ -3,7 +3,7 @@ window.CHEESE_BINGO_CONFIG_READY = (async () => {
   const url='https://wgvsnmukiaobcbyqhkkt.supabase.co/rest/v1/published_bingo_cards?select=id,movie_title,season,holiday,description,pool,published_at&order=published_at.desc&limit=1';
   const key='sb_publishable_3xcqfNu-mJPuDWivmlBXug_3Tw60QoM';
   try{
-    const response=await fetch(url,{headers:{apikey:key,Authorization:`Bearer ${key}`}});
+    const response=await fetch(url,{headers:{apikey:key}});
     if(!response.ok) throw new Error(`Published Bingo request failed: ${response.status}`);
     const rows=await response.json();
     const row=rows?.[0];
