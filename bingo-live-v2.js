@@ -258,6 +258,9 @@
   }
 
   function traitIcon(square) {
+    if (square?.image_url) {
+      return `<span class="bingo-trait-symbol bingo-trait-symbol-image" aria-hidden="true"><img src="${escapeHtml(square.image_url)}" alt="" loading="eager" decoding="async"></span>`;
+    }
     if (square?.id === 'plaid-flannel') {
       return `<span class="bingo-trait-symbol" aria-hidden="true">${flannelShirtSvg()}</span>`;
     }
@@ -265,6 +268,32 @@
       return `<span class="bingo-trait-symbol" aria-hidden="true">${barnSvg()}</span>`;
     }
     return `<span class="bingo-trait-symbol" aria-hidden="true">${symbolFor(square)}</span>`;
+  }
+
+  function fitBingoLabels() {
+    document.querySelectorAll('.bingo-trait-label').forEach(label => {
+      const square=label.closest('.bingo-square');
+      if(!square) return;
+      let size=14;
+      const min=6.5;
+      label.style.whiteSpace='normal';
+      label.style.overflow='visible';
+      label.style.textOverflow='clip';
+      label.style.overflowWrap='anywhere';
+      label.style.wordBreak='normal';
+      label.style.lineHeight='1.02';
+      label.style.fontSize=size+'px';
+
+      while(size>min){
+        const squareBox=square.getBoundingClientRect();
+        const labelBox=label.getBoundingClientRect();
+        const overflowY=labelBox.bottom > squareBox.bottom-3 || square.scrollHeight>square.clientHeight+1;
+        const overflowX=label.scrollWidth>label.clientWidth+1;
+        if(!overflowY&&!overflowX) break;
+        size-=0.5;
+        label.style.fontSize=size+'px';
+      }
+    });
   }
 
   function render() {
@@ -290,6 +319,12 @@
 
     cardCodeEl.textContent = card.code;
     markedCountEl.textContent = new Set(card.marked).size;
+    requestAnimationFrame(()=>{
+      fitBingoLabels();
+      boardEl.querySelectorAll('img').forEach(img=>{
+        if(!img.complete) img.addEventListener('load',fitBingoLabels,{once:true});
+      });
+    });
   }
 
   function escapeHtml(value) {
@@ -327,6 +362,9 @@
     saveCard(card);
     render();
   }
+
+  window.addEventListener('resize',fitBingoLabels);
+  window.addEventListener('orientationchange',fitBingoLabels);
 
   document.querySelector('[data-new-card]')?.addEventListener('click', newCard);
   document.querySelector('[data-clear-marks]')?.addEventListener('click', clearMarks);
