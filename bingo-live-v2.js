@@ -162,21 +162,8 @@
   }
 
   function loadCard() {
-    try {
-      const saved = JSON.parse(localStorage.getItem(storageKey()));
-      if (
-        saved?.movieId === config.id &&
-        Array.isArray(saved.squares) &&
-        saved.squares.length === 25 &&
-        savedCardUsesCurrentPool(saved)
-      ) {
-        saved.marked = Array.isArray(saved.marked) ? saved.marked : [FREE_INDEX];
-        if (!saved.marked.includes(FREE_INDEX)) saved.marked.push(FREE_INDEX);
-        return saved;
-      }
-    } catch (err) {
-      console.warn('Could not restore Bingo card', err);
-    }
+    // Public Bingo intentionally starts with a brand-new randomized card on every page load.
+    // We still save marks during the current visit, but do not restore yesterday's layout.
     const card = buildCard();
     saveCard(card);
     return card;
@@ -330,8 +317,7 @@
   function newCard() {
     const meaningfulMarks = card.marked.filter(i => i !== FREE_INDEX).length;
     if (meaningfulMarks && !window.confirm('Generate a new randomized card? Your current marks will be cleared.')) return;
-    const previousCard = card;
-    card = buildCard(previousCard);
+    card = buildCard();
     saveCard(card);
     render();
   }
