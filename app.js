@@ -29,14 +29,14 @@ function showToast(message) {
   showToast.timer = window.setTimeout(() => toast.classList.remove('show'), 3200);
 }
 
-// Bingo now has its own playable page. Keep the illustrated Town Hall hotspot,
-// top navigation, and weekly feature card all pointed to the same game.
+// Direct every public Bingo entry point to the maintained standalone Bingo app.
+// The older local bingo.html is retained only for legacy direct links.
 document.querySelectorAll('a[href="#bingo"]').forEach((link) => {
-  link.setAttribute('href', 'bingo.html?v=20261011b');
+  link.setAttribute('href', 'https://moldavite333.github.io/Romantiverse-Bingo-App/');
 });
 
 document.querySelector('[data-bingo-placeholder]')?.addEventListener('click', () => {
-  window.location.href = 'bingo.html?v=20261011b';
+  window.location.href = 'https://moldavite333.github.io/Romantiverse-Bingo-App/';
 });
 
 // On phones the Romantiverse is intentionally wider than the viewport so it can
