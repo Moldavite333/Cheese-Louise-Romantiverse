@@ -29,3 +29,14 @@ footer{background:#113b36;color:#fff0da}
 :focus-visible{outline:3px solid #f1a85e;outline-offset:4px}
 @media(max-width:800px){.hero:after{display:none}.feature-card:hover{transform:none}.site-header{backdrop-filter:none}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.button,.support-button,.feature-card,.mini-bingo span{transition:none!important}}
+
+.cheese-tray-section{background:linear-gradient(135deg,#f9edda,#fff9ef);text-align:center}
+.cheese-tray-section>p{max-width:760px;margin-left:auto;margin-right:auto}
+.tray-period-buttons{display:flex;gap:12px;justify-content:center;margin:22px auto}
+.tray-period-buttons button{background:#fffaf0;border:1px solid #d9b58c;border-radius:28px;padding:12px 22px;font-weight:700;color:#183d38;cursor:pointer}
+.tray-period-buttons button[aria-pressed=true]{background:#16453f;color:white;border-color:#16453f}
+[data-cheese-tray]{max-width:760px;margin:20px auto;text-align:left}
+.community-ranks{padding:0;list-style:none}
+.community-ranks li{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:15px 18px;background:#fffaf0;border:1px solid #ead7bc;border-radius:12px;margin:8px 0;box-shadow:0 5px 15px #203b3312}
+.community-ranks li strong{color:#1d4b42}
+@media(max-width:600px){.community-ranks li{flex-direction:column;align-items:flex-start;gap:4px}}
