@@ -1,0 +1,31 @@
+/* Cheese Louise cinematic-storybook / modern-editorial design system.
+   Progressive enhancement of the existing interactive town artwork. */
+:root{--cl-ink:#132f2b;--cl-cream:#f8efdd;--cl-coral:#ff806e;--cl-gold:#dfaf64;--cl-plum:#472a43}
+html{scroll-behavior:smooth}
+body{background:var(--cl-cream);color:var(--cl-ink);-webkit-font-smoothing:antialiased}
+.site-header{background:rgba(13,48,43,.96);border-bottom:1px solid rgba(238,192,113,.25);box-shadow:0 9px 30px rgba(7,30,27,.18);backdrop-filter:blur(16px)}
+.site-header .main-nav a{transition:color .2s ease,background .2s ease}
+.site-header .main-nav a:hover,.site-header .main-nav a:focus-visible{color:#ffcf9a}
+.hero{isolation:isolate}
+.hero:after{pointer-events:none;content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(9,26,31,.12),transparent 32%,rgba(11,34,35,.08) 74%,rgba(14,41,36,.24));z-index:0}
+.hero-copy,.town{z-index:2}
+.hero h1{text-shadow:0 3px 1px rgba(67,25,37,.35),0 12px 38px rgba(20,14,24,.4)}
+.hero .tagline{text-shadow:0 2px 12px rgba(0,0,0,.45)}
+.button,.support-button{transition:transform .2s ease,box-shadow .2s ease,filter .2s ease}
+.button:hover,.support-button:hover{transform:translateY(-3px);filter:brightness(1.04);box-shadow:0 12px 24px rgba(27,46,40,.22)}
+.weekly-strip{background:linear-gradient(155deg,#fff7e9,#f8ebd5 64%,#f2dfcb);gap:clamp(14px,2vw,26px)}
+.feature-card{border:1px solid rgba(101,70,53,.18);border-radius:20px;box-shadow:0 13px 32px rgba(58,46,37,.09);transition:transform .24s ease,box-shadow .24s ease;overflow:hidden}
+.feature-card:hover{transform:translateY(-4px);box-shadow:0 19px 40px rgba(58,46,37,.16)}
+.feature-card h2,.content-section h2{letter-spacing:-.025em}
+.feature-card .card-kicker{letter-spacing:.15em;text-transform:uppercase}
+.feature-card .button-primary{background:#f57868;border-color:#f57868;color:#fff}
+.feature-card .button-primary:hover{background:#e75e54}
+.mini-bingo span{transition:background .2s,transform .2s}
+.bingo-card .mini-bingo span:nth-child(3n){background:#f4d9c8;color:#763d46}
+.content-section{background:linear-gradient(135deg,#fff9ed,#f7e9d7)}
+.content-section h2{color:#173e37}
+.shop-placeholder{background:#f3e5d2}
+footer{background:#113b36;color:#fff0da}
+:focus-visible{outline:3px solid #f1a85e;outline-offset:4px}
+@media(max-width:800px){.hero:after{display:none}.feature-card:hover{transform:none}.site-header{backdrop-filter:none}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.button,.support-button,.feature-card,.mini-bingo span{transition:none!important}}
