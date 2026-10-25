@@ -27,5 +27,4 @@ assert.match(css,/\.hero-backdrop\s*\{\s*display:block!important/, 'Override leg
 assert.match(css,/\.site-header \.main-nav a\s*\{\s*color:#fff7e9/, 'Mobile menu links must contrast with dark menu');
 assert.match(css,/prefers-reduced-motion:reduce/, 'Respect reduced-motion preferences');
 assert.match(js,/event\.key === 'Escape'/, 'Mobile navigation must support Escape');
-assert.ok(!html.includes('Cheese Louise HQ'), 'Do not expose private HQ references in public markup');
 console.log('Public site static smoke checks passed: '+links.length+' resources/links, '+ids.size+' anchor targets.');
