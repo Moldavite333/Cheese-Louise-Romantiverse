@@ -19,6 +19,11 @@ for(const link of links){
 assert.match(html,/<main\s+id="home">/, 'Main landmark required');
 assert.match(html,/class="skip-link" href="#features"/, 'Skip link required');
 assert.match(html,/id="hero-title"/, 'Accessible marquee heading required');
+assert.match(html,/<meta property="og:title" content="Cheese Louise — Visit the Romantiverse"/, 'Social sharing title required');
+assert.match(html,/<meta property="og:description"[^>]+Podcast episodes coming soon/, 'Social sharing description must not imply episodes are published');
+assert.match(html,/<meta name="twitter:card" content="summary"/, 'Social preview card required');
+assert.match(html,/<a href="#support">Support<\/a>/, 'Support navigation must describe its actual destination');
+assert.ok(!html.includes('<a href="#support">Contact</a>'), 'Do not mislabel the support section as contact');
 assert.ok(!html.includes('map-overrides.css'), 'Old map hotspot stylesheet must not hide or duplicate the hero');
 assert.ok(!css.includes('background:url("romantiverse-town.jpg")'), 'Baked-in text must not appear behind live marquee');
 assert.match(css,/assets\/alpine-village\.svg/,'Original clean scenery required');
