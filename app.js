@@ -9,6 +9,7 @@ if (menuButton && nav) {
   menuButton.addEventListener('click', () => {
     const open = nav.classList.toggle('open');
     menuButton.setAttribute('aria-expanded', String(open));
+    menuButton.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
     menuButton.textContent = open ? 'CLOSE' : 'MENU';
   });
 
@@ -16,8 +17,18 @@ if (menuButton && nav) {
     link.addEventListener('click', () => {
       nav.classList.remove('open');
       menuButton.setAttribute('aria-expanded', 'false');
+      menuButton.setAttribute('aria-label', 'Open menu');
       menuButton.textContent = 'MENU';
     });
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && nav.classList.contains('open')) {
+      nav.classList.remove('open');
+      menuButton.setAttribute('aria-expanded', 'false');
+      menuButton.setAttribute('aria-label', 'Open menu');
+      menuButton.textContent = 'MENU';
+      menuButton.focus();
+    }
   });
 }
 
