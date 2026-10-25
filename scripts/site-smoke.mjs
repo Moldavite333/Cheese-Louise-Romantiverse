@@ -25,6 +25,9 @@ assert.match(html,/Illustrative preview, not a published episode/, 'Sample episo
 assert.match(html,/class="tile-action-placeholder"[^>]*>Listen Now · Coming Soon<\/span>/, 'Unpublished podcast audio must not have a live Listen Now link');
 assert.ok(!html.includes('selected trope pool for this week'), 'Do not claim unpublished HQ movie selections are synchronized');
 assert.match(html,/Friends can join with a direct link and receive independent cards/, 'Explain current Bingo invitation behavior');
+assert.ok(!html.includes('Rule of the Week') && !html.includes('When you’re a single dad'), 'Do not prepublish private podcast rules');
+assert.ok(!html.includes('may get a shout-out'), 'Do not promise unapproved podcast shout-outs');
+assert.match(html,/No unpublished episode material is shown here/, 'Explain public rules publication status');
 assert.match(css,/\.hero-copy h1\s*\{\s*display:block!important/, 'Override legacy hidden marquee');
 assert.match(css,/\.hero-backdrop\s*\{\s*display:block!important/, 'Override legacy hidden backdrop');
 assert.match(css,/\.site-header \.main-nav a\s*\{\s*color:#fff7e9/, 'Mobile menu links must contrast with dark menu');
