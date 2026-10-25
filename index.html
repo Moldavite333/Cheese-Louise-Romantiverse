@@ -12,49 +12,31 @@
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="map-overrides.css?v=4" />
   <link rel="stylesheet" href="cinematic-theme.css?v=1" />
+  <link rel="stylesheet" href="mountain-home.css?v=1" />
 </head>
 <body>
+  <a class="skip-link" href="#features">Skip to content</a>
   <header class="site-header" data-header>
-    <a class="brand-mark" href="#home" aria-label="Cheese Louise home">CL</a>
+    <a class="brand-mark" href="#home" aria-label="Cheese Louise home">Cheese<span>Louise</span></a>
     <button class="menu-button" type="button" aria-label="Open menu" aria-expanded="false" data-menu-button>MENU</button>
     <nav class="main-nav" data-nav aria-label="Main navigation">
-      <a class="active" href="#home">Home</a>
-      <a href="#episodes">Episodes</a>
-      <a href="https://moldavite333.github.io/Romantiverse-Bingo-App/">Bingo</a>
-      <a href="#rules">The Rules</a>
-      <a href="#movies">Upcoming Movies</a>
-      <a href="#cocktails">Cocktail Lounge</a>
-      <a href="#shop">Shop</a>
-      <a href="#about">About</a>
+      <a class="active" href="#home">Home</a><a href="#podcast">Podcast</a><a href="#episodes">Episodes</a>
+      <a href="#music">Music</a><a href="https://moldavite333.github.io/Romantiverse-Bingo-App/">Bingo</a>
+      <a href="#about">About</a><a href="#support">Contact</a>
     </nav>
-    <a class="support-button" href="#support">Support the Show <span aria-hidden="true">♥</span></a>
   </header>
-
   <main id="home">
     <section class="hero" aria-labelledby="hero-title">
       <div class="hero-backdrop" aria-hidden="true"></div>
-      <div class="hero-copy">
-        <p class="eyebrow">♥ &nbsp; Visit the Romantiverse &nbsp; ♥</p>
-        <h1 id="hero-title">Cheese Louise</h1>
-        <p class="tagline">The podcast where we unravel the mysteries<br class="desktop-only" /> of the Romantiverse… one rule at a time.</p>
-        <div class="hero-actions">
-          <a class="button button-primary" href="#episodes"><span aria-hidden="true">▶</span> Listen to the Show</a>
-          <a class="button button-paper" href="#town">Enter the Romantiverse <span aria-hidden="true">→</span></a>
-        </div>
-      </div>
-
-      <section class="town" id="town" aria-label="Explore the Romantiverse town">
-        <p class="town-hint">Explore the town</p>
-        <a class="landmark landmark-about" href="#about"><span>Sweet Peaks Bakery</span><strong>About the Podcast</strong></a>
-        <a class="landmark landmark-episodes" href="#episodes"><span>Mistletoe Inn</span><strong>Episodes</strong></a>
-        <a class="landmark landmark-movies" href="#movies"><span>Small Town Theater</span><strong>Upcoming Movies</strong></a>
-        <a class="landmark landmark-bingo" href="https://moldavite333.github.io/Romantiverse-Bingo-App/"><span>Town Hall</span><strong>Romantiverse Bingo</strong></a>
-        <a class="landmark landmark-cocktails" href="#cocktails"><span>Meet Cute Café</span><strong>Cocktail Lounge</strong></a>
-        <a class="landmark landmark-rules" href="#rules"><span>Second Chance Bookshop</span><strong>The Rules</strong></a>
-        <a class="landmark landmark-shop" href="#shop"><span>Hometown Handyman Hardware</span><strong>Shop Merch</strong></a>
-      </section>
+      <div class="hero-copy"><h1 id="hero-title">Unlocking the Mysteries of the Romantiverse<br>One Rule at a Time</h1></div>
     </section>
-
+    <section class="homepage-features" id="features" aria-label="Explore Cheese Louise">
+      <article class="homepage-tile tile-podcast" id="podcast"><h2>The Podcast</h2><p>Cheese Louise with Nick and Jenny</p><div class="tile-art" aria-hidden="true">🎙</div><div class="tile-actions"><a href="#episodes">Listen Now</a><a href="#episodes">Explore Episodes</a></div></article>
+      <article class="homepage-tile tile-music" id="music"><h2>The Music</h2><p>Podcast Music</p><div class="tile-art" aria-hidden="true">♫</div><a class="tile-link" href="#about">Explore the Music</a></article>
+      <article class="homepage-tile tile-bingo"><h2>Romantiverse Bingo</h2><p>A romantic twist on a classic game</p><div class="tile-art" aria-hidden="true">▦</div><a class="tile-link" href="https://moldavite333.github.io/Romantiverse-Bingo-App/">Play Bingo</a></article>
+      <article class="homepage-tile tile-drink"><h2>The Drink of the Week</h2><p>A new cheesy concoction for every episode</p><div class="tile-art" aria-hidden="true">🍹</div><a class="tile-link" href="#cocktails">Explore the Drinks</a></article>
+    </section>
+    <section class="episode-spotlight" aria-labelledby="spotlight-title"><div><p class="section-kicker">Featured movie</p><h2 id="spotlight-title">Autumn at Apple Hill</h2><p>Step into the Romantiverse with Nick and Jenny. Episode audio and notes will be available here when published.</p><a href="#episodes">Explore Episodes →</a></div><div><h2>Favorite Episodes</h2><p>Our favorites will appear here as episodes are released.</p></div></section>
     <section class="weekly-strip" aria-label="This week in the Romantiverse">
       <article class="feature-card bingo-card" id="bingo">
         <p class="card-kicker">This Week’s</p>
@@ -137,7 +119,7 @@
     </section>
   </main>
 
-  <footer>
+  <footer><p class="footer-tagline">Because life is better with a little cheese.</p>
     <strong>Cheese Louise</strong>
     <span>Visit the Romantiverse.</span>
     <span>© <span data-year></span> Cheese Louise</span>
