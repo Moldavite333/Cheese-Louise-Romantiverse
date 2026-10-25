@@ -42,6 +42,12 @@ try{
   assert.ok(dimensions.documentWidth<=dimensions.viewportWidth+2,'Horizontal document overflow at '+width+'px: '+JSON.stringify(dimensions));
   assert.ok(dimensions.heroScroll<=dimensions.heroClient+2,'Legacy oversized swipe map remains at '+width+'px');
   assert.ok(await page.locator('.homepage-tile').count()===4,'Expected four feature tiles');
+  await page.locator('.tile-art img').first().scrollIntoViewIfNeeded();
+  await page.waitForFunction(() => {
+    const art=[...document.querySelectorAll('.tile-art img')];
+    return art.length===4&&art.every(img=>img.complete&&img.naturalWidth>0);
+  });
+  assert.equal(await page.locator('.tile-art img[alt=""]').count(),4,'All decorative art must have empty alt text');
   if(width===390){
    const menu=page.locator('[data-menu-button]');
    assert.ok(await menu.isVisible(),'Mobile menu button hidden');
