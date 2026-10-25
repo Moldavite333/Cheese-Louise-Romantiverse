@@ -10,18 +10,19 @@
 .hero-copy{margin:0 0 0 clamp(1rem,8vw,9rem);padding:2rem 0;max-width:min(530px,80%);text-align:left}
 .hero h1{font:700 clamp(1.7rem,3.7vw,3.4rem)/1.18 Oswald,sans-serif;letter-spacing:.025em;text-transform:uppercase;color:#fff6dd;text-shadow:2px 3px #1a1c24,0 0 25px #f5ae4a;max-width:14ch;padding:1.2rem;background:#1b2529c9;border:8px solid #bd804b;outline:3px solid #f6c46c;box-shadow:0 0 0 10px #352721,0 0 25px #ffb75b80}
 .homepage-features{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;padding:18px;background:#f8eddb}
-.homepage-tile{min-height:315px;position:relative;overflow:hidden;text-align:center;border-radius:8px;border:1px solid #c6a886;padding:18px 12px 82px;background:linear-gradient(165deg,#fce4bd,#d6c4a5 55%,#617d75);box-shadow:0 5px 18px #2c332a1e}
+.homepage-tile{min-height:385px;position:relative;overflow:hidden;text-align:center;border-radius:8px;border:1px solid #c6a886;padding:18px 12px 82px;background:linear-gradient(165deg,#fce4bd,#d6c4a5 55%,#617d75);box-shadow:0 5px 18px #2c332a1e}
 .homepage-tile:nth-child(2){background:linear-gradient(165deg,#e7e2d0,#b9b9a5 50%,#466b70)}.homepage-tile:nth-child(3){background:linear-gradient(165deg,#fce7c6,#e5b58b 55%,#b4675c)}.homepage-tile:nth-child(4){background:linear-gradient(165deg,#e6e5dc,#afc3b9 50%,#527b7e)}
 .homepage-tile h2{font:700 clamp(1.25rem,2vw,2rem)/1.08 'DM Serif Display',Georgia,serif;text-transform:uppercase;color:#802b3a;margin:0 0 10px}
 .homepage-tile p{font:600 1rem/1.4 Georgia,serif;color:#18323a;margin:0 auto;max-width:22ch}
-.tile-art{font-size:5rem;line-height:1.5;filter:drop-shadow(0 5px 5px #1115)}
+.tile-art{height:170px;max-width:100%;margin:12px auto 0;overflow:hidden;border:3px solid #f9e8cc;border-radius:10px;box-shadow:0 8px 20px #182c3350;background:#284e53}
+.tile-art img{display:block;width:100%;height:100%;object-fit:cover}
 .tile-actions{position:absolute;bottom:12px;left:12px;right:12px;display:grid;gap:6px}.tile-actions a,.tile-actions .tile-action-placeholder,.tile-link{display:block;background:#d93261;color:#fff;text-decoration:none;text-align:center;border-radius:8px;padding:10px 8px;font:700 .85rem Oswald,sans-serif;text-transform:uppercase;min-height:44px}
 .tile-actions .tile-action-placeholder{background:#6c5052;color:#fff5e7;cursor:default}
 .tile-actions a+ a{background:#172b2f}.tile-link{position:absolute;bottom:14px;left:14px;right:14px;background:#07636a}.tile-bingo .tile-link{background:#d28b29}
 .episode-spotlight{display:grid;grid-template-columns:2fr 1fr;gap:2rem;padding:clamp(1.5rem,4vw,4rem);background:#fff8ed}.episode-spotlight h2{font:700 clamp(1.7rem,3vw,2.8rem) Georgia,serif;color:#922d42}.episode-spotlight>div+div{border-left:1px solid #dfcbb5;padding-left:2rem}
 .footer-tagline{font:italic clamp(1.4rem,3vw,2.3rem) Georgia,serif;text-align:center;color:#fff1d8}
 @media(max-width:900px){.homepage-features{grid-template-columns:repeat(2,minmax(0,1fr))}.episode-spotlight{grid-template-columns:1fr}.episode-spotlight>div+div{border:0;border-top:1px solid #dfcbb5;padding:1rem 0 0}}
-@media(max-width:600px){.homepage-features{grid-template-columns:1fr}.homepage-tile{min-height:270px}.hero-copy{margin-left:2rem}.hero h1{font-size:1.7rem}.site-header{min-height:62px}.brand-mark{font-size:1.7rem}}
+@media(max-width:600px){.homepage-features{grid-template-columns:1fr}.homepage-tile{min-height:355px}.hero-copy{margin-left:2rem}.hero h1{font-size:1.7rem}.site-header{min-height:62px}.brand-mark{font-size:1.7rem}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
 
 /* The previous map-based homepage used !important rules that hid the new
