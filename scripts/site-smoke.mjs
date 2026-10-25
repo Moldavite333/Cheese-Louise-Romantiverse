@@ -20,6 +20,12 @@ assert.match(html,/<main\s+id="home">/, 'Main landmark required');
 assert.match(html,/class="skip-link" href="#features"/, 'Skip link required');
 assert.match(html,/id="hero-title"/, 'Accessible marquee heading required');
 assert.match(html,/id="music"/, 'Music section anchor required');
+for (const art of ['podcast','music','bingo','drink']) {
+ assert.match(html,new RegExp('src="assets/'+art+'-art\\.svg" alt="" loading="lazy"'),art+' card needs original decorative illustration');
+ const svg=readFileSync('assets/'+art+'-art.svg','utf8');
+ assert.match(svg,/<svg[^>]+viewBox="0 0 640 420"/,'Illustration must be scalable');
+ assert.ok(!/<script|onload=|<foreignObject/i.test(svg),'No executable content in card art');
+}
 assert.ok(!html.includes('href="#about">Explore the Music'), 'Do not link music card to unrelated About section');
 assert.match(html,/Illustrative preview, not a published episode/, 'Sample episode must be clearly labeled');
 assert.match(html,/class="tile-action-placeholder"[^>]*>Listen Now · Coming Soon<\/span>/, 'Unpublished podcast audio must not have a live Listen Now link');
