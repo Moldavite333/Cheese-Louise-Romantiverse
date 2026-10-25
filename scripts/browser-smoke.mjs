@@ -33,6 +33,8 @@ try{
   assert.ok(await hero.isVisible(),'Marquee hidden at '+width+'px');
   const rect=await hero.boundingBox();
   assert.ok(rect&&rect.width>100&&rect.height>40,'Marquee has no usable dimensions at '+width+'px');
+  const heroArt=await page.locator('.hero-backdrop').evaluate(el=>getComputedStyle(el).backgroundImage);
+  assert.match(heroArt,/alpine-village\.svg/,'Hero must use clean scenery rather than baked-in map artwork');
   const dimensions=await page.evaluate(()=>({
    documentWidth:document.documentElement.scrollWidth,
    viewportWidth:document.documentElement.clientWidth,
@@ -60,6 +62,7 @@ try{
    assert.equal(await menu.getAttribute('aria-expanded'),'false','Escape must close mobile menu');
   }
   assert.deepEqual(errors,[],'Page errors or missing local assets at '+width+'px');
+  await page.evaluate(()=>window.scrollTo(0,0));
   await page.screenshot({path:'artifacts/homepage-'+width+'.png',fullPage:true});
   console.log('Browser smoke passed at '+width+'px; screenshot captured.');
   await page.close();
