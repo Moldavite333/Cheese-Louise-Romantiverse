@@ -4,11 +4,11 @@
 .site-header{background:#fff8ed;color:#142b35;box-shadow:0 3px 18px #14222a24;min-height:76px}
 .brand-mark{width:auto;height:auto;background:none;border:0;box-shadow:none;transform:none;display:block;font:italic 700 clamp(1.6rem,3vw,2.6rem)/1 Georgia,serif;color:#d5a14e;letter-spacing:-.07em;text-shadow:2px 3px #16242c;padding:8px 0}
 .brand-mark span{color:#e57e83}.site-header .main-nav a{color:#142b35}.site-header .main-nav a:hover,.site-header .main-nav a.active{color:#842f3c;border-bottom-color:#e3a443}
-.hero{min-height:clamp(350px,43vw,610px);background:linear-gradient(180deg,#d87c8d 0%,#43516d 36%,#183e42 66%,#1d292e 100%);border:0;display:flex;align-items:center}
+.hero{min-height:clamp(420px,43vw,620px);background:linear-gradient(180deg,#d87c8d 0%,#43516d 36%,#183e42 66%,#1d292e 100%);border:0;display:flex;align-items:center}
 .hero::before{opacity:.35}.hero-backdrop{opacity:.85;mix-blend-mode:normal;background-position:center;background-size:cover}
 .hero::after{background:linear-gradient(90deg,#14202bb5,transparent 78%)}
 .hero-copy{margin:0 0 0 clamp(1rem,8vw,9rem);padding:2rem 0;max-width:min(530px,80%);text-align:left}
-.hero h1{font:700 clamp(1.7rem,3.7vw,3.4rem)/1.18 Oswald,sans-serif;letter-spacing:.025em;text-transform:uppercase;color:#fff6dd;text-shadow:2px 3px #1a1c24,0 0 25px #f5ae4a;max-width:14ch;padding:1.2rem;background:#1b2529c9;border:8px solid #bd804b;outline:3px solid #f6c46c;box-shadow:0 0 0 10px #352721,0 0 25px #ffb75b80}
+.hero h1{font:700 clamp(1.7rem,3vw,2.8rem)/1.12 Oswald,sans-serif;letter-spacing:.025em;text-transform:uppercase;color:#fff6dd;text-shadow:2px 3px #1a1c24,0 0 25px #f5ae4a;max-width:18ch;padding:1.2rem;background:#1b2529c9;border:8px solid #bd804b;outline:3px solid #f6c46c;box-shadow:0 0 0 10px #352721,0 0 25px #ffb75b80}
 .homepage-features{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;padding:18px;background:#f8eddb}
 .homepage-tile{min-height:385px;position:relative;overflow:hidden;text-align:center;border-radius:8px;border:1px solid #c6a886;padding:18px 12px 82px;background:linear-gradient(165deg,#fce4bd,#d6c4a5 55%,#617d75);box-shadow:0 5px 18px #2c332a1e}
 .homepage-tile:nth-child(2){background:linear-gradient(165deg,#e7e2d0,#b9b9a5 50%,#466b70)}.homepage-tile:nth-child(3){background:linear-gradient(165deg,#fce7c6,#e5b58b 55%,#b4675c)}.homepage-tile:nth-child(4){background:linear-gradient(165deg,#e6e5dc,#afc3b9 50%,#527b7e)}
@@ -27,8 +27,8 @@
 
 /* The previous map-based homepage used !important rules that hid the new
    marquee and forced a 230vw swipe canvas on mobile. Reset those rules here. */
-.hero{aspect-ratio:auto;background-image:none;overflow:hidden;min-height:clamp(350px,43vw,610px)}
-.hero-backdrop{display:block!important;position:absolute;inset:0;width:100%;height:100%;aspect-ratio:auto;background:url("romantiverse-town.jpg") center / cover no-repeat;opacity:.38;mix-blend-mode:normal;pointer-events:none}
+.hero{aspect-ratio:auto;background-image:none;overflow:hidden;min-height:clamp(420px,43vw,620px)}
+.hero-backdrop{display:block!important;position:absolute;inset:0;width:100%;height:100%;aspect-ratio:auto;background:url("assets/alpine-village.svg") center / cover no-repeat;opacity:1;mix-blend-mode:normal;pointer-events:none}
 .hero-copy{position:relative;left:auto;top:auto;width:auto;height:auto;aspect-ratio:auto;max-width:min(530px,80%);margin:0 0 0 clamp(1rem,8vw,9rem);padding:2rem 0;pointer-events:auto}
 .hero-copy h1{display:block!important}
 .tile-status{display:block;position:absolute;bottom:14px;left:14px;right:14px;padding:11px 8px;border-radius:8px;background:#1d3f43;color:#fff7e9;font:700 .85rem/1.35 Oswald,sans-serif;text-transform:uppercase}
@@ -39,10 +39,16 @@
 }
 @media(max-width:800px){
  .hero{width:100%;height:auto;aspect-ratio:auto;overflow:hidden;touch-action:auto}
- .hero-backdrop{position:absolute;inset:0;width:100%;height:100%;aspect-ratio:auto;background:url("romantiverse-town.jpg") center / cover no-repeat;opacity:.38}
+ .hero-backdrop{position:absolute;inset:0;width:100%;height:100%;aspect-ratio:auto;background:url("assets/alpine-village.svg") center / cover no-repeat;opacity:1}
  .hero-copy{position:relative;left:auto;top:auto;width:auto;height:auto;aspect-ratio:auto;max-width:min(530px,80%)}
 }
 @media(max-width:600px){
  .hero-copy{max-width:calc(100% - 2rem);margin:0 1rem;padding:2rem 0}
  .hero h1{max-width:100%;font-size:clamp(1.55rem,6vw,2.1rem)}
 }
+
+/* Clean illustrated hero: the earlier map JPG contains baked-in text and hotspots. */
+.hero{background-image:none;}
+.hero-backdrop{z-index:0;opacity:1;filter:saturate(1.1)}
+.hero-copy{z-index:2}
+.hero::after{z-index:1;background:linear-gradient(90deg,#14202b9e 0%,#14202b50 44%,transparent 80%)}
