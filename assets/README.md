@@ -25,3 +25,7 @@ cards and calls to action must stay as accessible, selectable HTML.
 The four feature-card illustrations are independent, editable SVG assets:
 `podcast-art.svg`, `music-art.svg`, `bingo-art.svg`, and `drink-art.svg`.
 Keep the standalone public website separate from private Cheese Louise HQ.
+
+## Release gate
+
+After uploading the **exact approved** `approved-town-hero.webp` image and replacing the temporary SVG background with it, run `node scripts/launch-gate.mjs` from the repository root. This independent release gate checks the approved image SHA-256 and dimensions, hero CSS, the accessible heading, four feature cards, standalone Bingo link, and footer. It intentionally fails while the image is missing or the placeholder remains. Ordinary draft-branch CI can continue passing during development; passing draft CI **does not** authorize publication. Follow with desktop/mobile browser screenshots and a real-device review before merging or publishing.
