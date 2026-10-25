@@ -19,6 +19,10 @@ for(const link of links){
 assert.match(html,/<main\s+id="home">/, 'Main landmark required');
 assert.match(html,/class="skip-link" href="#features"/, 'Skip link required');
 assert.match(html,/id="hero-title"/, 'Accessible marquee heading required');
+assert.ok(!html.includes('map-overrides.css'), 'Old map hotspot stylesheet must not hide or duplicate the hero');
+assert.ok(!css.includes('background:url("romantiverse-town.jpg")'), 'Baked-in text must not appear behind live marquee');
+assert.match(css,/assets\/alpine-village\.svg/,'Original clean scenery required');
+assert.ok(existsSync('assets/alpine-village.svg'),'Original clean hero asset must be present');
 assert.match(html,/id="music"/, 'Music section anchor required');
 for (const art of ['podcast','music','bingo','drink']) {
  assert.match(html,new RegExp('src="assets/'+art+'-art\\.svg" alt="" loading="lazy"'),art+' card needs original decorative illustration');
