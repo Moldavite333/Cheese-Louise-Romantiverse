@@ -22,3 +22,25 @@
 @media(max-width:900px){.homepage-features{grid-template-columns:repeat(2,minmax(0,1fr))}.episode-spotlight{grid-template-columns:1fr}.episode-spotlight>div+div{border:0;border-top:1px solid #dfcbb5;padding:1rem 0 0}}
 @media(max-width:600px){.homepage-features{grid-template-columns:1fr}.homepage-tile{min-height:270px}.hero-copy{margin-left:2rem}.hero h1{font-size:1.7rem}.site-header{min-height:62px}.brand-mark{font-size:1.7rem}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+
+/* The previous map-based homepage used !important rules that hid the new
+   marquee and forced a 230vw swipe canvas on mobile. Reset those rules here. */
+.hero{aspect-ratio:auto;background-image:none;overflow:hidden;min-height:clamp(350px,43vw,610px)}
+.hero-backdrop{display:block!important;position:absolute;inset:0;width:100%;height:100%;aspect-ratio:auto;background:url("romantiverse-town.jpg") center / cover no-repeat;opacity:.38;mix-blend-mode:normal;pointer-events:none}
+.hero-copy{position:relative;left:auto;top:auto;width:auto;height:auto;aspect-ratio:auto;max-width:min(530px,80%);margin:0 0 0 clamp(1rem,8vw,9rem);padding:2rem 0;pointer-events:auto}
+.hero-copy h1{display:block!important}
+.tile-status{display:block;position:absolute;bottom:14px;left:14px;right:14px;padding:11px 8px;border-radius:8px;background:#1d3f43;color:#fff7e9;font:700 .85rem/1.35 Oswald,sans-serif;text-transform:uppercase}
+@media(max-width:860px){
+ .site-header .menu-button{color:#142b35;border-color:#627776}
+ .site-header .main-nav a{color:#fff7e9}
+ .site-header .main-nav a:hover,.site-header .main-nav a:focus-visible,.site-header .main-nav a.active{color:#ffcf9a}
+}
+@media(max-width:800px){
+ .hero{width:100%;height:auto;aspect-ratio:auto;overflow:hidden;touch-action:auto}
+ .hero-backdrop{position:absolute;inset:0;width:100%;height:100%;aspect-ratio:auto;background:url("romantiverse-town.jpg") center / cover no-repeat;opacity:.38}
+ .hero-copy{position:relative;left:auto;top:auto;width:auto;height:auto;aspect-ratio:auto;max-width:min(530px,80%)}
+}
+@media(max-width:600px){
+ .hero-copy{max-width:calc(100% - 2rem);margin:0 1rem;padding:2rem 0}
+ .hero h1{max-width:100%;font-size:clamp(1.55rem,6vw,2.1rem)}
+}
