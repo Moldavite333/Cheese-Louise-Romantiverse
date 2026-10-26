@@ -57,7 +57,9 @@ assert.match(html,/id="cheese-trope-search"/, 'Public tropes must be searchable'
 assert.match(html,/id="cheese-trope-results"/, 'Public trope results need an accessible list');
 assert.match(html,/moderated submission form/, 'Fan submissions must remain pending until moderation is secure');
 assert.ok(!/action="[^"]*\/rest\/v1\/movies/i.test(html), 'Public fans must never submit directly into private HQ');
-assert.match(html,/Only movie titles deliberately published for Bingo appear here/, 'Explain the restricted public HQ projection');
+assert.match(html,/Bingo catalog titles and deliberately published HQ selections appear here/, 'Distinguish public catalog from restricted HQ projection');
+assert.match(posters,/\/functions\/v1\/bingo-public-posters/, 'Use public server-side verified Bingo poster cache');
+assert.match(posters,/poster_locked/, 'HQ-locked poster precedence must remain');
 assert.match(html,/Illustrative preview, not a published episode/, 'Unpublished episodes must remain clearly labeled');
 assert.match(css,/\.hero-copy h1\s*\{\s*display:block!important/, 'Override legacy hidden marquee');
 assert.match(css,/\.hero-backdrop\s*\{\s*display:block!important/, 'Override legacy hidden backdrop');
