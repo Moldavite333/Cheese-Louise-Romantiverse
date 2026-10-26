@@ -34,7 +34,7 @@ try{
   const hiddenHeading=await page.locator('.hero-copy').evaluate(el=>({rect:el.getBoundingClientRect().toJSON(),clip:getComputedStyle(el).clip,overflow:getComputedStyle(el).overflow}));
   assert.ok(hiddenHeading.rect.width<=2&&hiddenHeading.rect.height<=2&&hiddenHeading.overflow==='hidden'&&hiddenHeading.clip!=='auto','Baked-in marquee must not be visually duplicated at '+width+'px');
   const heroArt=await page.locator('.hero-backdrop').evaluate(el=>getComputedStyle(el).backgroundImage);
-  assert.match(heroArt,/cheese-louise-approved-town-hero\.webp/,'Hero must use approved mountain-town artwork');
+  assert.match(heroArt,/file_000000002040823089deaccfc427b599\.png/,'Hero must use approved mountain-town artwork');
   const dimensions=await page.evaluate(()=>({
    documentWidth:document.documentElement.scrollWidth,
    viewportWidth:document.documentElement.clientWidth,
