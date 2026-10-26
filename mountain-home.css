@@ -1,0 +1,60 @@
+/* Approved Cheese Louise mountain-town homepage — draft design branch */
+:root{--mountain-cream:#fff5e7;--mountain-burgundy:#852c39;--mountain-teal:#075b5d;--mountain-gold:#e4a544}
+.skip-link{position:absolute;left:1rem;top:-5rem;z-index:100;background:#fff;color:#111;padding:1rem}.skip-link:focus{top:1rem}
+.site-header{background:#fff8ed;color:#142b35;box-shadow:0 3px 18px #14222a24;min-height:76px}
+.brand-mark{width:auto;height:auto;background:none;border:0;box-shadow:none;transform:none;display:block;font:italic 700 clamp(1.6rem,3vw,2.6rem)/1 Georgia,serif;color:#d5a14e;letter-spacing:-.07em;text-shadow:2px 3px #16242c;padding:8px 0}
+.brand-mark span{color:#e57e83}.site-header .main-nav a{color:#142b35}.site-header .main-nav a:hover,.site-header .main-nav a.active{color:#842f3c;border-bottom-color:#e3a443}
+.hero{min-height:clamp(420px,43vw,620px);background:linear-gradient(180deg,#d87c8d 0%,#43516d 36%,#183e42 66%,#1d292e 100%);border:0;display:flex;align-items:center}
+.hero::before{opacity:.35}.hero-backdrop{opacity:.85;mix-blend-mode:normal;background-position:center;background-size:cover}
+.hero::after{background:linear-gradient(90deg,#14202bb5,transparent 78%)}
+.hero-copy{margin:0 0 0 clamp(1rem,8vw,9rem);padding:2rem 0;max-width:min(530px,80%);text-align:left}
+.hero h1{font:700 clamp(1.7rem,3vw,2.8rem)/1.12 Oswald,sans-serif;letter-spacing:.025em;text-transform:uppercase;color:#fff6dd;text-shadow:2px 3px #1a1c24,0 0 25px #f5ae4a;max-width:18ch;padding:1.2rem;background:#1b2529c9;border:8px solid #bd804b;outline:3px solid #f6c46c;box-shadow:0 0 0 10px #352721,0 0 25px #ffb75b80}
+.homepage-features{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;padding:18px;background:#f8eddb}
+.homepage-tile{min-height:385px;position:relative;overflow:hidden;text-align:center;border-radius:8px;border:1px solid #c6a886;padding:18px 12px 82px;background:linear-gradient(165deg,#fce4bd,#d6c4a5 55%,#617d75);box-shadow:0 5px 18px #2c332a1e}
+.homepage-tile:nth-child(2){background:linear-gradient(165deg,#e7e2d0,#b9b9a5 50%,#466b70)}.homepage-tile:nth-child(3){background:linear-gradient(165deg,#fce7c6,#e5b58b 55%,#b4675c)}.homepage-tile:nth-child(4){background:linear-gradient(165deg,#e6e5dc,#afc3b9 50%,#527b7e)}
+.homepage-tile h2{font:700 clamp(1.25rem,2vw,2rem)/1.08 'DM Serif Display',Georgia,serif;text-transform:uppercase;color:#802b3a;margin:0 0 10px}
+.homepage-tile p{font:600 1rem/1.4 Georgia,serif;color:#18323a;margin:0 auto;max-width:22ch}
+.tile-art{height:170px;max-width:100%;margin:12px auto 0;overflow:hidden;border:3px solid #f9e8cc;border-radius:10px;box-shadow:0 8px 20px #182c3350;background:#284e53}
+.tile-art img{display:block;width:100%;height:100%;object-fit:cover}
+.tile-actions{position:absolute;bottom:12px;left:12px;right:12px;display:grid;gap:6px}.tile-actions a,.tile-actions .tile-action-placeholder,.tile-link{display:block;background:#d93261;color:#fff;text-decoration:none;text-align:center;border-radius:8px;padding:10px 8px;font:700 .85rem Oswald,sans-serif;text-transform:uppercase;min-height:44px}
+.tile-actions .tile-action-placeholder{background:#6c5052;color:#fff5e7;cursor:default}
+.tile-actions a+ a{background:#172b2f}.tile-link{position:absolute;bottom:14px;left:14px;right:14px;background:#07636a}.tile-bingo .tile-link{background:#d28b29}
+.episode-spotlight{display:grid;grid-template-columns:2fr 1fr;gap:2rem;padding:clamp(1.5rem,4vw,4rem);background:#fff8ed}.episode-spotlight h2{font:700 clamp(1.7rem,3vw,2.8rem) Georgia,serif;color:#922d42}.episode-spotlight>div+div{border-left:1px solid #dfcbb5;padding-left:2rem}
+.footer-tagline{font:italic clamp(1.4rem,3vw,2.3rem) Georgia,serif;text-align:center;color:#fff1d8}
+@media(max-width:900px){.homepage-features{grid-template-columns:repeat(2,minmax(0,1fr))}.episode-spotlight{grid-template-columns:1fr}.episode-spotlight>div+div{border:0;border-top:1px solid #dfcbb5;padding:1rem 0 0}}
+@media(max-width:600px){.homepage-features{grid-template-columns:1fr}.homepage-tile{min-height:355px}.hero-copy{margin-left:2rem}.hero h1{font-size:1.7rem}.site-header{min-height:62px}.brand-mark{font-size:1.7rem}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+
+/* The previous map-based homepage used !important rules that hid the new
+   marquee and forced a 230vw swipe canvas on mobile. Reset those rules here. */
+.hero{aspect-ratio:auto;background-image:none;overflow:hidden;min-height:clamp(420px,43vw,620px)}
+.hero-backdrop{display:block!important;position:absolute;inset:0;width:100%;height:100%;aspect-ratio:auto;background:url("assets/file_000000002040823089deaccfc427b599.png") center / cover no-repeat;opacity:1;mix-blend-mode:normal;pointer-events:none}
+.hero-copy{position:relative;left:auto;top:auto;width:auto;height:auto;aspect-ratio:auto;max-width:min(530px,80%);margin:0 0 0 clamp(1rem,8vw,9rem);padding:2rem 0;pointer-events:auto}
+.hero-copy h1{display:block!important}
+.tile-status{display:block;position:absolute;bottom:14px;left:14px;right:14px;padding:11px 8px;border-radius:8px;background:#1d3f43;color:#fff7e9;font:700 .85rem/1.35 Oswald,sans-serif;text-transform:uppercase}
+@media(max-width:860px){
+ .site-header .menu-button{color:#142b35;border-color:#627776}
+ .site-header .main-nav a{color:#fff7e9}
+ .site-header .main-nav a:hover,.site-header .main-nav a:focus-visible,.site-header .main-nav a.active{color:#ffcf9a}
+}
+@media(max-width:800px){
+ .hero{width:100%;height:auto;aspect-ratio:auto;overflow:hidden;touch-action:auto}
+ .hero-backdrop{position:absolute;inset:0;width:100%;height:100%;aspect-ratio:auto;background:url("assets/file_000000002040823089deaccfc427b599.png") center / cover no-repeat;opacity:1}
+ .hero-copy{position:relative;left:auto;top:auto;width:auto;height:auto;aspect-ratio:auto;max-width:min(530px,80%)}
+}
+@media(max-width:600px){
+ .hero-copy{max-width:calc(100% - 2rem);margin:0 1rem;padding:2rem 0}
+ .hero h1{max-width:100%;font-size:clamp(1.55rem,6vw,2.1rem)}
+}
+
+/* Clean illustrated hero: the earlier map JPG contains baked-in text and hotspots. */
+.hero{background-image:none;}
+.hero-backdrop{z-index:0;opacity:1;filter:saturate(1.1)}
+.hero-copy{z-index:2}
+.hero::after{z-index:1;background:linear-gradient(90deg,#14202b9e 0%,#14202b50 44%,transparent 80%)}
+
+/* Approved original artwork already contains its marquee lettering. Keep an accessible heading without duplicating it visually. */
+.hero-copy{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+.hero{min-height:0;aspect-ratio:1672/941;background:#172c30}
+.hero-backdrop{background-image:url("assets/file_000000002040823089deaccfc427b599.png");background-size:cover;background-position:center}
+@media(max-width:600px){.hero{aspect-ratio:1672/941;min-height:180px}.hero-backdrop{background-size:contain;background-repeat:no-repeat;background-color:#172c30}.hero::after{display:none}}
