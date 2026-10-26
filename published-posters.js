@@ -1,9 +1,10 @@
-// Public HQ artwork only. This endpoint deliberately exposes titles with
-// published Bingo cards, not HQ's private workspace or production notes.
+// Merge verified public Bingo poster cache with the restricted published-HQ feed.
+// Neither endpoint exposes private HQ workspace records or production notes.
 (() => {
  const root=document.querySelector('[data-published-posters]');
  if(!root)return;
  const endpoint='https://wgvsnmukiaobcbyqhkkt.supabase.co/rest/v1/rpc/published_movie_posters';
+ const posterEndpoint='https://wgvsnmukiaobcbyqhkkt.supabase.co/functions/v1/bingo-public-posters';
  const key='sb_publishable_3xcqfNu-mJPuDWivmlBXug_3Tw60QoM';
  const bingo='https://moldavite333.github.io/Romantiverse-Bingo-App/';
  // Same public v3 invitation contract as the standalone Bingo game. Generate
@@ -16,7 +17,8 @@
    const season=['Christmas','Fall'].includes(movie.season)?movie.season:'Unspecified';
    const bytes=new Uint8Array(16);crypto.getRandomValues(bytes);
    const invite_id=Array.from(bytes,b=>b.toString(16).padStart(2,'0')).join('');
-   const payload={v:3,invite_id,movie:{title,season},
+   const year=Number.isInteger(movie.release_year)&&movie.release_year>=1900&&movie.release_year<=2100?{release_year:movie.release_year}:{};
+   const payload={v:3,invite_id,movie:{title,season,...year},
     ...(season==='Unspecified'?{cardTheme:'Christmas'}:{}),
     free:true,mode:'classic',difficulty:'balanced',ratio:50};
    const data=new TextEncoder().encode(JSON.stringify(payload));
@@ -41,9 +43,31 @@
  const status=document.querySelector('[data-published-movie-status]');
  let allMovies=[];
  let expanded=false;
- function show(rows){
-  allMovies=rows.filter(m=>m&&typeof m.title==='string'&&m.title.trim())
-   .sort((a,b)=>String(b.published_at||'').localeCompare(String(a.published_at||'')));
+ function show(hqRows,cachedRows){
+  // Automatic artwork fills gaps; only a deliberately HQ-locked poster can
+  // replace a verified automatic image for an exact title and release year.
+  const map=new Map();
+  const movieKey=m=>m.title.normalize('NFKC').trim().replace(/\s+/g,' ').toLowerCase()+'|'+m.release_year;
+  for(const m of cachedRows){
+   if(typeof m?.title!=='string'||!m.title.trim()||!Number.isInteger(m.release_year))continue;
+   const poster=approvedPoster(m.poster_url);if(!poster)continue;
+   const movie={title:m.title.trim().slice(0,250),release_year:m.release_year,season:'Unspecified',
+    poster_url:poster,poster_locked:false,is_hq:false};
+   map.set(movieKey(movie),movie);
+  }
+  for(const m of hqRows){
+   if(typeof m?.title!=='string'||!m.title.trim())continue;
+   const title=m.title.trim().slice(0,250);
+   const year=Number.isInteger(m.release_year)&&m.release_year>=1900&&m.release_year<=2100?m.release_year:null;
+   const movie={title,release_year:year,season:['Christmas','Fall'].includes(m.season)?m.season:'Unspecified',
+    poster_url:approvedPoster(m.poster_url),poster_locked:m.poster_locked===true,
+    published_at:typeof m.published_at==='string'?m.published_at:'',is_hq:true};
+   const key=movieKey(movie),prior=map.get(key);
+   if(prior)movie.poster_url=movie.poster_locked&&movie.poster_url?movie.poster_url:prior.poster_url||movie.poster_url;
+   map.set(key,movie);
+  }
+  allMovies=[...map.values()].sort((a,b)=>Number(b.is_hq)-Number(a.is_hq)||
+   String(b.published_at||'').localeCompare(String(a.published_at||''))||a.title.localeCompare(b.title));
   render();
  }
  function render(){
@@ -53,7 +77,7 @@
   const fragment=document.createDocumentFragment();
   if(!movies.length){
    const note=document.createElement('p');
-   note.textContent=term?'No published Bingo movies match that search.':'Featured Bingo movies will appear after publication from HQ.';
+   note.textContent=term?'No Bingo movies match that search.':'Bingo movie posters are temporarily unavailable.';
    fragment.append(note);
   }
   for(const movie of movies){
@@ -68,7 +92,7 @@
    }
    const info=document.createElement('div');
    const title=document.createElement('strong');title.textContent=movie.title.slice(0,250);
-   const detail=document.createElement('small');detail.textContent=[movie.release_year,movie.season==='Unspecified'?'':movie.season].filter(Boolean).join(' · ')||'Published Bingo selection';
+   const detail=document.createElement('small');detail.textContent=[movie.release_year,movie.season==='Unspecified'?'':movie.season].filter(Boolean).join(' · ')||(movie.is_hq?'Published Bingo selection':'Verified Bingo catalog poster');
    const link=document.createElement('a');link.href=movieInvitation(movie);link.textContent='Play Bingo →';link.setAttribute('aria-label','Play Romantiverse Bingo for '+movie.title+' with your own randomized card');
    link.addEventListener('click',()=>{link.href=movieInvitation(movie)});
    info.append(title,detail,link);row.append(info);fragment.append(row);
@@ -76,11 +100,11 @@
   root.replaceChildren(fragment);
   if(expand){
    expand.hidden=allMovies.length<=3||Boolean(term);
-   expand.textContent=expanded?'Show featured movies':'Show all '+allMovies.length+' published movies';
+   expand.textContent=expanded?'Show featured movies':'Show all '+allMovies.length+' Bingo movies';
    expand.setAttribute('aria-expanded',String(expanded));
   }
   if(status){
-   const message=term?'Showing '+movies.length+' of '+allMovies.length+' published movies matching your search.':'Showing '+movies.length+' of '+allMovies.length+' published Bingo movies.';
+   const message=term?'Showing '+movies.length+' of '+allMovies.length+' Bingo movies matching your search.':'Showing '+movies.length+' of '+allMovies.length+' Bingo movies.';
    if(status.textContent!==message)status.textContent=message;
   }
  }
@@ -89,14 +113,19 @@
  async function refresh(){
   controller?.abort();const request=new AbortController();controller=request;
   try{
-   const response=await fetch(endpoint,{headers:{apikey:key,Accept:'application/json'},cache:'no-store',signal:request.signal});
-   if(!response.ok)throw Error('Public artwork unavailable: '+response.status);
-   const rows=await response.json();if(!Array.isArray(rows))throw Error('Invalid public artwork feed');
-   if(!request.signal.aborted)show(rows);
+   const [hq,cache]=await Promise.allSettled([
+    fetch(endpoint,{headers:{apikey:key,Accept:'application/json'},cache:'no-store',signal:request.signal})
+     .then(async response=>{if(!response.ok)throw Error('Published HQ feed '+response.status);const rows=await response.json();if(!Array.isArray(rows))throw Error('Invalid published HQ feed');return rows}),
+    fetch(posterEndpoint,{headers:{Accept:'application/json'},cache:'no-store',signal:request.signal})
+     .then(async response=>{if(!response.ok)throw Error('Public poster cache '+response.status);const body=await response.json();if(body?.version!==1||!Array.isArray(body.movies))throw Error('Invalid public poster cache');return body.movies})
+   ]);
+   if(request.signal.aborted)return;
+   if(hq.status==='rejected'&&cache.status==='rejected')throw Error('Both public movie feeds unavailable');
+   show(hq.status==='fulfilled'?hq.value:[],cache.status==='fulfilled'?cache.value:[]);
   }catch(error){
    if(request.signal.aborted)return;
-   console.warn('Public HQ poster feed unavailable',error);
-   if(!root.querySelector('.published-poster-row'))root.textContent='Featured Bingo movies are temporarily unavailable.';
+   console.warn('Public Bingo poster feeds unavailable',error);
+   if(!root.querySelector('.published-poster-row'))root.textContent='Bingo movie posters are temporarily unavailable.';
   }
  }
  refresh();
