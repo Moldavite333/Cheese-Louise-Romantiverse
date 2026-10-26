@@ -36,6 +36,7 @@ try{
     poster_url:'https://image.tmdb.org/t/p/w500/test.jpg',poster_locked:true,
     published_at:'2026-10-26T10:00:00Z',notes:'PRIVATE HQ NOTES MUST NEVER RENDER'}])
   }));
+  await page.route('**/functions/v1/bingo-public-posters',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({version:1,movies:[{title:'Catalog Test Movie',release_year:2025,season:'Christmas',poster_url:'https://image.tmdb.org/t/p/w780/catalog.jpg',poster_source:'tmdb'}]})}));
   await page.route('https://image.tmdb.org/**',route=>route.fulfill({
    status:200,contentType:'image/png',
    body:Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScL/nwAAAABJRU5ErkJggg==','base64')
@@ -56,7 +57,7 @@ try{
   assert.ok(dimensions.documentWidth<=dimensions.viewportWidth+2,'Horizontal document overflow at '+width+'px: '+JSON.stringify(dimensions));
   assert.ok(dimensions.heroScroll<=dimensions.heroClient+2,'Legacy oversized swipe map remains at '+width+'px');
   assert.ok(await page.locator('.homepage-tile').count()===4,'Expected four feature tiles');
-  await page.locator('[data-published-posters] strong').waitFor();
+  await page.locator('[data-published-posters] strong').first().waitFor();
   assert.equal(await page.locator('[data-published-posters] strong').first().textContent(),'HQ Test Movie','Published HQ title missing');
   assert.equal(await page.locator('[data-published-posters] img[alt="Poster for HQ Test Movie"]').count(),1,'Published HQ poster missing');
   assert.ok(!(await page.locator('[data-published-posters]').innerText()).includes('PRIVATE HQ NOTES'),'Private HQ data leaked to public page');
@@ -69,7 +70,7 @@ try{
   const payload=decode(firstHref);
   assert.equal(payload.v,3);
   assert.match(payload.invite_id,/^[a-f0-9]{32}$/);
-  assert.deepEqual(payload.movie,{title:'HQ Test Movie',season:'Fall'});
+  assert.deepEqual(payload.movie,{title:'HQ Test Movie',season:'Fall',release_year:2026});
   assert.equal(payload.mode,'classic');
   assert.equal(payload.free,true);
   assert.ok(!JSON.stringify(payload).includes('PRIVATE HQ NOTES'),'Private HQ fields must never enter invitation links');
@@ -79,6 +80,13 @@ try{
   assert.notEqual(secondHref,firstHref,'Each click must generate a unique invitation URL');
   assert.deepEqual(decode(secondHref).movie,payload.movie,'Fresh invitation must preserve the selected movie');
 
+  await page.locator('[data-published-movie-search]').fill('Catalog Test Movie');
+  await page.locator('[data-published-posters] strong').first().waitFor();
+  assert.equal(await page.locator('[data-published-posters] strong').first().textContent(),'Catalog Test Movie','Cached public Bingo movie missing');
+  assert.equal(await page.locator('[data-published-posters] img[alt="Poster for Catalog Test Movie"]').count(),1,'Cached public poster missing');
+  const catalogInvite=decode(await page.locator('[data-published-posters] a').first().getAttribute('href'));
+  assert.deepEqual(catalogInvite.movie,{title:'Catalog Test Movie',season:'Christmas',release_year:2025});
+  await page.locator('[data-published-movie-search]').fill('');
   await page.locator('.tile-art img').first().scrollIntoViewIfNeeded();
   await page.waitForFunction(() => {
     const art=[...document.querySelectorAll('.tile-art img')];
