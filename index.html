@@ -93,10 +93,15 @@
       </article>
 
       <article class="feature-card" id="tropes">
-        <p class="card-kicker">Coming Soon</p>
-        <h2>Tropes</h2>
-        <p>Explore the recurring tropes, impossible coincidences, and familiar twists that make the Romantiverse what it is.</p>
-        <p class="meta">No unpublished episode material is shown here.</p>
+        <p class="card-kicker">The Cheesehead Field Guide</p>
+        <h2>The Cheese Trope Library 🧀</h2>
+        <p>Every almost-kiss, impossible coincidence, and small-town emergency has a name. Browse the recurring Romantiverse classics below.</p>
+        <label for="cheese-trope-search">Find a cheese trope</label>
+        <input id="cheese-trope-search" type="search" autocomplete="off" placeholder="Try: hometown, kiss, family…" aria-controls="cheese-trope-results">
+        <p id="cheese-trope-count" role="status" aria-live="polite"></p>
+        <ul id="cheese-trope-results" class="cheese-trope-results"></ul>
+        <h3>Spotted a new cheese trope?</h3>
+        <p>We're preparing a moderated submission form so Cheeseheads can contribute without exposing our private HQ. For now, keep that gloriously cheesy observation handy!</p>
       </article>
     </section>
 
@@ -139,5 +144,24 @@
   <script src="app.js?v=20261023a"></script>
   <script src="cheese-tray.js?v=1" defer></script>
   <script src="published-posters.js?v=20261026c" defer></script>
+<script>
+(() => {
+  const tropes=["An impossibly cute first meeting","Career versus love dilemma","Big-city person returns home","An old flame reappears","A beloved business must be saved","A completely avoidable misunderstanding","A perfectly timed interruption","A wildly dramatic romantic gesture","A relative gives unsolicited love advice","The almost-kiss","The entire town gets involved","A romantic deadline approaches","Someone learns the true meaning of life","An absurdly convenient coincidence","An inconvenient romantic rival","Decorating turns into accidental flirting","An awkward date","Two people are forced to spend time together","A town event saves the day","Someone reveals a secret talent","A very late romantic realization","Someone arrives at the last possible moment","Someone overhears the wrong half of a conversation","Family pressure complicates everything","Big-city life is apparently terrible","A stranger knows exactly what to say","Love is confessed in public","The love interest has no apparent flaws","Small-town magic fixes a real-world problem","Everyone knows the ending except the leads","A sentimental family heirloom matters","FREE SPACE"];
+  const input=document.getElementById('cheese-trope-search');
+  const list=document.getElementById('cheese-trope-results');
+  const count=document.getElementById('cheese-trope-count');
+  if(!input||!list||!count)return;
+  function render(){
+    const term=input.value.trim().toLocaleLowerCase();
+    const matches=tropes.filter(t=>t.toLocaleLowerCase().includes(term));
+    const fragment=document.createDocumentFragment();
+    for(const trope of matches){const item=document.createElement('li');item.textContent=trope;fragment.append(item);}
+    list.replaceChildren(fragment);
+    count.textContent=matches.length+' cheese trope'+(matches.length===1?'':'s')+' found';
+  }
+  input.addEventListener('input',render);
+  render();
+})();
+</script>
 </body>
 </html>
