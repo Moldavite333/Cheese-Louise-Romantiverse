@@ -1,6 +1,7 @@
 name: Public website static smoke checks
 on:
   pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
   push:
     branches: [main, design/mountain-town-homepage]
   workflow_dispatch:
@@ -16,3 +17,11 @@ jobs:
         with:
           node-version: '22'
       - run: node scripts/site-smoke.mjs
+      # Draft work can use temporary scenery. A review-ready PR, production
+      # push, or explicit launch check must contain the exact approved town.
+      - name: Verify approved public launch artwork and branding
+        if: >-
+          (github.event_name == 'pull_request' && github.event.pull_request.draft == false) ||
+          (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
+          github.event_name == 'workflow_dispatch'
+        run: node scripts/launch-gate.mjs
