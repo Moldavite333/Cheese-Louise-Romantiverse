@@ -36,11 +36,25 @@
   }catch{}
   return null;
  }
+ const search=document.querySelector('[data-published-movie-search]');
+ const expand=document.querySelector('[data-published-movie-expand]');
+ const status=document.querySelector('[data-published-movie-status]');
+ let allMovies=[];
+ let expanded=false;
  function show(rows){
-  const movies=rows.filter(m=>m&&typeof m.title==='string'&&m.title.trim()).sort((a,b)=>String(b.published_at||'').localeCompare(String(a.published_at||''))).slice(0,3);
+  allMovies=rows.filter(m=>m&&typeof m.title==='string'&&m.title.trim())
+   .sort((a,b)=>String(b.published_at||'').localeCompare(String(a.published_at||'')));
+  render();
+ }
+ function render(){
+  const term=(search?.value||'').trim().toLocaleLowerCase();
+  const matches=term?allMovies.filter(m=>(m.title+' '+(m.release_year||'')).toLocaleLowerCase().includes(term)):allMovies;
+  const movies=term||expanded?matches:matches.slice(0,3);
   const fragment=document.createDocumentFragment();
   if(!movies.length){
-   const note=document.createElement('p');note.textContent='Featured Bingo movies will appear after publication from HQ.';fragment.append(note);
+   const note=document.createElement('p');
+   note.textContent=term?'No published Bingo movies match that search.':'Featured Bingo movies will appear after publication from HQ.';
+   fragment.append(note);
   }
   for(const movie of movies){
    const row=document.createElement('div');row.className='published-poster-row';
@@ -60,7 +74,18 @@
    info.append(title,detail,link);row.append(info);fragment.append(row);
   }
   root.replaceChildren(fragment);
+  if(expand){
+   expand.hidden=allMovies.length<=3;
+   expand.textContent=expanded?'Show featured movies':'Show all '+allMovies.length+' published movies';
+   expand.setAttribute('aria-expanded',String(expanded));
+  }
+  if(status){
+   const message=term?'Showing '+movies.length+' of '+allMovies.length+' published movies matching your search.':'Showing '+movies.length+' of '+allMovies.length+' published Bingo movies.';
+   if(status.textContent!==message)status.textContent=message;
+  }
  }
+ search?.addEventListener('input',render);
+ expand?.addEventListener('click',()=>{expanded=!expanded;render()});
  async function refresh(){
   controller?.abort();const request=new AbortController();controller=request;
   try{
