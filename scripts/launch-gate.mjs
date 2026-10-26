@@ -5,31 +5,31 @@ import {createHash} from 'node:crypto';
 import {resolve, join} from 'node:path';
 
 const root=resolve(process.env.SITE_ROOT||'.');
-const image=join(root,'assets/cheese-louise-approved-town-hero.webp');
+const image=join(root,'assets/file_000000002040823089deaccfc427b599.png');
 const cssPath=join(root,'mountain-home.css');
 const htmlPath=join(root,'index.html');
-const expectedSha='809a00392ce05bbd0f2498707d2dbccc50e8b70f29c6418df26144924e5fa433';
+const expectedSha='14c326a6f8ffb007b19b84a0bd1e24322523bceb0e3b26609b31882fc7372d11';
 const problems=[];
 
 if(!existsSync(image)){
- problems.push('Approved mountain-town image missing: assets/cheese-louise-approved-town-hero.webp');
+ problems.push('Approved mountain-town image missing: assets/file_000000002040823089deaccfc427b599.png');
 }else{
  const bytes=readFileSync(image);
  const digest=createHash('sha256').update(bytes).digest('hex');
  if(digest!==expectedSha)problems.push('Town image does not match the exact approved artwork (SHA-256 mismatch)');
- if(bytes.toString('ascii',0,4)!=='RIFF'||bytes.toString('ascii',8,12)!=='WEBP'||bytes.toString('ascii',12,16)!=='VP8 '){
-  problems.push('Approved town image must be the original WebP/VP8 asset');
+ if(bytes.toString('hex',0,8)!=='89504e470d0a1a0a'){
+  problems.push('Approved town image must be a PNG');
  }else{
-  const width=bytes.readUInt16LE(26)&0x3fff;
-  const height=bytes.readUInt16LE(28)&0x3fff;
-  if(width!==1223||height!==426)problems.push(`Unexpected approved image dimensions: ${width}x${height}`);
+  const width=bytes.readUInt32BE(16);
+  const height=bytes.readUInt32BE(20);
+  if(width!==1672||height!==941)problems.push(`Unexpected approved image dimensions: ${width}x${height}`);
  }
 }
 
 if(!existsSync(cssPath))problems.push('Missing mountain-home.css');
 else{
  const css=readFileSync(cssPath,'utf8');
- if(!css.includes('assets/cheese-louise-approved-town-hero.webp'))problems.push('Homepage CSS does not reference the approved town image');
+ if(!css.includes('assets/file_000000002040823089deaccfc427b599.png'))problems.push('Homepage CSS does not reference the approved town image');
  if(css.includes('url("assets/alpine-village.svg")'))problems.push('Temporary alpine-village illustration still appears in homepage CSS');
 }
 
