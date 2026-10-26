@@ -52,7 +52,13 @@ assert.match(posters,/fallback[.]textContent='🧀'/, 'Missing movie posters mus
 assert.ok(!/Rules of the Romantiverse|Cheese Traits/i.test(html), 'Retired public terminology must not return');
 assert.ok(!html.includes('Rule of the Week') && !html.includes('When you’re a single dad'), 'Do not prepublish private podcast rules');
 assert.ok(!html.includes('may get a shout-out'), 'Do not promise unapproved podcast shout-outs');
-assert.match(html,/No unpublished episode material is shown here/, 'Explain public trope publication status');
+assert.match(html,/The Cheese Trope Library/, 'Public Cheese Trope Library must be discoverable');
+assert.match(html,/id="cheese-trope-search"/, 'Public tropes must be searchable');
+assert.match(html,/id="cheese-trope-results"/, 'Public trope results need an accessible list');
+assert.match(html,/moderated submission form/, 'Fan submissions must remain pending until moderation is secure');
+assert.ok(!/action="[^"]*\/rest\/v1\/movies/i.test(html), 'Public fans must never submit directly into private HQ');
+assert.match(html,/Only movie titles deliberately published for Bingo appear here/, 'Explain the restricted public HQ projection');
+assert.match(html,/Illustrative preview, not a published episode/, 'Unpublished episodes must remain clearly labeled');
 assert.match(css,/\.hero-copy h1\s*\{\s*display:block!important/, 'Override legacy hidden marquee');
 assert.match(css,/\.hero-backdrop\s*\{\s*display:block!important/, 'Override legacy hidden backdrop');
 assert.match(css,/\.site-header \.main-nav a\s*\{\s*color:#fff7e9/, 'Mobile menu links must contrast with dark menu');
