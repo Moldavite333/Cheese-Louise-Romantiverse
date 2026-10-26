@@ -51,7 +51,7 @@
   for(const m of cachedRows){
    if(typeof m?.title!=='string'||!m.title.trim()||!Number.isInteger(m.release_year))continue;
    const poster=approvedPoster(m.poster_url);if(!poster)continue;
-   const movie={title:m.title.trim().slice(0,250),release_year:m.release_year,season:'Unspecified',
+   const movie={title:m.title.trim().slice(0,250),release_year:m.release_year,season:['Christmas','Fall','Horror'].includes(m.season)?m.season:'Unspecified',
     poster_url:poster,poster_locked:false,is_hq:false};
    map.set(movieKey(movie),movie);
   }
