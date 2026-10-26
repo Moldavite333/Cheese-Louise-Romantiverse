@@ -47,10 +47,10 @@
    const poster=approvedPoster(movie.poster_url);
    if(poster){
     const img=document.createElement('img');img.src=poster;img.alt='Poster for '+movie.title;img.loading='lazy';img.decoding='async';img.referrerPolicy='no-referrer';
-    img.addEventListener('error',()=>{img.replaceWith(document.createTextNode('🎬'))},{once:true});
+    img.addEventListener('error',()=>{img.replaceWith(document.createTextNode('🧀'))},{once:true});
     row.append(img);
    }else{
-    const fallback=document.createElement('span');fallback.className='published-poster-fallback';fallback.textContent='🎬';fallback.setAttribute('aria-hidden','true');row.append(fallback);
+    const fallback=document.createElement('span');fallback.className='published-poster-fallback';fallback.textContent='🧀';fallback.setAttribute('aria-hidden','true');row.append(fallback);
    }
    const info=document.createElement('div');
    const title=document.createElement('strong');title.textContent=movie.title.slice(0,250);
