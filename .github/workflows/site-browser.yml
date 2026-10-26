@@ -2,7 +2,7 @@ name: Public website browser QA
 on:
   pull_request:
   push:
-    branches: [design/mountain-town-homepage]
+    branches: [main, design/mountain-town-homepage]
   workflow_dispatch:
 permissions:
   contents: read
