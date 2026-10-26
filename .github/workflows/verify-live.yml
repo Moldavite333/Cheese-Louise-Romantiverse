@@ -25,3 +25,5 @@ jobs:
       - run: npx playwright install --with-deps chromium
       - name: Verify actual HQ-locked artwork in both live mobile sites
         run: node scripts/verify-live-browser.mjs
+      - name: Test live poster refresh and lock precedence without modifying HQ
+        run: node scripts/verify-poster-refresh-browser.mjs
