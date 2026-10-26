@@ -26,6 +26,7 @@ const cors={
 };
 const image=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9YfXcZ0AAAAASUVORK5CYII=','base64');
 await context.route('https://image.tmdb.org/t/p/**',route=>route.fulfill({status:200,contentType:'image/png',body:image}));
+await context.route('**/functions/v1/bingo-public-posters',route=>route.fulfill({status:200,headers:cors,contentType:'application/json',body:JSON.stringify({version:1,movies:[{title,release_year:year,poster_url:automatic,poster_source:'tmdb'}]})}));
 await context.route('**/rest/v1/rpc/published_movie_posters',route=>{
  if(route.request().method()==='OPTIONS')return route.fulfill({status:204,headers:cors});
  return route.fulfill({status:200,headers:cors,contentType:'application/json',body:JSON.stringify(feed)});
@@ -64,7 +65,8 @@ try{
   site.goto('https://cheeselouisepod.com/',{waitUntil:'domcontentloaded',timeout:30000}),
   bingo.goto('https://moldavite333.github.io/Romantiverse-Bingo-App/',{waitUntil:'domcontentloaded',timeout:30000})
  ]);
- await websitePoster(hqA);
+ await site.locator('[data-published-movie-search]').fill(title);
+ await websitePoster(automatic); // Automatic artwork wins over an unlocked HQ selection.
  await bingoPoster(automatic); // HQ is unlocked; automatic exact-year artwork wins.
  feed=[published(hqB,true)];
  await refresh();
@@ -76,12 +78,12 @@ try{
  await bingoPoster(hqC); // Subsequent HQ edit propagates without reload.
  feed=[published(hqC,false)];
  await refresh();
- await websitePoster(hqC);
+ await websitePoster(automatic);
  await bingoPoster(automatic); // Unlock restores automatic priority.
  feed=[];
  await refresh();
- await site.waitForFunction(title=>![...document.querySelectorAll('.published-poster-row strong')].some(x=>x.textContent===title),title,{timeout:45000});
- await bingoPoster(automatic); // Unpublishing removes HQ art without deleting public catalog.
+ await websitePoster(automatic); // Unpublishing removes HQ artwork without deleting the public catalog.
+ await bingoPoster(automatic);
  for(const page of [site,bingo]){
   assert.ok(!(await page.locator('body').innerText()).includes(privateMarker),'Private HQ fields must not appear in the UI');
   const dimensions=await page.evaluate(()=>({scroll:document.documentElement.scrollWidth,width:document.documentElement.clientWidth}));
