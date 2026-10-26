@@ -60,6 +60,25 @@ try{
   assert.equal(await page.locator('[data-published-posters] strong').first().textContent(),'HQ Test Movie','Published HQ title missing');
   assert.equal(await page.locator('[data-published-posters] img[alt="Poster for HQ Test Movie"]').count(),1,'Published HQ poster missing');
   assert.ok(!(await page.locator('[data-published-posters]').innerText()).includes('PRIVATE HQ NOTES'),'Private HQ data leaked to public page');
+  // The homepage must deep-link directly into a new independently dealt card
+  // for this published HQ movie; each click must mint a fresh secure invitation.
+  const inviteLink=page.locator('[data-published-posters] a').first();
+  const firstHref=await inviteLink.getAttribute('href');
+  assert.ok(firstHref.startsWith('https://moldavite333.github.io/Romantiverse-Bingo-App/#invite='),'Published movie must deep-link into Bingo');
+  const decode=href=>JSON.parse(Buffer.from(new URL(href).hash.slice('#invite='.length),'base64url').toString('utf8'));
+  const payload=decode(firstHref);
+  assert.equal(payload.v,3);
+  assert.match(payload.invite_id,/^[a-f0-9]{32}$/);
+  assert.deepEqual(payload.movie,{title:'HQ Test Movie',season:'Fall'});
+  assert.equal(payload.mode,'classic');
+  assert.equal(payload.free,true);
+  assert.ok(!JSON.stringify(payload).includes('PRIVATE HQ NOTES'),'Private HQ fields must never enter invitation links');
+  await inviteLink.evaluate(el=>el.addEventListener('click',event=>event.preventDefault()));
+  await inviteLink.click();
+  const secondHref=await inviteLink.getAttribute('href');
+  assert.notEqual(secondHref,firstHref,'Each click must generate a unique invitation URL');
+  assert.deepEqual(decode(secondHref).movie,payload.movie,'Fresh invitation must preserve the selected movie');
+
   await page.locator('.tile-art img').first().scrollIntoViewIfNeeded();
   await page.waitForFunction(() => {
     const art=[...document.querySelectorAll('.tile-art img')];
