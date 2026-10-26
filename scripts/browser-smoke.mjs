@@ -31,8 +31,8 @@ try{
   await page.goto(origin,{waitUntil:'domcontentloaded'});
   const hero=page.locator('#hero-title');
   assert.equal(await hero.count(),1,'Accessible marquee heading missing');
-  const rect=await hero.boundingBox();
-  assert.ok(rect&&rect.width<=2&&rect.height<=2,'Baked-in marquee must not be visually duplicated at '+width+'px');
+  const hiddenHeading=await page.locator('.hero-copy').evaluate(el=>({rect:el.getBoundingClientRect().toJSON(),clip:getComputedStyle(el).clip,overflow:getComputedStyle(el).overflow}));
+  assert.ok(hiddenHeading.rect.width<=2&&hiddenHeading.rect.height<=2&&hiddenHeading.overflow==='hidden'&&hiddenHeading.clip!=='auto','Baked-in marquee must not be visually duplicated at '+width+'px');
   const heroArt=await page.locator('.hero-backdrop').evaluate(el=>getComputedStyle(el).backgroundImage);
   assert.match(heroArt,/cheese-louise-approved-town-hero\.webp/,'Hero must use approved mountain-town artwork');
   const dimensions=await page.evaluate(()=>({
