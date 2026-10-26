@@ -1,0 +1,86 @@
+const menuButton = document.querySelector('[data-menu-button]');
+const nav = document.querySelector('[data-nav]');
+const toast = document.querySelector('[data-toast]');
+const year = document.querySelector('[data-year]');
+
+if (year) year.textContent = new Date().getFullYear();
+
+if (menuButton && nav) {
+  menuButton.addEventListener('click', () => {
+    const open = nav.classList.toggle('open');
+    menuButton.setAttribute('aria-expanded', String(open));
+    menuButton.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    menuButton.textContent = open ? 'CLOSE' : 'MENU';
+  });
+
+  nav.querySelectorAll('a').forEach((link) => {
+    link.addEventListener('click', () => {
+      nav.classList.remove('open');
+      menuButton.setAttribute('aria-expanded', 'false');
+      menuButton.setAttribute('aria-label', 'Open menu');
+      menuButton.textContent = 'MENU';
+    });
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && nav.classList.contains('open')) {
+      nav.classList.remove('open');
+      menuButton.setAttribute('aria-expanded', 'false');
+      menuButton.setAttribute('aria-label', 'Open menu');
+      menuButton.textContent = 'MENU';
+      menuButton.focus();
+    }
+  });
+}
+
+function showToast(message) {
+  if (!toast) return;
+  toast.textContent = message;
+  toast.classList.add('show');
+  window.clearTimeout(showToast.timer);
+  showToast.timer = window.setTimeout(() => toast.classList.remove('show'), 3200);
+}
+
+// Direct every public Bingo entry point to the maintained standalone Bingo app.
+// The older local bingo.html is retained only for legacy direct links.
+document.querySelectorAll('a[href="#bingo"]').forEach((link) => {
+  link.setAttribute('href', 'https://moldavite333.github.io/Romantiverse-Bingo-App/');
+});
+
+document.querySelector('[data-bingo-placeholder]')?.addEventListener('click', () => {
+  window.location.href = 'https://moldavite333.github.io/Romantiverse-Bingo-App/';
+});
+
+// On phones the Romantiverse is intentionally wider than the viewport so it can
+// be explored like a real map. Start centered on the Cheese Louise title/town,
+// then let the visitor swipe left or right to explore the rest.
+const heroMap = document.querySelector('.hero');
+const mobileMapQuery = window.matchMedia('(max-width: 800px)');
+
+function centerMobileMap() {
+  if (!heroMap || !mobileMapQuery.matches) return;
+  window.requestAnimationFrame(() => {
+    heroMap.scrollLeft = Math.max(0, (heroMap.scrollWidth - heroMap.clientWidth) / 2);
+  });
+}
+
+centerMobileMap();
+window.addEventListener('load', centerMobileMap, { once: true });
+
+const sections = [...document.querySelectorAll('main section[id]')];
+const navLinks = [...document.querySelectorAll('.main-nav a[href^="#"]')];
+
+if ('IntersectionObserver' in window) {
+  const observer = new IntersectionObserver((entries) => {
+    const visible = entries
+      .filter((entry) => entry.isIntersecting)
+      .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+
+    if (!visible) return;
+    const id = visible.target.id;
+    navLinks.forEach((link) => {
+      link.classList.toggle('active', link.getAttribute('href') === `#${id}` || (id === 'town' && link.getAttribute('href') === '#home'));
+    });
+  }, { rootMargin: '-25% 0px -60% 0px', threshold: [0, .1, .25, .5] });
+
+  sections.forEach((section) => observer.observe(section));
+}
