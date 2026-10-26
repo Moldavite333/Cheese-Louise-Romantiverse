@@ -55,6 +55,6 @@
 
 /* Approved original artwork already contains its marquee lettering. Keep an accessible heading without duplicating it visually. */
 .hero-copy{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
-.hero{min-height:0;aspect-ratio:3/2;background:#172c30}
+.hero{min-height:0;aspect-ratio:1672/941;background:#172c30}
 .hero-backdrop{background-image:url("assets/file_000000002040823089deaccfc427b599.png");background-size:cover;background-position:center}
-@media(max-width:600px){.hero{aspect-ratio:3/2;min-height:180px}.hero-backdrop{background-size:contain;background-repeat:no-repeat;background-color:#172c30}.hero::after{display:none}}
+@media(max-width:600px){.hero{aspect-ratio:1672/941;min-height:180px}.hero-backdrop{background-size:contain;background-repeat:no-repeat;background-color:#172c30}.hero::after{display:none}}
