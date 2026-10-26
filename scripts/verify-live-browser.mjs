@@ -4,9 +4,16 @@ import assert from 'node:assert/strict';
 import {chromium} from 'playwright';
 const rpc='https://wgvsnmukiaobcbyqhkkt.supabase.co/rest/v1/rpc/published_movie_posters';
 const key='sb_publishable_3xcqfNu-mJPuDWivmlBXug_3Tw60QoM';
+const cacheUrl='https://wgvsnmukiaobcbyqhkkt.supabase.co/functions/v1/bingo-public-posters';
 const response=await fetch(rpc,{headers:{apikey:key,Accept:'application/json'},signal:AbortSignal.timeout(15000)});
 assert.equal(response.ok,true,'Anonymous HQ poster endpoint must respond successfully');
 const movies=await response.json();
+const cacheResponse=await fetch(cacheUrl,{signal:AbortSignal.timeout(15000)});
+assert.equal(cacheResponse.ok,true,'Public Bingo poster cache must respond successfully');
+const cache=await cacheResponse.json();
+assert.equal(cache.version,1);
+assert.ok(Array.isArray(cache.movies)&&cache.movies.length>=38,'All 38 bundled posters must be cached');
+const allSources=[...movies,...cache.movies];
 const locked=movies.find(m=>m.poster_locked===true&&m.poster_url&&m.title);
 assert.ok(locked,'At least one deliberately published HQ-locked poster is needed for live verification');
 const browser=await chromium.launch({headless:true});
@@ -22,24 +29,28 @@ try{
  })));
  assert.ok(visible.length>0,'Website must show published HQ movie titles');
  for(const item of visible){
-  const source=movies.find(m=>m.title===item.title);
-  assert.ok(source,'Website displayed a title not published in HQ');
-  if(source.poster_url)assert.equal(item.poster,source.poster_url,'Website poster differs from current HQ selection');
+  const hq=movies.find(m=>m.title===item.title);
+  const auto=cache.movies.find(m=>m.title===item.title);
+  assert.ok(hq||auto,'Website displayed a title not in either public movie feed');
+  const expected=hq?.poster_locked&&hq.poster_url?hq.poster_url:auto?.poster_url||hq?.poster_url;
+  if(expected)assert.equal(item.poster,expected,'Website poster differs from public cache / HQ lock precedence');
  }
  // Browse/search all deliberately published titles; never query HQ's private watchlist.
  const search=site.locator('[data-published-movie-search]');
  assert.equal(await search.count(),1,'Published movie search must be accessible');
- if(movies.length>3){
+ if(allSources.length>3){
   const expand=site.locator('[data-published-movie-expand]');
   await expand.click();
   assert.equal(await expand.getAttribute('aria-expanded'),'true');
   const shown=await site.locator('[data-published-posters] .published-poster-row').count();
-  assert.equal(shown,movies.length,'Browse all must show every publicly published title');
+  const identity=m=>m.title.normalize('NFKC').trim().toLowerCase()+'|'+(m.release_year??'null');
+  const unique=new Set(allSources.map(identity));
+  assert.equal(shown,unique.size,'Browse all must show every unique public Bingo title');
   const target=movies.find(m=>!visible.some(v=>v.title===m.title))||movies[movies.length-1];
   await search.fill(target.title);
   const found=await site.locator('[data-published-posters] .published-poster-row strong').allTextContents();
   assert.ok(found.includes(target.title),'Published title must be searchable');
-  assert.ok(found.every(title=>movies.some(m=>m.title===title)),'Search must not reveal unpublished HQ movies');
+  assert.ok(found.every(title=>allSources.some(m=>m.title===title)),'Search must only use the two public movie feeds');
   await search.fill('');
   await expand.click();
   assert.equal(await expand.getAttribute('aria-expanded'),'false');
@@ -69,6 +80,7 @@ try{
   card.querySelector('h3')?.textContent===title&&card.querySelector('img.movie-poster')?.src===poster
  ),{title:locked.title,poster:locked.poster_url},{timeout:60000});
  assert.deepEqual(bingoErrors,[],'Public Bingo JavaScript errors');
- console.log('Live mobile browser verified '+visible.length+' website movie selections against HQ and a locked HQ poster in Bingo for a published movie. No private HQ access used.');
+ await bingo.waitForFunction(()=>document.querySelectorAll('.movie-poster').length>=38,null,{timeout:60000});
+ console.log('Live mobile browser verified '+visible.length+' website movie selections, '+cache.movies.length+' cached Bingo posters, and locked HQ artwork in Bingo. No private HQ access used.');
  await bingo.close();
 }finally{await browser.close()}
