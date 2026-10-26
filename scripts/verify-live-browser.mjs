@@ -26,6 +26,21 @@ try{
   assert.ok(source,'Website displayed a title not published in HQ');
   if(source.poster_url)assert.equal(item.poster,source.poster_url,'Website poster differs from current HQ selection');
  }
+ // Confirm a published movie link on the real custom domain opens that exact
+ // movie as a new 25-square Bingo card, not merely the generic catalog.
+ const firstLink=await site.locator('[data-published-posters] a').first().getAttribute('href');
+ assert.match(firstLink,/^https:\/\/moldavite333\.github\.io\/Romantiverse-Bingo-App\/#invite=/,'Live published movie needs a direct Bingo invitation');
+ const payload=JSON.parse(Buffer.from(new URL(firstLink).hash.slice('#invite='.length),'base64url').toString('utf8'));
+ assert.equal(payload.v,3);
+ assert.match(payload.invite_id,/^[a-f0-9]{32}$/);
+ assert.equal(payload.movie.title,visible[0].title,'Live invitation must preserve HQ movie identity');
+ assert.equal(Object.keys(payload).sort().join(','),['v','invite_id','movie','cardTheme','free','mode','difficulty','ratio'].filter(k=>k!=='cardTheme'||payload.movie.season==='Unspecified').sort().join(','),'No private HQ metadata may enter invitation');
+ const direct=await browser.newPage({viewport:{width:390,height:844}});
+ const directErrors=[];direct.on('pageerror',e=>directErrors.push(e.message));
+ await direct.goto(firstLink,{waitUntil:'domcontentloaded',timeout:30000});
+ await direct.waitForFunction(title=>document.querySelector('.play-heading h2')?.textContent===title&&document.querySelectorAll('.board .square').length===25,visible[0].title,{timeout:60000});
+ assert.deepEqual(directErrors,[],'Direct invitation must open without JavaScript errors');
+ await direct.close();
  assert.deepEqual(errors,[],'Public website JavaScript errors');
  await site.close();
  const bingo=await browser.newPage({viewport:{width:390,height:844}});
