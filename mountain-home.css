@@ -68,3 +68,12 @@
 .published-poster-row small{font-size:.78rem;opacity:.8}
 .published-poster-row a{width:max-content;max-width:100%;font-weight:700;text-decoration:underline;text-underline-offset:3px}
 .published-poster-row a:focus-visible{outline:3px solid #e9c97a;outline-offset:3px}
+
+/* Published-movie discovery remains usable on narrow phones and with a keyboard. */
+.published-poster-controls{display:grid;gap:8px;margin:12px 0 16px}
+.published-poster-controls label{font-size:.9rem;font-weight:700}
+.published-poster-controls input{width:100%;min-width:0;padding:11px 12px;border:1px solid #a3b5a8;border-radius:7px;background:#fffdf6;color:#173f36;font:inherit}
+.published-poster-controls button{justify-self:start;padding:9px 13px;border:1px solid currentColor;border-radius:7px;background:transparent;color:inherit;font:inherit;font-weight:700;cursor:pointer}
+.published-poster-controls button[hidden]{display:none}
+.published-poster-controls input:focus-visible,.published-poster-controls button:focus-visible{outline:3px solid #e9c97a;outline-offset:3px}
+.visually-hidden{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
