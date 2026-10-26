@@ -5,14 +5,14 @@ import {createHash} from 'node:crypto';
 import {resolve, join} from 'node:path';
 
 const root=resolve(process.env.SITE_ROOT||'.');
-const image=join(root,'assets/approved-town-hero.webp');
+const image=join(root,'assets/cheese-louise-approved-town-hero.webp');
 const cssPath=join(root,'mountain-home.css');
 const htmlPath=join(root,'index.html');
 const expectedSha='809a00392ce05bbd0f2498707d2dbccc50e8b70f29c6418df26144924e5fa433';
 const problems=[];
 
 if(!existsSync(image)){
- problems.push('Approved mountain-town image missing: assets/approved-town-hero.webp');
+ problems.push('Approved mountain-town image missing: assets/cheese-louise-approved-town-hero.webp');
 }else{
  const bytes=readFileSync(image);
  const digest=createHash('sha256').update(bytes).digest('hex');
@@ -29,8 +29,8 @@ if(!existsSync(image)){
 if(!existsSync(cssPath))problems.push('Missing mountain-home.css');
 else{
  const css=readFileSync(cssPath,'utf8');
- if(!css.includes('assets/approved-town-hero.webp'))problems.push('Homepage CSS does not reference the approved town image');
- if(css.includes('assets/alpine-village.svg'))problems.push('Temporary alpine-village illustration still appears in homepage CSS');
+ if(!css.includes('assets/cheese-louise-approved-town-hero.webp'))problems.push('Homepage CSS does not reference the approved town image');
+ if(css.includes('url("assets/alpine-village.svg")'))problems.push('Temporary alpine-village illustration still appears in homepage CSS');
 }
 
 if(!existsSync(htmlPath))problems.push('Missing public index.html');
