@@ -6,6 +6,25 @@
  const endpoint='https://wgvsnmukiaobcbyqhkkt.supabase.co/rest/v1/rpc/published_movie_posters';
  const key='sb_publishable_3xcqfNu-mJPuDWivmlBXug_3Tw60QoM';
  const bingo='https://moldavite333.github.io/Romantiverse-Bingo-App/';
+ // Same public v3 invitation contract as the standalone Bingo game. Generate
+ // an independent secure invitation for every movie link, without HQ notes,
+ // poster URLs, or the host player's card/marks in the URL.
+ function movieInvitation(movie){
+  try{
+   const title=typeof movie.title==='string'?movie.title.trim().slice(0,250):'';
+   if(!title||!globalThis.crypto?.getRandomValues)return bingo;
+   const season=['Christmas','Fall'].includes(movie.season)?movie.season:'Unspecified';
+   const bytes=new Uint8Array(16);crypto.getRandomValues(bytes);
+   const invite_id=Array.from(bytes,b=>b.toString(16).padStart(2,'0')).join('');
+   const payload={v:3,invite_id,movie:{title,season},
+    ...(season==='Unspecified'?{cardTheme:'Christmas'}:{}),
+    free:true,mode:'classic',difficulty:'balanced',ratio:50};
+   const data=new TextEncoder().encode(JSON.stringify(payload));
+   let binary='';for(const byte of data)binary+=String.fromCharCode(byte);
+   return bingo+'#invite='+btoa(binary).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+  }catch{return bingo}
+ }
+
  let controller=null;
  function approvedPoster(value){
   if(typeof value!=='string')return null;
@@ -36,7 +55,8 @@
    const info=document.createElement('div');
    const title=document.createElement('strong');title.textContent=movie.title.slice(0,250);
    const detail=document.createElement('small');detail.textContent=[movie.release_year,movie.season==='Unspecified'?'':movie.season].filter(Boolean).join(' · ')||'Published Bingo selection';
-   const link=document.createElement('a');link.href=bingo;link.textContent='Play Bingo →';link.setAttribute('aria-label','Play Romantiverse Bingo for '+movie.title);
+   const link=document.createElement('a');link.href=movieInvitation(movie);link.textContent='Play Bingo →';link.setAttribute('aria-label','Play Romantiverse Bingo for '+movie.title+' with your own randomized card');
+   link.addEventListener('click',()=>{link.href=movieInvitation(movie)});
    info.append(title,detail,link);row.append(info);fragment.append(row);
   }
   root.replaceChildren(fragment);
