@@ -5,8 +5,8 @@ import {createHash} from 'node:crypto';
 import {setTimeout as sleep} from 'node:timers/promises';
 
 const base='https://moldavite333.github.io/Cheese-Louise-Romantiverse/preview/';
-const expectedImageHash='809a00392ce05bbd0f2498707d2dbccc50e8b70f29c6418df26144924e5fa433';
-const files=['','mountain-home.css','styles.css','cinematic-theme.css','app.js','cheese-tray.js','assets/cheese-louise-approved-town-hero.webp','assets/podcast-art.svg','assets/music-art.svg','assets/bingo-art.svg','assets/drink-art.svg'];
+const expectedImageHash='14c326a6f8ffb007b19b84a0bd1e24322523bceb0e3b26609b31882fc7372d11';
+const files=['','mountain-home.css','styles.css','cinematic-theme.css','app.js','cheese-tray.js','assets/file_000000002040823089deaccfc427b599.png','assets/podcast-art.svg','assets/music-art.svg','assets/bingo-art.svg','assets/drink-art.svg'];
 
 async function check(){
  const responses=await Promise.all(files.map(async path=>{
@@ -21,11 +21,12 @@ async function check(){
  const css=data.get('mountain-home.css').toString('utf8');
  assert.match(html,/<meta name="robots" content="noindex,nofollow"/,'Preview must be excluded from search indexing');
  assert.match(html,/Unlocking the Mysteries of the Romantiverse/,'Approved headline missing');
+ assert.match(html,/One Trope at a Time/,'Approved trope tagline missing');
  assert.equal(html.split('class="homepage-tile').length-1,4,'Expected four public feature cards');
- assert.ok(css.includes('cheese-louise-approved-town-hero.webp'),'Approved artwork not used in preview CSS');
+ assert.ok(css.includes('file_000000002040823089deaccfc427b599.png'),'Approved artwork not used in preview CSS');
  assert.ok(!css.includes('url("assets/alpine-village.svg")'),'Placeholder artwork still used');
  assert.ok(data.get('app.js').toString('utf8').includes("event.key === 'Escape'"),'Mobile menu keyboard behavior missing');
- const imageHash=createHash('sha256').update(data.get('assets/cheese-louise-approved-town-hero.webp')).digest('hex');
+ const imageHash=createHash('sha256').update(data.get('assets/file_000000002040823089deaccfc427b599.png')).digest('hex');
  assert.equal(imageHash,expectedImageHash,'Published artwork differs from the approved original');
  return files.length;
 }
