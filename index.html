@@ -67,16 +67,15 @@
       <article class="feature-card movies-card" id="movies">
         <div class="card-heading-row">
           <div>
-            <p class="card-kicker">Coming Up</p>
-            <h2>Upcoming Movies</h2>
+            <p class="card-kicker">From Cheese Louise HQ</p>
+            <h2>Featured Bingo Movies</h2>
           </div>
-          <span class="meta">Schedule coming soon</span>
+          <span class="meta">Published selections only</span>
         </div>
-        <div class="movie-list">
-          <div><time>TBD</time><strong>Next Cheese Louise watch</strong><small>Movie selection coming soon</small></div>
-          <div><time>TBD</time><strong>On the radar</strong><small>Upcoming Romantiverse candidate</small></div>
-          <div><time>TBD</time><strong>Future watch</strong><small>More suspiciously predictable romance</small></div>
+        <div class="movie-list published-poster-list" data-published-posters role="status" aria-live="polite">
+          <p>Loading published Bingo movies…</p>
         </div>
+        <p class="meta">Only movie titles deliberately published for Bingo appear here. Poster imagery via TMDB or Wikimedia Commons; rights remain with their owners.</p>
       </article>
 
       <article class="feature-card" id="cocktails">
@@ -132,5 +131,6 @@
   <div class="toast" role="status" aria-live="polite" data-toast></div>
   <script src="app.js?v=20261023a"></script>
   <script src="cheese-tray.js?v=1" defer></script>
+  <script src="published-posters.js?v=20261026" defer></script>
 </body>
 </html>
