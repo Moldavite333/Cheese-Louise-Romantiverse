@@ -26,6 +26,24 @@ try{
   assert.ok(source,'Website displayed a title not published in HQ');
   if(source.poster_url)assert.equal(item.poster,source.poster_url,'Website poster differs from current HQ selection');
  }
+ // Browse/search all deliberately published titles; never query HQ's private watchlist.
+ const search=site.locator('[data-published-movie-search]');
+ assert.equal(await search.count(),1,'Published movie search must be accessible');
+ if(movies.length>3){
+  const expand=site.locator('[data-published-movie-expand]');
+  await expand.click();
+  assert.equal(await expand.getAttribute('aria-expanded'),'true');
+  const shown=await site.locator('[data-published-posters] .published-poster-row').count();
+  assert.equal(shown,movies.length,'Browse all must show every publicly published title');
+  const target=movies.find(m=>!visible.some(v=>v.title===m.title))||movies[movies.length-1];
+  await search.fill(target.title);
+  const found=await site.locator('[data-published-posters] .published-poster-row strong').allTextContents();
+  assert.ok(found.includes(target.title),'Published title must be searchable');
+  assert.ok(found.every(title=>movies.some(m=>m.title===title)),'Search must not reveal unpublished HQ movies');
+  await search.fill('');
+  await expand.click();
+  assert.equal(await expand.getAttribute('aria-expanded'),'false');
+ }
  // Confirm a published movie link on the real custom domain opens that exact
  // movie as a new 25-square Bingo card, not merely the generic catalog.
  const firstLink=await site.locator('[data-published-posters] a').first().getAttribute('href');
