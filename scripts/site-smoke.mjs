@@ -26,8 +26,8 @@ assert.match(html,/<a href="#support">Support<\/a>/, 'Support navigation must de
 assert.ok(!html.includes('<a href="#support">Contact</a>'), 'Do not mislabel the support section as contact');
 assert.ok(!html.includes('map-overrides.css'), 'Old map hotspot stylesheet must not hide or duplicate the hero');
 assert.ok(!css.includes('background:url("romantiverse-town.jpg")'), 'Baked-in text must not appear behind live marquee');
-assert.match(css,/assets\/cheese-louise-approved-town-hero\.webp/,'Approved mountain town required');
-assert.ok(existsSync('assets/cheese-louise-approved-town-hero.webp'),'Approved mountain-town image must be present');
+assert.match(css,/assets\/file_000000002040823089deaccfc427b599\.png/,'Approved mountain town required');
+assert.ok(existsSync('assets/file_000000002040823089deaccfc427b599.png'),'Approved mountain-town image must be present');
 assert.match(html,/id="music"/, 'Music section anchor required');
 for (const art of ['podcast','music','bingo','drink']) {
  assert.match(html,new RegExp('src="assets/'+art+'-art\\.svg" alt="" loading="lazy"'),art+' card needs original decorative illustration');
