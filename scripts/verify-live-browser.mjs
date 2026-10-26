@@ -81,6 +81,15 @@ try{
  ),{title:locked.title,poster:locked.poster_url},{timeout:60000});
  assert.deepEqual(bingoErrors,[],'Public Bingo JavaScript errors');
  await bingo.waitForFunction(()=>document.querySelectorAll('.movie-poster').length>=38,null,{timeout:60000});
+ const sample=cache.movies[0];
+ const samplePoster=bingo.locator('img.movie-poster[alt="'+sample.title+' movie poster"]');
+ await samplePoster.scrollIntoViewIfNeeded();
+ await samplePoster.evaluate(img=>new Promise((resolve,reject)=>{
+  if(img.complete)return img.naturalWidth>0?resolve():reject(Error('Poster image failed to load'));
+  img.addEventListener('load',()=>resolve(),{once:true});
+  img.addEventListener('error',()=>reject(Error('Poster image failed to load')),{once:true});
+ }));
+ assert.ok(await samplePoster.evaluate(img=>img.naturalWidth>0),'A real cached poster must render on mobile');
  console.log('Live mobile browser verified '+visible.length+' website movie selections, '+cache.movies.length+' cached Bingo posters, and locked HQ artwork in Bingo. No private HQ access used.');
  await bingo.close();
 }finally{await browser.close()}
