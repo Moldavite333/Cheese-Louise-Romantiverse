@@ -21,10 +21,10 @@ async function check(){
  const css=data.get('mountain-home.css').toString('utf8');
  assert.match(html,/<meta name="robots" content="noindex,nofollow"/,'Preview must be excluded from search indexing');
  assert.match(html,/Unlocking the Mysteries of the Romantiverse/,'Approved headline missing');
- assert.equal((html.match(/class="homepage-tile\\b/g)||[]).length,4,'Expected four public feature cards');
- assert.match(css,/cheese-louise-approved-town-hero\\.webp/,'Approved artwork not used in preview CSS');
+ assert.equal(html.split('class="homepage-tile').length-1,4,'Expected four public feature cards');
+ assert.ok(css.includes('cheese-louise-approved-town-hero.webp'),'Approved artwork not used in preview CSS');
  assert.ok(!css.includes('url("assets/alpine-village.svg")'),'Placeholder artwork still used');
- assert.match(data.get('app.js').toString('utf8'),/event\\.key === 'Escape'/,'Mobile menu keyboard behavior missing');
+ assert.ok(data.get('app.js').toString('utf8').includes("event.key === 'Escape'"),'Mobile menu keyboard behavior missing');
  const imageHash=createHash('sha256').update(data.get('assets/cheese-louise-approved-town-hero.webp')).digest('hex');
  assert.equal(imageHash,expectedImageHash,'Published artwork differs from the approved original');
  return files.length;
