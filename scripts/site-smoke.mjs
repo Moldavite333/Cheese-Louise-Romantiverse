@@ -41,7 +41,7 @@ assert.match(html,/class="tile-action-placeholder"[^>]*>Listen Now · Coming Soo
 assert.ok(!html.includes('selected trope pool for this week'), 'Do not claim unpublished HQ movie selections are synchronized');
 assert.match(html,/Friends can join with a direct link and receive independent cards/, 'Explain current Bingo invitation behavior');
 assert.match(html,/data-published-posters/, 'Public homepage must include the opt-in HQ poster section');
-assert.match(html,/src="published-posters\\.js\\?v=20261026"/, 'Public poster refresh script must be loaded');
+assert.match(html,/src="published-posters\.js\?v=20261026"/, 'Public poster refresh script must be loaded');
 const posters=readFileSync('published-posters.js','utf8');
 assert.match(posters,/\/rpc\/published_movie_posters/, 'Use restricted public RPC, never private HQ tables');
 assert.ok(!/\/rest\/v1\/movies|service_role|source_metadata|workspace_id/.test(posters), 'Public script must not access private HQ data');
