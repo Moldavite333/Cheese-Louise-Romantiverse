@@ -28,6 +28,18 @@ try{
   page.on('pageerror',e=>errors.push(e.message));
   page.on('response',r=>{if(r.url().startsWith(origin)&&r.status()>=400)errors.push(r.status()+' '+r.url())});
   await page.route(/^https:\/\/fonts\./,route=>route.abort());
+  // The public HQ RPC is mocked to prove published posters render without
+  // exposing private fields or requiring credentials in browser QA.
+  await page.route('**/rest/v1/rpc/published_movie_posters',route=>route.fulfill({
+   status:200,contentType:'application/json',
+   body:JSON.stringify([{title:'HQ Test Movie',release_year:2026,season:'Fall',
+    poster_url:'https://image.tmdb.org/t/p/w500/test.jpg',poster_locked:true,
+    published_at:'2026-10-26T10:00:00Z',notes:'PRIVATE HQ NOTES MUST NEVER RENDER'}])
+  }));
+  await page.route('https://image.tmdb.org/**',route=>route.fulfill({
+   status:200,contentType:'image/png',
+   body:Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScL/nwAAAABJRU5ErkJggg==','base64')
+  }));
   await page.goto(origin,{waitUntil:'domcontentloaded'});
   const hero=page.locator('#hero-title');
   assert.equal(await hero.count(),1,'Accessible marquee heading missing');
@@ -44,6 +56,10 @@ try{
   assert.ok(dimensions.documentWidth<=dimensions.viewportWidth+2,'Horizontal document overflow at '+width+'px: '+JSON.stringify(dimensions));
   assert.ok(dimensions.heroScroll<=dimensions.heroClient+2,'Legacy oversized swipe map remains at '+width+'px');
   assert.ok(await page.locator('.homepage-tile').count()===4,'Expected four feature tiles');
+  await page.locator('[data-published-posters] strong').waitFor();
+  assert.equal(await page.locator('[data-published-posters] strong').first().textContent(),'HQ Test Movie','Published HQ title missing');
+  assert.equal(await page.locator('[data-published-posters] img[alt="Poster for HQ Test Movie"]').count(),1,'Published HQ poster missing');
+  assert.ok(!(await page.locator('[data-published-posters]').innerText()).includes('PRIVATE HQ NOTES'),'Private HQ data leaked to public page');
   await page.locator('.tile-art img').first().scrollIntoViewIfNeeded();
   await page.waitForFunction(() => {
     const art=[...document.querySelectorAll('.tile-art img')];
