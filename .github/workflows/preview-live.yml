@@ -1,0 +1,21 @@
+name: Verify live mobile preview
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'preview/**'
+      - 'scripts/verify-preview.mjs'
+      - '.github/workflows/preview-live.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node scripts/verify-preview.mjs
