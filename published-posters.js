@@ -75,7 +75,7 @@
   }
   root.replaceChildren(fragment);
   if(expand){
-   expand.hidden=allMovies.length<=3;
+   expand.hidden=allMovies.length<=3||Boolean(term);
    expand.textContent=expanded?'Show featured movies':'Show all '+allMovies.length+' published movies';
    expand.setAttribute('aria-expanded',String(expanded));
   }
