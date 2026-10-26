@@ -5,6 +5,7 @@ import {createHash} from 'node:crypto';
 const domain='https://cheeselouisepod.com/';
 const rpc='https://wgvsnmukiaobcbyqhkkt.supabase.co/rest/v1/rpc/published_movie_posters';
 const key='sb_publishable_3xcqfNu-mJPuDWivmlBXug_3Tw60QoM';
+const cache='https://wgvsnmukiaobcbyqhkkt.supabase.co/functions/v1/bingo-public-posters';
 const digest=bytes=>createHash('sha256').update(bytes).digest('hex');
 const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 async function readUrl(url,headers={}){
@@ -28,7 +29,15 @@ for(let attempt=1;attempt<=15;attempt++){
    if(JSON.stringify(fields)!==JSON.stringify(allowed))throw Error('Public poster RPC returned unexpected fields');
    if(typeof row.title!=='string'||typeof row.poster_locked!=='boolean')throw Error('Invalid public poster row');
   }
-  console.log('Verified custom-domain HTML and poster script match main; anonymous HQ poster RPC returned '+rows.length+' public titles with no private fields.');
+  const publicCache=JSON.parse((await readUrl(cache)).toString('utf8'));
+  if(publicCache.version!==1||!Array.isArray(publicCache.movies)||publicCache.movies.length<38)throw Error('Public Bingo poster cache has fewer than 38 verified images');
+  for(const movie of publicCache.movies){
+   const fields=Object.keys(movie).sort();
+   const allowed=['title','release_year','season','poster_url','poster_source','match_score'].sort();
+   if(JSON.stringify(fields)!==JSON.stringify(allowed))throw Error('Public cache contains unexpected fields');
+   if(!/^https:\/\/image\.tmdb\.org\/t\/p\/(?:w\d+|original)\/[A-Za-z0-9_.-]+$/.test(movie.poster_url))throw Error('Public cache has unapproved poster URL');
+  }
+  console.log('Verified custom-domain HTML and poster script match main; '+rows.length+' published HQ titles and '+publicCache.movies.length+' verified public Bingo posters, without private fields.');
   process.exit(0);
  }catch(error){last=String(error?.message||error);if(attempt<15)await wait(12000)}
 }
