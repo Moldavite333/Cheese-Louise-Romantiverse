@@ -36,7 +36,7 @@ else{
 if(!existsSync(htmlPath))problems.push('Missing public index.html');
 else{
  const html=readFileSync(htmlPath,'utf8');
- if(!/<h1\b[^>]*id="hero-title"[^>]*>Unlocking the Mysteries of the Romantiverse<br\s*\/?\s*>One Trope at a Time<\/h1>/i.test(html))problems.push('Accessible approved hero heading missing or changed');
+ if(!/<h1\b[^>]*id="hero-title"[^>]*>Unlocking the Mysteries of the Romantiverse<br\s*\/?\s*>One Rule at a Time<\/h1>/i.test(html))problems.push('Accessible approved hero heading missing or changed');
  if((html.match(/class="homepage-tile\b/g)||[]).length!==4)problems.push('Expected four homepage feature cards');
  if(!html.includes('Because life is better with a little cheese.'))problems.push('Approved footer tagline missing');
  if(!html.includes('https://moldavite333.github.io/Romantiverse-Bingo-App/'))problems.push('Standalone Bingo link missing');
