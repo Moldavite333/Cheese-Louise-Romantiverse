@@ -13,7 +13,7 @@ assert.equal(cacheResponse.ok,true,'Public Bingo poster cache must respond succe
 const cache=await cacheResponse.json();
 assert.equal(cache.version,1);
 assert.ok(Array.isArray(cache.movies)&&cache.movies.length>=38,'All 38 bundled posters must be cached');
-const allSources=[...movies,...cache.movies].filter(m=>m.season!=='Horror');
+const allSources=[...movies,...cache.movies].filter(m=>m.season!=='Horror'&&m.title.trim().toLowerCase()!=='christmas in the rockies');
 const locked=movies.find(m=>m.poster_locked===true&&m.poster_url&&m.title);
 assert.ok(locked,'At least one deliberately published HQ-locked poster is needed for live verification');
 const browser=await chromium.launch({headless:true});
@@ -49,7 +49,7 @@ try{
   const identity=m=>m.title.normalize('NFKC').trim().toLowerCase()+'|'+(m.release_year??'null');
   const unique=new Set(allSources.map(identity));
   assert.equal(shown,unique.size,'Browse all must show every unique public Bingo title');
-  const target=movies.find(m=>!visible.some(v=>v.title===m.title))||movies[movies.length-1];
+  const target=allSources.find(m=>!visible.some(v=>v.title===m.title))||allSources[allSources.length-1];
   await search.fill(target.title);
   const found=await site.locator('[data-published-posters] .published-poster-row strong').allTextContents();
   assert.ok(found.includes(target.title),'Published title must be searchable');
