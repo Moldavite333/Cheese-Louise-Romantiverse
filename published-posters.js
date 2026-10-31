@@ -82,7 +82,7 @@
   const fragment=document.createDocumentFragment();
   if(!movies.length){
    const note=document.createElement('p');
-   note.textContent=term||selectedSeason?'No Bingo movies match that search. Try another title or season.':'Movie selections are temporarily unavailable. You can still open Free Bingo above.';
+   note.textContent=term||selectedSeason?'No Bingo movies match that search. Try another title or season.':'Movie selections are temporarily unavailable. You can still open Romantiverse Bingo above.';
    fragment.append(note);
   }
   for(const movie of movies){
@@ -139,7 +139,7 @@
   }catch(error){
    if(request.signal.aborted&&request.signal.reason!=='timeout')return;
    console.warn('Public Bingo poster feeds unavailable',error);
-   if(!root.querySelector('.published-poster-row'))root.textContent='Movie selections are temporarily unavailable. You can still play Free Bingo above.';
+   if(!root.querySelector('.published-poster-row'))root.textContent='Movie selections are temporarily unavailable. You can still play Romantiverse Bingo above.';
    const retry=document.querySelector('[data-movie-retry]');if(retry)retry.hidden=false;
   }finally{clearTimeout(timeout)}
  }
