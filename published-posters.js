@@ -52,7 +52,9 @@
   // Automatic artwork fills gaps; only a deliberately HQ-locked poster can
   // replace a verified automatic image for an exact title and release year.
   const map=new Map();
-  const movieKey=m=>m.title.normalize('NFKC').trim().replace(/\s+/g,' ').toLowerCase()+'|'+m.release_year;
+  // Match accent variants from independently sourced catalog and published HQ rows,
+  // without merging different release years or exposing any private HQ fields.
+  const movieKey=m=>m.title.normalize('NFKD').replace(/\p{M}/gu,'').trim().replace(/\s+/g,' ').toLowerCase()+'|'+m.release_year;
   for(const m of cachedRows){
    if(typeof m?.title!=='string'||!m.title.trim()||!Number.isInteger(m.release_year))continue;
    if(m.season==='Horror')continue;
