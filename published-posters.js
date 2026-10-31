@@ -38,6 +38,7 @@
   }catch{}
   return null;
  }
+ const normalizeSearch=value=>String(value).normalize('NFKD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
  const search=document.querySelector('[data-published-movie-search]');
  const expand=document.querySelector('[data-published-movie-expand]');
  const status=document.querySelector('[data-published-movie-status]');
@@ -75,8 +76,8 @@
   render();
  }
  function render(){
-  const term=(search?.value||'').trim().toLocaleLowerCase();
-  const matches=allMovies.filter(m=>(!selectedSeason||m.season===selectedSeason)&&(!term||(m.title+' '+(m.release_year||'')).toLocaleLowerCase().includes(term)));
+  const term=normalizeSearch(search?.value||'');
+  const matches=allMovies.filter(m=>(!selectedSeason||m.season===selectedSeason)&&(!term||normalizeSearch(m.title+' '+(m.release_year||'')).includes(term)));
   const movies=expanded?matches:matches.slice(0,3);
   const fragment=document.createDocumentFragment();
   if(!movies.length){
@@ -108,7 +109,7 @@
    expand.setAttribute('aria-expanded',String(expanded));
   }
   if(status){
-   const message=term?'Showing '+movies.length+' of '+allMovies.length+' Bingo movies matching your search.':'Showing '+movies.length+' of '+allMovies.length+' Bingo movies.';
+   const message='Showing '+movies.length+' of '+matches.length+' Bingo movies'+(term||selectedSeason?' matching your filters.':'.');
    if(status.textContent!==message)status.textContent=message;
   }
  }
@@ -118,13 +119,21 @@
   controller?.abort();const request=new AbortController();controller=request;
   const timeout=setTimeout(()=>request.abort('timeout'),12000);
   try{
+   let hqRows=[],cachedRows=[];
+   const accept=(kind,rows)=>{
+    if(request!==controller||request.signal.aborted)return rows;
+    if(kind==='hq')hqRows=rows;else cachedRows=rows;
+    show(hqRows,cachedRows);
+    return rows;
+   };
    const [hq,cache]=await Promise.allSettled([
     fetch(endpoint,{headers:{apikey:key,Accept:'application/json'},cache:'no-store',signal:request.signal})
-     .then(async response=>{if(!response.ok)throw Error('Published HQ feed '+response.status);const rows=await response.json();if(!Array.isArray(rows))throw Error('Invalid published HQ feed');return rows}),
+     .then(async response=>{if(!response.ok)throw Error('Published HQ feed '+response.status);const rows=await response.json();if(!Array.isArray(rows))throw Error('Invalid published HQ feed');return rows}).then(rows=>accept('hq',rows)),
     fetch(posterEndpoint,{headers:{Accept:'application/json'},cache:'no-store',signal:request.signal})
-     .then(async response=>{if(!response.ok)throw Error('Public poster cache '+response.status);const body=await response.json();if(body?.version!==1||!Array.isArray(body.movies))throw Error('Invalid public poster cache');return body.movies})
+     .then(async response=>{if(!response.ok)throw Error('Public poster cache '+response.status);const body=await response.json();if(body?.version!==1||!Array.isArray(body.movies))throw Error('Invalid public poster cache');return body.movies}).then(rows=>accept('cache',rows))
    ]);
-   if(request.signal.aborted){if(request.signal.reason==='timeout')throw Error('Movie search timed out');return;}
+   if(request!==controller)return;
+   if(request!==controller||(request.signal.aborted&&request.signal.reason!=='timeout'))return;
    if(hq.status==='rejected'&&cache.status==='rejected')throw Error('Both public movie feeds unavailable');
    show(hq.status==='fulfilled'?hq.value:[],cache.status==='fulfilled'?cache.value:[]);
   }catch(error){
