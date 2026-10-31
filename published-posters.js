@@ -82,7 +82,10 @@
   // Match title/year terms in any order, as in the standalone Bingo search.
   // Never broaden a non-Latin query into an empty, match-everything search.
   const matches=allMovies.filter(m=>(tokens.length||normalizeSearch(m.title)!=='christmas in the rockies')&&(!selectedSeason||m.season===selectedSeason)&&(!tokens.length||tokens.every(token=>normalizeSearch(m.title+' '+(m.release_year||'')).includes(token))));
-  const movies=expanded?matches:matches.slice(0,3);
+  // Keep the homepage's three featured picks, but show more useful results
+  // immediately when someone searches or selects a season.
+  const visibleLimit=term||selectedSeason?9:3;
+  const movies=expanded?matches:matches.slice(0,visibleLimit);
   const fragment=document.createDocumentFragment();
   if(!movies.length){
    const note=document.createElement('p');
@@ -108,7 +111,7 @@
   }
   root.replaceChildren(fragment);
   if(expand){
-   expand.hidden=matches.length<=3;
+   expand.hidden=matches.length<=visibleLimit;
    expand.textContent=expanded?'Show featured movies':'Show all '+matches.length+' matching movies';
    expand.setAttribute('aria-expanded',String(expanded));
   }
