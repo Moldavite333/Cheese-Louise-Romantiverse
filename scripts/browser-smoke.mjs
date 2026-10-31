@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';import {createServer} from 'node:http';i
 const root=process.cwd(),server=createServer(async(req,res)=>{try{const p=decodeURIComponent(new URL(req.url,'http://localhost').pathname);const file=resolve(root,'.'+(p==='/'?'/index.html':p));if(!file.startsWith(root+sep))throw Error('path');const body=await readFile(file);res.writeHead(200,{'Content-Type':{'.html':'text/html','.js':'text/javascript','.css':'text/css','.webp':'image/webp','.svg':'image/svg+xml','.mp3':'audio/mpeg'}[extname(file)]||'application/octet-stream'}).end(body)}catch{res.writeHead(404).end()}});
 await new Promise(r=>server.listen(0,'127.0.0.1',r));const origin='http://127.0.0.1:'+server.address().port,browser=await chromium.launch();
 await mkdir('artifacts',{recursive:true});
-try{for(const width of [320,390,768,1440]){const page=await browser.newPage({viewport:{width,height:900}}),errors=[];let catalogUnavailable=false;page.on('pageerror',e=>errors.push(e.message));await page.route('**/rpc/published_movie_posters',r=>r.fulfill({json:[{title:'HQ Test Movie',release_year:2026,season:'Fall',poster_locked:true,poster_url:'https://image.tmdb.org/t/p/w500/hq.jpg',notes:'PRIVATE NOTES'}]}));await page.route('**/functions/v1/bingo-public-posters',r=>catalogUnavailable?r.fulfill({status:503,body:'Temporarily unavailable'}):r.fulfill({json:{version:1,movies:[{title:'Christmas Test',release_year:2025,season:'Christmas',poster_url:null},{title:'Horror Test',release_year:2025,season:'Horror',poster_url:null},{title:'Café Noël',release_year:2024,season:'Fall',poster_url:null}]}}));await page.route('**/rpc/cheese_tray_top',r=>r.fulfill({json:[]}));await page.route('https://image.tmdb.org/**',r=>r.fulfill({status:404}));await page.goto(origin);await page.locator('[data-published-posters] strong').first().waitFor();
+try{for(const width of [320,390,768,1440]){const page=await browser.newPage({viewport:{width,height:900}}),errors=[];let catalogUnavailable=false;page.on('pageerror',e=>errors.push(e.message));await page.route('**/rpc/published_movie_posters',r=>r.fulfill({json:[{title:'HQ Test Movie',release_year:2026,season:'Fall',poster_locked:true,poster_url:'https://image.tmdb.org/t/p/w500/hq.jpg',notes:'PRIVATE NOTES'}]}));await page.route('**/functions/v1/bingo-public-posters',r=>catalogUnavailable?r.fulfill({status:503,body:'Temporarily unavailable'}):r.fulfill({json:{version:1,movies:[{title:'Christmas Test',release_year:2025,season:'Christmas',poster_url:null},{title:'Horror Test',release_year:2025,season:'Horror',poster_url:null},{title:'Café Noël',release_year:2024,season:'Fall',poster_url:null},...Array.from({length:10},(_,i)=>({title:'Festival Movie '+String(i+1).padStart(2,'0'),release_year:2024,season:'Fall',poster_url:null}))]}}));await page.route('**/rpc/cheese_tray_top',r=>r.fulfill({json:[]}));await page.route('https://image.tmdb.org/**',r=>r.fulfill({status:404}));await page.goto(origin);await page.locator('[data-published-posters] strong').first().waitFor();
 assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));assert.ok(!(await page.locator('body').innerText()).includes('PRIVATE NOTES'));assert.ok(!(await page.locator('[data-published-posters]').innerText()).includes('Horror Test'));assert.ok((await page.locator('[data-published-posters]').innerText()).includes('Christmas Test'),'Movie without poster must remain playable');
 
 // Refresh failures must keep the last usable catalog instead of dropping its titles.
@@ -26,6 +26,18 @@ await page.locator('[data-published-movie-search]').fill('not in this catalog');
 assert.match(await page.locator('[data-published-posters]').innerText(),/No Bingo movies/);
 assert.equal(await page.getByRole('link',{name:'Search the full Bingo catalog'}).getAttribute('href'),'https://bingo.cheeselouisepod.com/','Full catalog remains accessible after a failed homepage search');
 await page.locator('[data-published-movie-search]').fill('');
+// Search should surface nine matches immediately instead of hiding all but
+// three; the explicit expansion still exposes the complete matching catalog.
+await page.locator('[data-published-movie-search]').fill('festival');
+assert.equal(await page.locator('[data-published-posters] strong').count(),9,'Filtered searches show nine movies without an extra click');
+const expandResults=page.locator('[data-published-movie-expand]');
+assert.equal(await expandResults.textContent(),'Show all 10 matching movies');
+await expandResults.click();
+assert.equal(await page.locator('[data-published-posters] strong').count(),10,'Show all exposes every filtered match');
+await expandResults.click();
+assert.equal(await page.locator('[data-published-posters] strong').count(),9,'Collapse restores filtered limit');
+await page.locator('[data-published-movie-search]').fill('');
+assert.equal(await page.locator('[data-published-posters] strong').count(),3,'Clearing search restores three featured movies');
 const tile=page.locator('.homepage-tile').nth(2);
 assert.ok(await tile.evaluate(el=>el.scrollWidth<=el.clientWidth),'Bingo label must fit inside its tile');
 const href=await page.locator('[data-published-posters] a').first().getAttribute('href');assert.ok(href.startsWith('https://bingo.cheeselouisepod.com/#invite='));const payload=JSON.parse(Buffer.from(new URL(href).hash.slice(8),'base64url'));assert.equal(payload.movie.title,'HQ Test Movie');assert.equal(payload.v,3);assert.ok(!JSON.stringify(payload).includes('PRIVATE NOTES'));
