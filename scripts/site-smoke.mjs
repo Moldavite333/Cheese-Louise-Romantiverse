@@ -7,7 +7,7 @@ assert.equal(ids.length,new Set(ids).size,'Duplicate IDs break navigation');
 for(const m of html.matchAll(/\b(?:href|src)="([^"]+)"/g)){const value=m[1];if(value.startsWith('#'))assert.ok(ids.includes(value.slice(1)),'Missing anchor '+value);else if(!/^(https?:|mailto:|data:)/.test(value))assert.ok(existsSync(resolve(value.split(/[?#]/)[0])),'Missing asset '+value)}
 assert.ok(!html.includes('moldavite333.github.io'),'Public links must use branded domains');
 assert.ok(!/One Rule at a Time|Cheese Rating/i.test(html),'Retired terminology');
-assert.match(html,/Brought to you by the/);assert.match(html,/Cheese Louise Podcast/);
+assert.match(html,/Brought to you by the <strong>Cheese Louise Podcast<\/strong>/,'Attribution must read as one exact phrase');
 assert.match(html,/rel="canonical" href="https:\/\/cheeselouisepod.com\//);
 assert.match(css,/prefers-reduced-motion/);
 assert.ok(!/service_role|\/rest\/v1\/movies|workspace_id/.test(posters),'Public code must not access private HQ records');
