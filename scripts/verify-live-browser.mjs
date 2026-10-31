@@ -55,8 +55,7 @@ try{
   assert.ok(found.includes(target.title),'Published title must be searchable');
   assert.ok(found.every(title=>allSources.some(m=>m.title===title)),'Search must only use the two public movie feeds');
   await search.fill('');
-  await expand.click();
-  assert.equal(await expand.getAttribute('aria-expanded'),'false');
+  assert.equal(await expand.getAttribute('aria-expanded'),'false','A new search must collapse previously expanded results');
  }
  // Confirm a published movie link on the real custom domain opens that exact
  // movie as a new 25-square Bingo card, not merely the generic catalog.
