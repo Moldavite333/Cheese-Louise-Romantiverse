@@ -78,7 +78,10 @@
  }
  function render(){
   const term=normalizeSearch(search?.value||'');
-  const matches=allMovies.filter(m=>(term||normalizeSearch(m.title)!=='christmas in the rockies')&&(!selectedSeason||m.season===selectedSeason)&&(!term||normalizeSearch(m.title+' '+(m.release_year||'')).includes(term)));
+  const tokens=term.split(' ').filter(Boolean);
+  // Match title/year terms in any order, as in the standalone Bingo search.
+  // Never broaden a non-Latin query into an empty, match-everything search.
+  const matches=allMovies.filter(m=>(tokens.length||normalizeSearch(m.title)!=='christmas in the rockies')&&(!selectedSeason||m.season===selectedSeason)&&(!tokens.length||tokens.every(token=>normalizeSearch(m.title+' '+(m.release_year||'')).includes(token))));
   const movies=expanded?matches:matches.slice(0,3);
   const fragment=document.createDocumentFragment();
   if(!movies.length){
