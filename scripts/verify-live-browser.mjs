@@ -22,7 +22,10 @@ try{
  const errors=[];
  site.on('pageerror',e=>errors.push(e.message));
  await site.goto('https://cheeselouisepod.com/',{waitUntil:'domcontentloaded',timeout:30000});
- await site.waitForFunction(()=>document.querySelectorAll('[data-published-posters] .published-poster-row').length>0,null,{timeout:30000});
+ // The fast feed renders first; verify the complete catalog after both feeds arrive.
+ const identity=m=>m.title.normalize('NFKC').trim().replace(/\s+/g,' ').toLowerCase()+'|'+(m.release_year??'null');
+ const expectedTotal=new Set(allSources.map(identity)).size;
+ await site.waitForFunction(total=>document.querySelector('[data-published-movie-status]')?.textContent==='Showing '+Math.min(3,total)+' of '+total+' Bingo movies.',expectedTotal,{timeout:30000});
  const visible=await site.locator('[data-published-posters] .published-poster-row').evaluateAll(nodes=>nodes.map(node=>({
   title:node.querySelector('strong')?.textContent||'',
   poster:node.querySelector('img')?.src||null
