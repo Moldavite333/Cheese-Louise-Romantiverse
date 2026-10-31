@@ -14,6 +14,6 @@ assert.ok(!/service_role|\/rest\/v1\/movies|workspace_id/.test(posters),'Public 
 assert.match(posters,/textContent/);
 assert.match(posters,/poster_locked/);
 assert.match(posters,/getRandomValues/);
-assert.equal((html.match(/<audio /g)||[]).length,0);
+assert.equal((html.match(/<audio /g)||[]).length,2);
 for(const m of css.matchAll(/url\("([^"]+)"\)/g))assert.ok(existsSync(m[1]),'Missing CSS artwork '+m[1]);
 console.log('Navigation, local assets, branded links, public data boundaries, and audio sources verified.');
