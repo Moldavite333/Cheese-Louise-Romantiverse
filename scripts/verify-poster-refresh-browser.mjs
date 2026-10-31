@@ -63,7 +63,7 @@ async function refresh(){
 try{
  await Promise.all([
   site.goto('https://cheeselouisepod.com/',{waitUntil:'domcontentloaded',timeout:30000}),
-  bingo.goto('https://moldavite333.github.io/Romantiverse-Bingo-App/',{waitUntil:'domcontentloaded',timeout:30000})
+  bingo.goto('https://bingo.cheeselouisepod.com/',{waitUntil:'domcontentloaded',timeout:30000})
  ]);
  await site.locator('[data-published-movie-search]').fill(title);
  await websitePoster(automatic); // Automatic artwork wins over an unlocked HQ selection.

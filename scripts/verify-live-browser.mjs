@@ -13,7 +13,7 @@ assert.equal(cacheResponse.ok,true,'Public Bingo poster cache must respond succe
 const cache=await cacheResponse.json();
 assert.equal(cache.version,1);
 assert.ok(Array.isArray(cache.movies)&&cache.movies.length>=38,'All 38 bundled posters must be cached');
-const allSources=[...movies,...cache.movies];
+const allSources=[...movies,...cache.movies].filter(m=>m.season!=='Horror');
 const locked=movies.find(m=>m.poster_locked===true&&m.poster_url&&m.title);
 assert.ok(locked,'At least one deliberately published HQ-locked poster is needed for live verification');
 const browser=await chromium.launch({headless:true});
@@ -58,7 +58,7 @@ try{
  // Confirm a published movie link on the real custom domain opens that exact
  // movie as a new 25-square Bingo card, not merely the generic catalog.
  const firstLink=await site.locator('[data-published-posters] a').first().getAttribute('href');
- assert.match(firstLink,/^https:\/\/moldavite333\.github\.io\/Romantiverse-Bingo-App\/#invite=/,'Live published movie needs a direct Bingo invitation');
+ assert.match(firstLink,/^https:\/\/bingo\.cheeselouisepod\.com\/#invite=/,'Live published movie needs a direct Bingo invitation');
  const payload=JSON.parse(Buffer.from(new URL(firstLink).hash.slice('#invite='.length),'base64url').toString('utf8'));
  assert.equal(payload.v,3);
  assert.match(payload.invite_id,/^[a-f0-9]{32}$/);
@@ -75,7 +75,7 @@ try{
  const bingo=await browser.newPage({viewport:{width:390,height:844}});
  const bingoErrors=[];
  bingo.on('pageerror',e=>bingoErrors.push(e.message));
- await bingo.goto('https://moldavite333.github.io/Romantiverse-Bingo-App/',{waitUntil:'domcontentloaded',timeout:30000});
+ await bingo.goto('https://bingo.cheeselouisepod.com/',{waitUntil:'domcontentloaded',timeout:30000});
  await bingo.waitForFunction(({title,poster})=>[...document.querySelectorAll('.movie-card')].some(card=>
   card.querySelector('h3')?.textContent===title&&card.querySelector('img.movie-poster')?.src===poster
  ),{title:locked.title,poster:locked.poster_url},{timeout:60000});

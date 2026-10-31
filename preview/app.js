@@ -43,11 +43,11 @@ function showToast(message) {
 // Direct every public Bingo entry point to the maintained standalone Bingo app.
 // The older local bingo.html is retained only for legacy direct links.
 document.querySelectorAll('a[href="#bingo"]').forEach((link) => {
-  link.setAttribute('href', 'https://moldavite333.github.io/Romantiverse-Bingo-App/');
+  link.setAttribute('href', 'https://bingo.cheeselouisepod.com/');
 });
 
 document.querySelector('[data-bingo-placeholder]')?.addEventListener('click', () => {
-  window.location.href = 'https://moldavite333.github.io/Romantiverse-Bingo-App/';
+  window.location.href = 'https://bingo.cheeselouisepod.com/';
 });
 
 // On phones the Romantiverse is intentionally wider than the viewport so it can

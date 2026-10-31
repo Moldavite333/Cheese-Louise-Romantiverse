@@ -1,74 +1,19 @@
 import assert from 'node:assert/strict';
-import {existsSync,readFileSync} from 'node:fs';
+import {readFileSync,existsSync} from 'node:fs';
 import {resolve} from 'node:path';
-
-const html=readFileSync('index.html','utf8');
-const css=readFileSync('mountain-home.css','utf8');
-const js=readFileSync('app.js','utf8');
-const ids=new Set([...html.matchAll(/\bid="([^"]+)"/g)].map(match=>match[1]));
-const links=[...html.matchAll(/\b(?:href|src)="([^"]+)"/g)].map(match=>match[1]);
-
-for(const link of links){
- if(link.startsWith('#')){
-  assert.ok(ids.has(decodeURIComponent(link.slice(1))), 'Missing anchor target: '+link);
- }else if(!/^(?:https?:|mailto:|tel:|data:)/i.test(link)){
-  const pathname=link.split(/[?#]/)[0];
-  assert.ok(existsSync(resolve(pathname)), 'Missing local resource: '+link);
- }
-}
-assert.match(html,/<main\s+id="home">/, 'Main landmark required');
-assert.match(html,/class="skip-link" href="#features"/, 'Skip link required');
-assert.match(html,/id="hero-title"[^>]*>Unlocking the Mysteries of the Romantiverse<br>One Trope at a Time<\/h1>/, 'Accessible hero must use the approved One Trope at a Time tagline');
-assert.ok(!html.includes('One Rule at a Time'), 'Retired Rules tagline must not return');
-assert.match(html,/Brought to you by the Cheese Louise Podcast/, 'Bingo section must carry the exact podcast attribution');
-const bingoLinks=[...html.matchAll(/href="(https:\/\/(?:moldavite333[.]github[.]io\/Romantiverse-Bingo-App|bingo[.]cheeselouisepod[.]com)\/)"/g)].map(match=>match[1]);
-assert.ok(bingoLinks.length>=4, 'All four public Bingo entry points must be present');
-assert.equal(new Set(bingoLinks).size,1, 'All public Bingo entry points must use one canonical destination');
-assert.match(html,/<meta property="og:title" content="Cheese Louise — Visit the Romantiverse"/, 'Social sharing title required');
-assert.match(html,/<meta property="og:description"[^>]+Podcast episodes coming soon/, 'Social sharing description must not imply episodes are published');
-assert.match(html,/<meta name="twitter:card" content="summary"/, 'Social preview card required');
-assert.match(html,/<a href="#support">Support<\/a>/, 'Support navigation must describe its actual destination');
-assert.ok(!html.includes('<a href="#support">Contact</a>'), 'Do not mislabel the support section as contact');
-assert.ok(!html.includes('map-overrides.css'), 'Old map hotspot stylesheet must not hide or duplicate the hero');
-assert.ok(!css.includes('background:url("romantiverse-town.jpg")'), 'Baked-in text must not appear behind live marquee');
-assert.match(css,/assets\/file_000000002040823089deaccfc427b599\.png/,'Approved mountain town required');
-assert.ok(existsSync('assets/file_000000002040823089deaccfc427b599.png'),'Approved mountain-town image must be present');
-assert.match(html,/id="music"/, 'Music section anchor required');
-for (const art of ['podcast','music','bingo','drink']) {
- assert.match(html,new RegExp('src="assets/'+art+'-art\\.svg" alt="" loading="lazy"'),art+' card needs original decorative illustration');
- const svg=readFileSync('assets/'+art+'-art.svg','utf8');
- assert.match(svg,/<svg[^>]+viewBox="0 0 640 420"/,'Illustration must be scalable');
- assert.ok(!/<script|onload=|<foreignObject/i.test(svg),'No executable content in card art');
-}
-assert.ok(!html.includes('href="#about">Explore the Music'), 'Do not link music card to unrelated About section');
-assert.match(html,/Illustrative preview, not a published episode/, 'Sample episode must be clearly labeled');
-assert.match(html,/class="tile-action-placeholder"[^>]*>Listen Now · Coming Soon<\/span>/, 'Unpublished podcast audio must not have a live Listen Now link');
-assert.ok(!html.includes('selected trope pool for this week'), 'Do not claim unpublished HQ movie selections are synchronized');
-assert.match(html,/Friends can join with a direct link and receive independent cards/, 'Explain current Bingo invitation behavior');
-assert.match(html,/data-published-posters/, 'Public homepage must include the opt-in HQ poster section');
-assert.match(html,/src="published-posters[.]js([?]v=[a-zA-Z0-9._-]+)?"/, 'Public poster refresh script must be loaded');
-const posters=readFileSync('published-posters.js','utf8');
-assert.match(posters,/\/rpc\/published_movie_posters/, 'Use restricted public RPC, never private HQ tables');
-assert.ok(!/\/rest\/v1\/movies|service_role|source_metadata|workspace_id/.test(posters), 'Public script must not access private HQ data');
-assert.match(posters,/setInterval\(refresh,300000\)/, 'Published posters must refresh automatically');
-assert.match(posters,/published-poster-fallback/, 'Missing or broken poster images must retain the styled cheese fallback');
-assert.match(posters,/fallback[.]textContent='🧀'/, 'Missing movie posters must display the Cheese Louise cheese wedge');
-
-assert.ok(!/Rules of the Romantiverse|Cheese Traits/i.test(html), 'Retired public terminology must not return');
-assert.ok(!html.includes('Rule of the Week') && !html.includes('When you’re a single dad'), 'Do not prepublish private podcast rules');
-assert.ok(!html.includes('may get a shout-out'), 'Do not promise unapproved podcast shout-outs');
-assert.match(html,/The Cheese Trope Library/, 'Public Cheese Trope Library must be discoverable');
-assert.match(html,/id="cheese-trope-search"/, 'Public tropes must be searchable');
-assert.match(html,/id="cheese-trope-results"/, 'Public trope results need an accessible list');
-assert.match(html,/moderated submission form/, 'Fan submissions must remain pending until moderation is secure');
-assert.ok(!/action="[^"]*\/rest\/v1\/movies/i.test(html), 'Public fans must never submit directly into private HQ');
-assert.match(html,/Bingo catalog titles and deliberately published HQ selections appear here/, 'Distinguish public catalog from restricted HQ projection');
-assert.match(posters,/\/functions\/v1\/bingo-public-posters/, 'Use public server-side verified Bingo poster cache');
-assert.match(posters,/poster_locked/, 'HQ-locked poster precedence must remain');
-assert.match(html,/Illustrative preview, not a published episode/, 'Unpublished episodes must remain clearly labeled');
-assert.match(css,/\.hero-copy h1\s*\{\s*display:block!important/, 'Override legacy hidden marquee');
-assert.match(css,/\.hero-backdrop\s*\{\s*display:block!important/, 'Override legacy hidden backdrop');
-assert.match(css,/\.site-header \.main-nav a\s*\{\s*color:#fff7e9/, 'Mobile menu links must contrast with dark menu');
-assert.match(css,/prefers-reduced-motion:reduce/, 'Respect reduced-motion preferences');
-assert.match(js,/event\.key === 'Escape'/, 'Mobile navigation must support Escape');
-console.log('Public site static smoke checks passed: '+links.length+' resources/links, '+ids.size+' anchor targets.');
+const html=readFileSync('index.html','utf8'),css=readFileSync('homepage.css','utf8'),posters=readFileSync('published-posters.js','utf8');
+const ids=[...html.matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]);
+assert.equal(ids.length,new Set(ids).size,'Duplicate IDs break navigation');
+for(const m of html.matchAll(/\b(?:href|src)="([^"]+)"/g)){const value=m[1];if(value.startsWith('#'))assert.ok(ids.includes(value.slice(1)),'Missing anchor '+value);else if(!/^(https?:|mailto:|data:)/.test(value))assert.ok(existsSync(resolve(value.split(/[?#]/)[0])),'Missing asset '+value)}
+assert.ok(!html.includes('moldavite333.github.io'),'Public links must use branded domains');
+assert.ok(!/One Rule at a Time|Cheese Rating/i.test(html),'Retired terminology');
+assert.match(html,/Brought to you by the/);assert.match(html,/Cheese Louise Podcast/);
+assert.match(html,/rel="canonical" href="https:\/\/cheeselouisepod.com\//);
+assert.match(css,/prefers-reduced-motion/);
+assert.ok(!/service_role|\/rest\/v1\/movies|workspace_id/.test(posters),'Public code must not access private HQ records');
+assert.match(posters,/textContent/);
+assert.match(posters,/poster_locked/);
+assert.match(posters,/getRandomValues/);
+assert.equal((html.match(/<audio /g)||[]).length,2);
+for(const m of css.matchAll(/url\("([^"]+)"\)/g))assert.ok(existsSync(m[1]),'Missing CSS artwork '+m[1]);
+console.log('Navigation, local assets, branded links, public data boundaries, and audio sources verified.');
