@@ -6,14 +6,17 @@ function watchAudio(player) {
   notice.hidden=true;
   notice.setAttribute('role','status');
   player.after(notice);
-  player.addEventListener('error',()=>{
+  const showError=()=>{
     notice.textContent='This audio could not load. Try again, or ';
     const link=document.createElement('a');
     link.href=player.currentSrc||player.querySelector('source')?.src||player.src;
     link.textContent='open the audio directly';
     notice.append(link,'.');
     notice.hidden=false;
-  });
+  };
+  player.addEventListener('error',showError);
+  player.querySelectorAll('source').forEach(source=>source.addEventListener('error',showError));
+  player.addEventListener('loadeddata',()=>{notice.hidden=true;notice.replaceChildren()});
 }
 document.querySelectorAll('audio').forEach(watchAudio);
 fetch('podcast-promo.json',{signal:AbortSignal.timeout(8000)})

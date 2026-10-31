@@ -5,6 +5,8 @@
 @media(max-width:400px){.homepage-tile h2{font-size:20px}.art{width:150px}.art-podcast{background-position:-40px -384px}.art-music{background-position:-229px -384px}.art-bingo{background-position:-418px -384px}.art-drink{background-position:-605px -384px}.about-content,.cocktail-content{grid-template-columns:1fr;text-align:center}.welcome-actions{align-items:stretch;flex-direction:column}.tray-heading{flex-direction:column}.published-poster-row a{font-size:14px}.published-poster-list{gap:12px}.page-wrap{padding-left:12px;padding-right:12px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition:none!important;animation:none!important}}
 .music-section{text-align:center;padding:35px}.music-copy{max-width:none}.track-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:25px;text-align:left}.track{padding:22px;border:1px solid var(--line);border-radius:8px}.track h3{font-size:27px}.track p{font-size:15px}.track audio{width:100%;margin-top:20px;display:block}audio{max-width:100%}@media(max-width:650px){.track-grid{grid-template-columns:1fr}.music-section{padding:22px}.track{padding:16px}}
-@media(max-width:760px){.text-link{font-size:14px;white-space:nowrap}}
+@media(max-width:760px){.text-link{font-size:14px;white-space:normal;overflow-wrap:anywhere}}
 #podcast-promo{margin-top:24px}#podcast-promo audio{display:block;width:100%;margin-top:14px}
 .footer-main nav{flex-wrap:wrap;justify-content:center;max-width:450px;row-gap:12px}#movie-night-guides+p{margin-top:16px}
+
+.homepage-tile,.homepage-tile .text-link{min-width:0;max-width:100%}.season-filters{flex-wrap:wrap}.track{min-width:0}

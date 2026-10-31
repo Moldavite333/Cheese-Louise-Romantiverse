@@ -28,6 +28,7 @@
  }
 
  let controller=null;
+ let lastHqRows=[],lastCachedRows=[];
  function approvedPoster(value){
   if(typeof value!=='string')return null;
   try{
@@ -38,7 +39,7 @@
   }catch{}
   return null;
  }
- const normalizeSearch=value=>String(value).normalize('NFKD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
+ const normalizeSearch=value=>String(value).normalize('NFKD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase().replace(/[^\p{L}\p{N}]+/gu,' ').trim();
  const search=document.querySelector('[data-published-movie-search]');
  const expand=document.querySelector('[data-published-movie-expand]');
  const status=document.querySelector('[data-published-movie-status]');
@@ -116,14 +117,16 @@
  search?.addEventListener('input',render);
  expand?.addEventListener('click',()=>{expanded=!expanded;render()});
  async function refresh(){
+  if(root.contains(document.activeElement))return;
   controller?.abort();const request=new AbortController();controller=request;
   const timeout=setTimeout(()=>request.abort('timeout'),12000);
   try{
-   let hqRows=[],cachedRows=[];
+   const retry=document.querySelector('[data-movie-retry]');
+   if(retry)retry.hidden=true;
    const accept=(kind,rows)=>{
     if(request!==controller||request.signal.aborted)return rows;
-    if(kind==='hq')hqRows=rows;else cachedRows=rows;
-    show(hqRows,cachedRows);
+    if(kind==='hq')lastHqRows=rows;else lastCachedRows=rows;
+    show(lastHqRows,lastCachedRows);
     return rows;
    };
    const [hq,cache]=await Promise.allSettled([
@@ -132,12 +135,12 @@
     fetch(posterEndpoint,{headers:{Accept:'application/json'},cache:'no-store',signal:request.signal})
      .then(async response=>{if(!response.ok)throw Error('Public poster cache '+response.status);const body=await response.json();if(body?.version!==1||!Array.isArray(body.movies))throw Error('Invalid public poster cache');return body.movies}).then(rows=>accept('cache',rows))
    ]);
-   if(request!==controller)return;
    if(request!==controller||(request.signal.aborted&&request.signal.reason!=='timeout'))return;
    if(hq.status==='rejected'&&cache.status==='rejected')throw Error('Both public movie feeds unavailable');
-   show(hq.status==='fulfilled'?hq.value:[],cache.status==='fulfilled'?cache.value:[]);
+   show(lastHqRows,lastCachedRows);
+   if(retry)retry.hidden=hq.status==='fulfilled'&&cache.status==='fulfilled';
   }catch(error){
-   if(request.signal.aborted&&request.signal.reason!=='timeout')return;
+   if(request!==controller||(request.signal.aborted&&request.signal.reason!=='timeout'))return;
    console.warn('Public Bingo poster feeds unavailable',error);
    if(!root.querySelector('.published-poster-row'))root.textContent='Movie selections are temporarily unavailable. You can still play Romantiverse Bingo above.';
    const retry=document.querySelector('[data-movie-retry]');if(retry)retry.hidden=false;
