@@ -47,7 +47,7 @@
  let expanded=false;
  let selectedSeason='';
  const filters=[...document.querySelectorAll('[data-season]')];
- filters.forEach(button=>button.addEventListener('click',()=>{selectedSeason=button.dataset.season;filters.forEach(b=>b.setAttribute('aria-pressed',String(b===button)));render()}));
+ filters.forEach(button=>button.addEventListener('click',()=>{selectedSeason=button.dataset.season;expanded=false;filters.forEach(b=>b.setAttribute('aria-pressed',String(b===button)));render()}));
  function show(hqRows,cachedRows){
   // Automatic artwork fills gaps; only a deliberately HQ-locked poster can
   // replace a verified automatic image for an exact title and release year.
@@ -120,7 +120,18 @@
    if(status.textContent!==message)status.textContent=message;
   }
  }
- search?.addEventListener('input',render);
+ // Carry only the visitor's search text to the complete public Bingo catalog.
+ // This avoids making people retype a movie missing from the homepage's curated list.
+ const fullCatalogLink=document.querySelector('.movie-section .free-note a');
+ function updateFullCatalogLink(){
+  if(!fullCatalogLink)return;
+  const title=(search?.value||'').trim().slice(0,120);
+  const url=new URL(bingo);
+  if(title)url.searchParams.set('search',title);
+  fullCatalogLink.href=url.href;
+ }
+ search?.addEventListener('input',()=>{expanded=false;updateFullCatalogLink();render()});
+ updateFullCatalogLink();
  expand?.addEventListener('click',()=>{expanded=!expanded;render()});
  async function refresh(){
   if(root.contains(document.activeElement))return;
