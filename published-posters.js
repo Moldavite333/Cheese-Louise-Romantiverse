@@ -77,7 +77,7 @@
  }
  function render(){
   const term=normalizeSearch(search?.value||'');
-  const matches=allMovies.filter(m=>(!selectedSeason||m.season===selectedSeason)&&(!term||normalizeSearch(m.title+' '+(m.release_year||'')).includes(term)));
+  const matches=allMovies.filter(m=>(term||normalizeSearch(m.title)!=='christmas in the rockies')&&(!selectedSeason||m.season===selectedSeason)&&(!term||normalizeSearch(m.title+' '+(m.release_year||'')).includes(term)));
   const movies=expanded?matches:matches.slice(0,3);
   const fragment=document.createDocumentFragment();
   if(!movies.length){
