@@ -18,7 +18,12 @@ for(const link of links){
 }
 assert.match(html,/<main\s+id="home">/, 'Main landmark required');
 assert.match(html,/class="skip-link" href="#features"/, 'Skip link required');
-assert.match(html,/id="hero-title"/, 'Accessible marquee heading required');
+assert.match(html,/id="hero-title"[^>]*>Unlocking the Mysteries of the Romantiverse<br>One Trope at a Time<\/h1>/, 'Accessible hero must use the approved One Trope at a Time tagline');
+assert.ok(!html.includes('One Rule at a Time'), 'Retired Rules tagline must not return');
+assert.match(html,/Brought to you by the Cheese Louise Podcast/, 'Bingo section must carry the exact podcast attribution');
+const bingoLinks=[...html.matchAll(/href="(https:\/\/(?:moldavite333[.]github[.]io\/Romantiverse-Bingo-App|bingo[.]cheeselouisepod[.]com)\/)"/g)].map(match=>match[1]);
+assert.ok(bingoLinks.length>=4, 'All four public Bingo entry points must be present');
+assert.equal(new Set(bingoLinks).size,1, 'All public Bingo entry points must use one canonical destination');
 assert.match(html,/<meta property="og:title" content="Cheese Louise — Visit the Romantiverse"/, 'Social sharing title required');
 assert.match(html,/<meta property="og:description"[^>]+Podcast episodes coming soon/, 'Social sharing description must not imply episodes are published');
 assert.match(html,/<meta name="twitter:card" content="summary"/, 'Social preview card required');
