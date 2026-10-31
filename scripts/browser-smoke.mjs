@@ -24,8 +24,13 @@ await page.locator('[data-published-movie-search]').fill('2025 test christmas');
 assert.equal(await page.locator('[data-published-posters] strong').first().textContent(),'Christmas Test','Year-first title search must work');
 await page.locator('[data-published-movie-search]').fill('not in this catalog');
 assert.match(await page.locator('[data-published-posters]').innerText(),/No Bingo movies/);
-assert.equal(await page.getByRole('link',{name:'Search the full Bingo catalog'}).getAttribute('href'),'https://bingo.cheeselouisepod.com/','Full catalog remains accessible after a failed homepage search');
+const fullCatalog=page.getByRole('link',{name:'Search the full Bingo catalog'});
+assert.equal(new URL(await fullCatalog.getAttribute('href')).searchParams.get('search'),'not in this catalog','A missing movie title must carry into the full Bingo search');
+await page.locator('[data-published-movie-search]').fill('A Christmas Village');
+assert.equal(new URL(await fullCatalog.getAttribute('href')).searchParams.get('search'),'A Christmas Village','Search handoff must preserve exact movie title');
+assert.ok(!(await fullCatalog.getAttribute('href')).includes('PRIVATE NOTES'),'No private HQ data may enter a public link');
 await page.locator('[data-published-movie-search]').fill('');
+assert.equal(await fullCatalog.getAttribute('href'),'https://bingo.cheeselouisepod.com/','Clearing search must restore the normal Bingo URL');
 // Search should surface nine matches immediately instead of hiding all but
 // three; the explicit expansion still exposes the complete matching catalog.
 await page.locator('[data-published-movie-search]').fill('festival');
