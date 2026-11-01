@@ -53,7 +53,7 @@ try{
  },catalogUrl);
  assert.equal(browserCatalog,true,'Cross-subdomain Bingo catalog fetch must work in a browser');
  const catalogOnly=catalog.movies.find(m=>m.is_demo!==true&&m.season!=='Horror'&&
-  !allSources.some(existing=>existing.title.normalize('NFKD').replace(/\\p{M}/gu,'').toLowerCase()===m.title.normalize('NFKD').replace(/\\p{M}/gu,'').toLowerCase()&&existing.release_year===m.release_year));
+  !allSources.some(existing=>existing.title.normalize('NFKD').replace(/\p{M}/gu,'').toLowerCase()===m.title.normalize('NFKD').replace(/\p{M}/gu,'').toLowerCase()&&existing.release_year===m.release_year));
  if(catalogOnly){
   await site.locator('[data-published-movie-search]').fill(catalogOnly.title);
   await site.waitForFunction(title=>[...document.querySelectorAll('[data-published-posters] strong')].some(el=>el.textContent===title),catalogOnly.title,{timeout:20000});
