@@ -12,3 +12,8 @@
 .homepage-tile,.homepage-tile .text-link{min-width:0;max-width:100%}.season-filters{flex-wrap:wrap}.track{min-width:0}
 
 .about-panel .about-content{grid-template-columns:1fr;text-align:left}.about-photo{width:100%;max-width:400px;height:auto;justify-self:center;border-radius:8px;margin-bottom:8px}.about-panel .about-content p+p{margin-top:16px}
+
+/* Keep the full-catalog escape hatch visible when a movie search has no matches. */
+.movie-empty-action{grid-column:1/-1;margin:4px auto 12px;text-align:center}
+.movie-empty-action a{display:inline-block;padding:10px 16px;border:1px solid var(--teal);border-radius:6px;color:var(--teal);font-weight:700;text-decoration:none}
+.movie-empty-action a:hover,.movie-empty-action a:focus-visible{background:var(--teal);color:var(--cream)}
