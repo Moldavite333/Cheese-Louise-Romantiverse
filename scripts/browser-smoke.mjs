@@ -48,6 +48,7 @@ assert.equal(new URL(await noResultsLink.getAttribute('href')).searchParams.get(
 assert.equal(await noResultsLink.isVisible(),true,'The full-catalog search action must be visible at the empty state');
 await page.locator('[data-published-movie-search]').fill('2026 movie HQ');
 assert.equal(await noResultsLink.count(),0,'The no-results action must disappear when matching movies return');
+await page.locator('[data-published-movie-search]').fill('not in this catalog');
 const fullCatalog=page.getByRole('link',{name:'Search the full Bingo catalog'});
 assert.equal(new URL(await fullCatalog.getAttribute('href')).searchParams.get('search'),'not in this catalog','A missing movie title must carry into the full Bingo search');
 await page.locator('[data-published-movie-search]').fill('A Christmas Village');
