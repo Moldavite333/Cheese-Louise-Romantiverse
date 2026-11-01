@@ -7,6 +7,10 @@ try{for(const width of [320,390,768,1440]){const page=await browser.newPage({vie
  {title:'Reel One Romance',release_year:2023,season:'Christmas',production_company:'Reel One Entertainment',verification_status:'metadata_verified'},
  {title:'Unverified Studio',release_year:2026,season:'Fall',production_company:'MarVista Entertainment',verification_status:'unverified'},
  {title:'Cafe Noel',release_year:2024,season:'Fall',network:'Hallmark Channel',verification_status:'metadata_verified'},
+ {title:'Peacock Listed Romance',release_year:2025,season:'Christmas',source_name:'Peacock official movie page',verification_status:'metadata_verified'},
+ {title:'Prime Listed Romance',release_year:2024,season:'Fall',source_name:'Prime Video movie and studio listing',verification_status:'metadata_verified'},
+ {title:'Apple Listed Romance',release_year:2018,season:'Christmas',source_name:'Apple TV (film metadata)',verification_status:'metadata_verified'},
+ {title:'Unverified Listing',release_year:2025,season:'Christmas',source_name:'Peacock official movie page',verification_status:'unverified'}, 
  {title:'Horror Catalog',release_year:2026,season:'Horror'},
  {title:'Demo Catalog',release_year:2026,season:'Fall',is_demo:true}
 ]}}));await page.goto(origin);await page.locator('[data-published-posters] strong').first().waitFor();
@@ -41,6 +45,16 @@ await page.locator('[data-published-movie-search]').fill('Lifetime');
 assert.equal(await page.locator('[data-published-posters] strong').first().textContent(),'Catalog Only Romance','Verified Lifetime network must be searchable');
 await page.locator('[data-published-movie-search]').fill('Reel One');
 assert.equal(await page.locator('[data-published-posters] strong').first().textContent(),'Reel One Romance','Verified Reel One studio must be searchable');
+// Verified public listing providers are searchable, but a listing is not
+// represented as a current streaming availability claim.
+for(const [term,title,label] of [['Peacock','Peacock Listed Romance','Peacock listing'],['Prime Video','Prime Listed Romance','Prime Video listing'],['Apple TV','Apple Listed Romance','Apple TV listing']]){
+ await page.locator('[data-published-movie-search]').fill(term);
+ assert.equal(await page.locator('[data-published-posters] strong').first().textContent(),title,term+' listing search must work');
+ assert.match(await page.locator('[data-published-posters]').innerText(),new RegExp(label),term+' listing label must be visible');
+ assert.ok(!(await page.locator('[data-published-posters]').innerText()).includes('Available now'),'Listing evidence must not claim current availability');
+}
+await page.locator('[data-published-movie-search]').fill('unverified listing');
+assert.ok(!(await page.locator('[data-published-posters]').innerText()).includes('Peacock listing'),'Unverified provider claims must not be shown');
 await page.locator('[data-published-movie-search]').fill('Hallmark Channel');
 assert.equal(await page.locator('[data-published-posters] strong').first().textContent(),'Café Noël','Verified network must enrich an HQ-locked poster without replacing it');
 assert.equal(await page.locator('[data-published-posters] img').first().getAttribute('src'),'https://image.tmdb.org/t/p/w500/hq-cafe.jpg','Studio discovery must preserve HQ-locked poster precedence');
