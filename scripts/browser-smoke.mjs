@@ -3,8 +3,10 @@ const root=process.cwd(),server=createServer(async(req,res)=>{try{const p=decode
 await new Promise(r=>server.listen(0,'127.0.0.1',r));const origin='http://127.0.0.1:'+server.address().port,browser=await chromium.launch();
 await mkdir('artifacts',{recursive:true});
 try{for(const width of [320,390,768,1440]){const page=await browser.newPage({viewport:{width,height:900}}),errors=[];let catalogUnavailable=false;page.on('pageerror',e=>errors.push(e.message));await page.route('**/rpc/published_movie_posters',r=>r.fulfill({json:[{title:'HQ Test Movie',release_year:2026,season:'Fall',poster_locked:true,poster_url:'https://image.tmdb.org/t/p/w500/hq.jpg',published_at:'2026-10-31T12:00:00Z',notes:'PRIVATE NOTES'},{title:'Café Noël',release_year:2024,season:'Fall',poster_locked:true,poster_url:'https://image.tmdb.org/t/p/w500/hq-cafe.jpg',published_at:'2026-10-30T12:00:00Z',notes:'PRIVATE CAFÉ NOTES'}]}));await page.route('**/functions/v1/bingo-public-posters',r=>catalogUnavailable?r.fulfill({status:503,body:'Temporarily unavailable'}):r.fulfill({json:{version:1,movies:[{title:'Christmas Test',release_year:2025,season:'Christmas',poster_url:null},{title:'Horror Test',release_year:2025,season:'Horror',poster_url:null},{title:'Cafe Noel',release_year:2024,season:'Fall',poster_url:null},...Array.from({length:10},(_,i)=>({title:'Festival Movie '+String(i+1).padStart(2,'0'),release_year:2024,season:'Fall',poster_url:null}))]}}));await page.route('**/rpc/cheese_tray_top',r=>r.fulfill({json:[]}));await page.route('https://image.tmdb.org/**',r=>r.request().url().endsWith('/hq-cafe.jpg')?r.fulfill({status:200,contentType:'image/svg+xml',body:'<svg xmlns="http://www.w3.org/2000/svg" width="1" height="1"></svg>'}):r.fulfill({status:404}));await page.route('**/catalog/movies.json',r=>r.fulfill({json:{version:1,movies:[
- {title:'Catalog Only Romance',release_year:2026,season:'Fall',notes:'PRIVATE CATALOG NOTES',story_facts:{secret:'PRIVATE CATALOG STORY'}},
- {title:'Cafe Noel',release_year:2024,season:'Fall'},
+ {title:'Catalog Only Romance',release_year:2026,season:'Fall',network:'Lifetime',production_company:'MarVista Entertainment',verification_status:'metadata_verified',notes:'PRIVATE CATALOG NOTES',story_facts:{secret:'PRIVATE CATALOG STORY'}},
+ {title:'Reel One Romance',release_year:2023,season:'Christmas',production_company:'Reel One Entertainment',verification_status:'metadata_verified'},
+ {title:'Unverified Studio',release_year:2026,season:'Fall',production_company:'MarVista Entertainment',verification_status:'unverified'},
+ {title:'Cafe Noel',release_year:2024,season:'Fall',network:'Hallmark Channel',verification_status:'metadata_verified'},
  {title:'Horror Catalog',release_year:2026,season:'Horror'},
  {title:'Demo Catalog',release_year:2026,season:'Fall',is_demo:true}
 ]}}));await page.goto(origin);await page.locator('[data-published-posters] strong').first().waitFor();
@@ -30,6 +32,20 @@ assert.equal(await page.locator('[data-published-posters] img').first().getAttri
 assert.ok(!(await page.locator('body').innerText()).includes('PRIVATE CAFÉ NOTES'),'Private HQ notes must never appear');
 await page.locator('[data-published-movie-search]').fill('2025 test christmas');
 assert.equal(await page.locator('[data-published-posters] strong').first().textContent(),'Christmas Test','Year-first title search must work');
+// Studio/network searches must work for both posterless and HQ-published titles,
+// while rejecting unverified catalog production claims.
+await page.locator('[data-published-movie-search]').fill('MarVista');
+assert.equal(await page.locator('[data-published-posters] strong').first().textContent(),'Catalog Only Romance','Verified MarVista credits must be searchable');
+assert.match(await page.locator('[data-published-posters]').innerText(),/MarVista Entertainment/,'Verified studio credit should be visible');
+await page.locator('[data-published-movie-search]').fill('Lifetime');
+assert.equal(await page.locator('[data-published-posters] strong').first().textContent(),'Catalog Only Romance','Verified Lifetime network must be searchable');
+await page.locator('[data-published-movie-search]').fill('Reel One');
+assert.equal(await page.locator('[data-published-posters] strong').first().textContent(),'Reel One Romance','Verified Reel One studio must be searchable');
+await page.locator('[data-published-movie-search]').fill('Hallmark Channel');
+assert.equal(await page.locator('[data-published-posters] strong').first().textContent(),'Café Noël','Verified network must enrich an HQ-locked poster without replacing it');
+assert.equal(await page.locator('[data-published-posters] img').first().getAttribute('src'),'https://image.tmdb.org/t/p/w500/hq-cafe.jpg','Studio discovery must preserve HQ-locked poster precedence');
+await page.locator('[data-published-movie-search]').fill('unverified studio');
+assert.ok(!(await page.locator('[data-published-posters]').innerText()).includes('MarVista Entertainment'),'Unverified studio credits must not be displayed');
 await page.locator('[data-published-movie-search]').fill('catalog only');
 assert.equal(await page.locator('[data-published-posters] strong').first().textContent(),'Catalog Only Romance','A title missing from the poster cache must be searchable via the public Bingo catalog');
 assert.match(await page.locator('[data-published-posters]').innerText(),/Bingo catalog/,'Missing artwork must not block movie discovery');
