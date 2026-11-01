@@ -108,6 +108,15 @@
    const note=document.createElement('p');
    note.textContent=term||selectedSeason?'No Bingo movies match that search. Try another title or season.':'Movie selections are temporarily unavailable. You can still open Romantiverse Bingo above.';
    fragment.append(note);
+   if(term){
+    const action=document.createElement('p');
+    action.className='movie-empty-action';
+    const link=document.createElement('a');
+    link.href=bingoSearchUrl();
+    link.textContent='Try this search in the full Bingo catalog';
+    action.append(link);
+    fragment.append(action);
+   }
   }
   for(const movie of movies){
    const row=document.createElement('div');row.className='published-poster-row';
@@ -140,12 +149,14 @@
  // Carry only the visitor's search text to the complete public Bingo catalog.
  // This avoids making people retype a movie missing from the homepage's curated list.
  const fullCatalogLink=document.querySelector('.movie-section .free-note a');
- function updateFullCatalogLink(){
-  if(!fullCatalogLink)return;
+ function bingoSearchUrl(){
   const title=(search?.value||'').trim().slice(0,120);
   const url=new URL(bingo);
   if(title)url.searchParams.set('search',title);
-  fullCatalogLink.href=url.href;
+  return url.href;
+ }
+ function updateFullCatalogLink(){
+  if(fullCatalogLink)fullCatalogLink.href=bingoSearchUrl();
  }
  search?.addEventListener('input',()=>{expanded=false;updateFullCatalogLink();render()});
  updateFullCatalogLink();
