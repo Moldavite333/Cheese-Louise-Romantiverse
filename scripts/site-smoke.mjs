@@ -14,6 +14,8 @@ assert.match(css,/prefers-reduced-motion/);
 assert.ok(!/service_role|\/rest\/v1\/movies|workspace_id/.test(posters),'Public code must not access private HQ records');
 assert.match(posters,/textContent/);
 assert.match(posters,/poster_locked/);
+assert.match(posters,/bingo\.cheeselouisepod\.com\/catalog\/movies\.json/,'Public movie search must include the standalone Bingo catalog');
+assert.match(posters,/catalog_only/,'Posterless catalog titles must remain discoverable without changing featured picks');
 assert.match(posters,/getRandomValues/);
 assert.equal((html.match(/<audio /g)||[]).length,2);
 for(const m of css.matchAll(/url\("([^"]+)"\)/g))assert.ok(existsSync(m[1]),'Missing CSS artwork '+m[1]);
