@@ -107,6 +107,7 @@ assert.equal(new URL(page.url()).searchParams.get('season'),'Christmas','Season 
 await page.reload();
 await page.locator('[data-published-posters] strong').first().waitFor();
 assert.equal(await page.locator('[data-season="Christmas"]').getAttribute('aria-pressed'),'true','Shared season must restore its selected control');
+await page.locator('[data-published-posters] strong',{hasText:'Reel One Romance'}).waitFor();
 assert.ok((await page.locator('[data-published-posters] strong').allTextContents()).includes('Reel One Romance'),'Shared season must restore posterless catalog movies');
 await page.locator('[data-published-movie-search]').fill('no such movie');assert.match(await page.locator('[data-published-posters]').innerText(),/No Bingo movies/);await page.locator('[data-published-movie-search]').fill('');await page.locator('[data-season=""]').click();assert.equal(new URL(page.url()).searchParams.has('season'),false,'All Movies must remove season URL filter');
 await page.getByRole('link',{name:'Get the recipe',exact:true}).click();assert.ok(await page.locator('#mule-tide').getAttribute('open')!==null);
