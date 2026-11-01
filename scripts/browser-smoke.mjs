@@ -110,6 +110,22 @@ assert.equal(await page.locator('[data-season="Christmas"]').getAttribute('aria-
 await page.locator('[data-published-posters] strong',{hasText:'Reel One Romance'}).waitFor();
 assert.ok((await page.locator('[data-published-posters] strong').allTextContents()).includes('Reel One Romance'),'Shared season must restore posterless catalog movies');
 await page.locator('[data-published-movie-search]').fill('no such movie');assert.match(await page.locator('[data-published-posters]').innerText(),/No Bingo movies/);await page.locator('[data-published-movie-search]').fill('');await page.locator('[data-season=""]').click();assert.equal(new URL(page.url()).searchParams.has('season'),false,'All Movies must remove season URL filter');
+// One accessible action should clear both search and season, restore the featured
+// selection, and remove only public filter parameters from the shareable URL.
+await page.locator('[data-published-movie-search]').fill('catalog only');
+await page.locator('[data-season="Fall"]').click();
+const clearFilters=page.locator('[data-movie-clear-filters]');
+assert.equal(await clearFilters.isVisible(),true,'Clear filters must be visible when filters are active');
+assert.equal(new URL(page.url()).searchParams.get('search'),'catalog only');
+assert.equal(new URL(page.url()).searchParams.get('season'),'Fall');
+await clearFilters.click();
+assert.equal(await page.locator('[data-published-movie-search]').inputValue(),'','Clearing filters resets search');
+assert.equal(await page.locator('[data-season=""]').getAttribute('aria-pressed'),'true','Clearing filters restores All Movies');
+assert.equal(new URL(page.url()).searchParams.has('search'),false,'Clearing filters removes search from URL');
+assert.equal(new URL(page.url()).searchParams.has('season'),false,'Clearing filters removes season from URL');
+assert.equal(await clearFilters.isHidden(),true,'Clear filters hides when no filters are active');
+assert.equal(await page.locator('[data-published-posters] strong').count(),3,'Clearing filters restores featured movies');
+assert.equal(await page.locator('[data-published-movie-search]').evaluate(el=>el===document.activeElement),true,'Keyboard focus returns to movie search');
 await page.getByRole('link',{name:'Get the recipe',exact:true}).click();assert.ok(await page.locator('#mule-tide').getAttribute('open')!==null);
 if(width===390){const menu=page.locator('[data-menu-button]');await menu.click();assert.equal(await menu.getAttribute('aria-expanded'),'true');await page.locator('#movie-title').click();assert.equal(await menu.getAttribute('aria-expanded'),'false','Outside tap closes mobile menu');await menu.click();await page.keyboard.press('Escape');assert.equal(await menu.getAttribute('aria-expanded'),'false','Escape closes mobile menu');await menu.click();await page.locator('#main-nav a[href="#movies"]').click();assert.equal(await menu.getAttribute('aria-expanded'),'false','Movie navigation closes the mobile menu');assert.equal(new URL(page.url()).hash,'#movies','Mobile navigation reaches the movie search section')}
 assert.equal(await page.locator('audio source').count(),2);
