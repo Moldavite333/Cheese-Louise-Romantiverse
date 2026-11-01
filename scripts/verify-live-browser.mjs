@@ -13,6 +13,7 @@ assert.equal(cacheResponse.ok,true,'Public Bingo poster cache must respond succe
 const cache=await cacheResponse.json();
 assert.equal(cache.version,1);
 assert.ok(Array.isArray(cache.movies)&&cache.movies.length>=38,'All 38 bundled posters must be cached');
+const identity=m=>String(m.title).normalize('NFKD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase().replace(/[^\p{L}\p{N}]+/gu,' ').trim()+'|'+(m.release_year??'null');
 const catalogUrl='https://bingo.cheeselouisepod.com/catalog/movies.json';
 const catalogResponse=await fetch(catalogUrl,{signal:AbortSignal.timeout(15000)});
 assert.equal(catalogResponse.ok,true,'Public Bingo static movie catalog must be reachable');
@@ -30,7 +31,7 @@ try{
  site.on('pageerror',e=>errors.push(e.message));
  await site.goto('https://cheeselouisepod.com/',{waitUntil:'domcontentloaded',timeout:30000});
  // The fast feed renders first; verify the complete catalog after both feeds arrive.
- const identity=m=>m.title.normalize('NFKC').trim().replace(/\s+/g,' ').toLowerCase()+'|'+(m.release_year??'null');
+ // Use the same punctuation-insensitive, exact-year identity as the website.
  const expectedTotal=new Set(allSources.map(identity)).size;
  await site.waitForFunction(total=>document.querySelector('[data-published-movie-status]')?.textContent==='Showing '+Math.min(3,total)+' of '+total+' Bingo movies.',expectedTotal,{timeout:30000});
  const visible=await site.locator('[data-published-posters] .published-poster-row').evaluateAll(nodes=>nodes.map(node=>({
@@ -53,7 +54,7 @@ try{
  },catalogUrl);
  assert.equal(browserCatalog,true,'Cross-subdomain Bingo catalog fetch must work in a browser');
  const catalogOnly=catalog.movies.find(m=>m.is_demo!==true&&m.season!=='Horror'&&
-  !allSources.some(existing=>existing.title.normalize('NFKD').replace(/\p{M}/gu,'').toLowerCase()===m.title.normalize('NFKD').replace(/\p{M}/gu,'').toLowerCase()&&existing.release_year===m.release_year));
+  !allSources.some(existing=>identity(existing)===identity(m)));
  if(catalogOnly){
   await site.locator('[data-published-movie-search]').fill(catalogOnly.title);
   await site.waitForFunction(title=>[...document.querySelectorAll('[data-published-posters] strong')].some(el=>el.textContent===title),catalogOnly.title,{timeout:20000});
@@ -67,7 +68,7 @@ try{
   await expand.click();
   assert.equal(await expand.getAttribute('aria-expanded'),'true');
   const shown=await site.locator('[data-published-posters] .published-poster-row').count();
-  const identity=m=>m.title.normalize('NFKC').trim().toLowerCase()+'|'+(m.release_year??'null');
+  // Exact-year normalized identities also apply to the expanded listing.
   const unique=new Set(allSources.map(identity));
   assert.equal(shown,unique.size,'Browse all must show every unique public Bingo title');
   const target=allSources.find(m=>!visible.some(v=>v.title===m.title))||allSources[allSources.length-1];
