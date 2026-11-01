@@ -12,6 +12,14 @@
  // discovery. Never read or display arbitrary HQ or catalog notes/fields.
  const approvedNetworks=new Set(['Hallmark Channel','Hallmark Mystery','Lifetime','CBS']);
  const approvedStudios=new Set(['MarVista Entertainment','Reel One Entertainment']);
+ // A catalog listing is evidence that a title was listed by that provider,
+ // not a promise it is currently streamable there. Only allowlisted public
+ // metadata-verified sources may be used for discovery or displayed.
+ const approvedListings=new Map([
+  ['Peacock official movie page','Peacock listing'],
+  ['Prime Video movie and studio listing','Prime Video listing'],
+  ['Apple TV (film metadata)','Apple TV listing']
+ ]);
  const key='sb_publishable_3xcqfNu-mJPuDWivmlBXug_3Tw60QoM';
  const bingo='https://bingo.cheeselouisepod.com/';
  // Same public v3 invitation contract as the standalone Bingo game. Generate
@@ -115,13 +123,15 @@
    const verified=m.verification_status==='metadata_verified';
    const network=verified&&approvedNetworks.has(m.network)?m.network:'';
    const studio=verified&&approvedStudios.has(m.production_company)?m.production_company:'';
+   const listing=verified?approvedListings.get(m.source_name)||'':'';
    const existing=map.get(key);
    if(existing){
     // Enrich a cached or HQ-published movie without changing its poster,
     // locked-artwork precedence, title, season, or published visibility.
     if(network)existing.network=network;
     if(studio)existing.studio=studio;
-   }else map.set(key,{...movie,network,studio});
+    if(listing)existing.listing=listing;
+   }else map.set(key,{...movie,network,studio,listing});
   }
   allMovies=[...map.values()].sort((a,b)=>Number(b.is_hq)-Number(a.is_hq)||
    String(b.published_at||'').localeCompare(String(a.published_at||''))||a.title.localeCompare(b.title));
@@ -133,7 +143,7 @@
   const tokens=term.split(' ').filter(Boolean);
   // Match title/year terms in any order, as in the standalone Bingo search.
   // Never broaden a non-Latin query into an empty, match-everything search.
-  const matches=allMovies.filter(m=>(tokens.length||selectedSeason||!m.catalog_only)&& (tokens.length||normalizeSearch(m.title)!=='christmas in the rockies')&&(!selectedSeason||m.season===selectedSeason)&&(!tokens.length||tokens.every(token=>normalizeSearch([m.title,m.release_year,m.network,m.studio].filter(Boolean).join(' ')).includes(token))));
+  const matches=allMovies.filter(m=>(tokens.length||selectedSeason||!m.catalog_only)&& (tokens.length||normalizeSearch(m.title)!=='christmas in the rockies')&&(!selectedSeason||m.season===selectedSeason)&&(!tokens.length||tokens.every(token=>normalizeSearch([m.title,m.release_year,m.network,m.studio,m.listing].filter(Boolean).join(' ')).includes(token))));
   // Keep the homepage's three featured picks, but show more useful results
   // immediately when someone searches or selects a season.
   const visibleLimit=term||selectedSeason?9:3;
@@ -165,7 +175,7 @@
    }
    const info=document.createElement('div');
    const title=document.createElement('strong');title.textContent=movie.title.slice(0,250);
-   const detail=document.createElement('small');const metadata=[movie.release_year,movie.season==='Unspecified'?'':movie.season,movie.network,movie.studio].filter(Boolean).join(' · ');detail.textContent=movie.catalog_only?'Bingo catalog · '+metadata:metadata||(movie.is_hq?'Published Bingo selection':'Verified Bingo catalog poster');
+   const detail=document.createElement('small');const metadata=[movie.release_year,movie.season==='Unspecified'?'':movie.season,movie.network,movie.studio,movie.listing].filter(Boolean).join(' · ');detail.textContent=movie.catalog_only?'Bingo catalog · '+metadata:metadata||(movie.is_hq?'Published Bingo selection':'Verified Bingo catalog poster');
    const link=document.createElement('a');link.href=movieInvitation(movie);link.textContent='Play Bingo →';link.setAttribute('aria-label','Play Romantiverse Bingo for '+movie.title+' with your own randomized card');
    link.addEventListener('click',()=>{link.href=movieInvitation(movie)});
    info.append(title,detail,link);row.append(info);fragment.append(row);
