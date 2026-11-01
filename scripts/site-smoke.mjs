@@ -20,7 +20,9 @@ assert.match(posters,/bingo\.cheeselouisepod\.com\/catalog\/movies\.json/,'Publi
 assert.match(posters,/catalog_only/,'Posterless catalog titles must remain discoverable without changing featured picks');
 assert.match(posters,/verification_status==='metadata_verified'/,'Only source-verified public metadata may power network/studio discovery');
 assert.match(posters,/approvedStudios/,'Public studio names must use an explicit allowlist');
-assert.match(html,/Movie, network, or studio/,'Homepage must advertise verified network/studio search');
+assert.match(posters,/approvedListings/,'Verified listing-source discovery must use an explicit allowlist');
+assert.match(html,/A listing does not guarantee current streaming availability/,'Listing search must not promise streaming availability');
+assert.match(html,/Movie, network, studio, or listing/,'Homepage must advertise verified network, studio and listing search');
 assert.match(html,/data-movie-clear-filters hidden aria-label="Clear movie search and season filters"/,'Movie search and season filters need an accessible reset action');
 assert.match(posters,/getRandomValues/);
 assert.equal((html.match(/<audio /g)||[]).length,2);
