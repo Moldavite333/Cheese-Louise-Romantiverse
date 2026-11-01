@@ -13,7 +13,14 @@ assert.equal(cacheResponse.ok,true,'Public Bingo poster cache must respond succe
 const cache=await cacheResponse.json();
 assert.equal(cache.version,1);
 assert.ok(Array.isArray(cache.movies)&&cache.movies.length>=38,'All 38 bundled posters must be cached');
+const catalogUrl='https://bingo.cheeselouisepod.com/catalog/movies.json';
+const catalogResponse=await fetch(catalogUrl,{signal:AbortSignal.timeout(15000)});
+assert.equal(catalogResponse.ok,true,'Public Bingo static movie catalog must be reachable');
+const catalog=await catalogResponse.json();
+assert.equal(catalog.version,1,'Unexpected Bingo catalog version');
+assert.ok(Array.isArray(catalog.movies)&&catalog.movies.length>=121,'Bingo static catalog must contain at least 121 movies');
 const allSources=[...movies,...cache.movies].filter(m=>m.season!=='Horror'&&m.title.trim().toLowerCase()!=='christmas in the rockies');
+const searchableSources=[...allSources,...catalog.movies.filter(m=>m.season!=='Horror'&&m.is_demo!==true)];
 const locked=movies.find(m=>m.poster_locked===true&&m.poster_url&&m.title);
 assert.ok(locked,'At least one deliberately published HQ-locked poster is needed for live verification');
 const browser=await chromium.launch({headless:true});
@@ -38,6 +45,20 @@ try{
   const expected=hq?.poster_locked&&hq.poster_url?hq.poster_url:auto?.poster_url||hq?.poster_url;
   if(expected)assert.equal(item.poster,expected,'Website poster differs from public cache / HQ lock precedence');
  }
+ // Confirm that the public static catalog is accessible from the other branded
+ // subdomain in an actual browser (Node fetch alone does not test CORS).
+ const browserCatalog=await site.evaluate(async url=>{
+  try{const response=await fetch(url,{cache:'no-store'});const body=await response.json();return response.ok&&body.version===1&&Array.isArray(body.movies)}
+  catch{return false}
+ },catalogUrl);
+ assert.equal(browserCatalog,true,'Cross-subdomain Bingo catalog fetch must work in a browser');
+ const catalogOnly=catalog.movies.find(m=>m.is_demo!==true&&m.season!=='Horror'&&
+  !allSources.some(existing=>existing.title.normalize('NFKD').replace(/\\p{M}/gu,'').toLowerCase()===m.title.normalize('NFKD').replace(/\\p{M}/gu,'').toLowerCase()&&existing.release_year===m.release_year));
+ if(catalogOnly){
+  await site.locator('[data-published-movie-search]').fill(catalogOnly.title);
+  await site.waitForFunction(title=>[...document.querySelectorAll('[data-published-posters] strong')].some(el=>el.textContent===title),catalogOnly.title,{timeout:20000});
+  await site.locator('[data-published-movie-search]').fill('');
+ }
  // Browse/search all deliberately published titles; never query HQ's private watchlist.
  const search=site.locator('[data-published-movie-search]');
  assert.equal(await search.count(),1,'Published movie search must be accessible');
@@ -53,7 +74,7 @@ try{
   await search.fill(target.title);
   const found=await site.locator('[data-published-posters] .published-poster-row strong').allTextContents();
   assert.ok(found.includes(target.title),'Published title must be searchable');
-  assert.ok(found.every(title=>allSources.some(m=>m.title===title)),'Search must only use the two public movie feeds');
+  assert.ok(found.every(title=>searchableSources.some(m=>m.title===title)),'Search must use only public movie feeds and the static Bingo catalog');
   await search.fill('');
   assert.equal(await expand.getAttribute('aria-expanded'),'false','A new search must collapse previously expanded results');
  }
