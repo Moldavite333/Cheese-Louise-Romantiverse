@@ -63,6 +63,7 @@
   if(url.href!==location.href)history.replaceState(history.state,'',url);
  }
  const expand=document.querySelector('[data-published-movie-expand]');
+ const clearFilters=document.querySelector('[data-movie-clear-filters]');
  const status=document.querySelector('[data-published-movie-status]');
  let allMovies=[];
  let expanded=false;
@@ -128,6 +129,7 @@
  }
  function render(){
   const term=normalizeSearch(search?.value||'');
+  if(clearFilters)clearFilters.hidden=!(term||selectedSeason);
   const tokens=term.split(' ').filter(Boolean);
   // Match title/year terms in any order, as in the standalone Bingo search.
   // Never broaden a non-Latin query into an empty, match-everything search.
@@ -193,6 +195,12 @@
  }
  search?.addEventListener('input',()=>{expanded=false;syncSearchUrl();updateFullCatalogLink();render()});
  updateFullCatalogLink();
+ clearFilters?.addEventListener('click',()=>{
+  if(search)search.value='';
+  selectedSeason='';expanded=false;
+  filters.forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.season==='')));
+  syncSearchUrl();updateFullCatalogLink();render();search?.focus();
+ });
  expand?.addEventListener('click',()=>{expanded=!expanded;render()});
  async function refresh(){
   if(root.contains(document.activeElement))return;
