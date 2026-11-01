@@ -50,22 +50,28 @@
  const search=document.querySelector('[data-published-movie-search]');
  // A public ?search= link can reopen the same movie lookup without a login.
  // Only the visitor's search text enters the URL; never HQ or catalog fields.
- const initialSearch=new URL(location.href).searchParams.get('search');
+ const initialParams=new URL(location.href).searchParams;
+ const initialSearch=initialParams.get('search');
  if(search&&initialSearch)search.value=initialSearch.trim().slice(0,120);
  function syncSearchUrl(){
   const url=new URL(location.href);
   const term=(search?.value||'').trim().slice(0,120);
   if(term)url.searchParams.set('search',term);
   else url.searchParams.delete('search');
+  if(selectedSeason)url.searchParams.set('season',selectedSeason);
+  else url.searchParams.delete('season');
   if(url.href!==location.href)history.replaceState(history.state,'',url);
  }
  const expand=document.querySelector('[data-published-movie-expand]');
  const status=document.querySelector('[data-published-movie-status]');
  let allMovies=[];
  let expanded=false;
- let selectedSeason='';
+ let selectedSeason=['Christmas','Fall'].includes(initialParams.get('season'))?initialParams.get('season'):'';
  const filters=[...document.querySelectorAll('[data-season]')];
- filters.forEach(button=>button.addEventListener('click',()=>{selectedSeason=button.dataset.season;expanded=false;filters.forEach(b=>b.setAttribute('aria-pressed',String(b===button)));render()}));
+ filters.forEach(button=>{
+  button.setAttribute('aria-pressed',String(button.dataset.season===selectedSeason));
+  button.addEventListener('click',()=>{selectedSeason=button.dataset.season;expanded=false;filters.forEach(b=>b.setAttribute('aria-pressed',String(b===button)));syncSearchUrl();render()});
+ });
  function show(hqRows,cachedRows,catalogRows){
   // Automatic artwork fills gaps; only a deliberately HQ-locked poster can
   // replace a verified automatic image for an exact title and release year.
