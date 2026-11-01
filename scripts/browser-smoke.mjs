@@ -98,12 +98,16 @@ assert.equal(new URL(page.url()).searchParams.has('search'),false,'Clearing sear
 const tile=page.locator('.homepage-tile').nth(2);
 assert.ok(await tile.evaluate(el=>el.scrollWidth<=el.clientWidth),'Bingo label must fit inside its tile');
 const href=await page.locator('[data-published-posters] a').first().getAttribute('href');assert.ok(href.startsWith('https://bingo.cheeselouisepod.com/#invite='));const payload=JSON.parse(Buffer.from(new URL(href).hash.slice(8),'base64url'));assert.equal(payload.movie.title,'HQ Test Movie');assert.equal(payload.v,3);assert.ok(!JSON.stringify(payload).includes('PRIVATE NOTES'));
-await page.locator('[data-season="Christmas"]').click();assert.equal(await page.locator('[data-published-posters] strong').textContent(),'Christmas Test');
+await page.locator('[data-season="Christmas"]').click();
+const christmasBrowse=await page.locator('[data-published-posters] strong').allTextContents();
+assert.ok(christmasBrowse.includes('Christmas Test'),'Season browsing must retain cached poster selections');
+assert.ok(christmasBrowse.includes('Reel One Romance'),'Season browsing must include posterless public Bingo catalog movies');
+assert.ok(!christmasBrowse.includes('Demo Catalog')&&!christmasBrowse.includes('Horror Catalog'),'Season browsing must exclude demos and horror');
 assert.equal(new URL(page.url()).searchParams.get('season'),'Christmas','Season selection must be shareable');
 await page.reload();
 await page.locator('[data-published-posters] strong').first().waitFor();
 assert.equal(await page.locator('[data-season="Christmas"]').getAttribute('aria-pressed'),'true','Shared season must restore its selected control');
-assert.equal(await page.locator('[data-published-posters] strong').textContent(),'Christmas Test','Shared season must restore matching movies');
+assert.ok((await page.locator('[data-published-posters] strong').allTextContents()).includes('Reel One Romance'),'Shared season must restore posterless catalog movies');
 await page.locator('[data-published-movie-search]').fill('no such movie');assert.match(await page.locator('[data-published-posters]').innerText(),/No Bingo movies/);await page.locator('[data-published-movie-search]').fill('');await page.locator('[data-season=""]').click();assert.equal(new URL(page.url()).searchParams.has('season'),false,'All Movies must remove season URL filter');
 await page.getByRole('link',{name:'Get the recipe',exact:true}).click();assert.ok(await page.locator('#mule-tide').getAttribute('open')!==null);
 if(width===390){const menu=page.locator('[data-menu-button]');await menu.click();assert.equal(await menu.getAttribute('aria-expanded'),'true');await page.locator('#movie-title').click();assert.equal(await menu.getAttribute('aria-expanded'),'false','Outside tap closes mobile menu');await menu.click();await page.keyboard.press('Escape');assert.equal(await menu.getAttribute('aria-expanded'),'false','Escape closes mobile menu');await menu.click();await page.locator('#main-nav a[href="#movies"]').click();assert.equal(await menu.getAttribute('aria-expanded'),'false','Movie navigation closes the mobile menu');assert.equal(new URL(page.url()).hash,'#movies','Mobile navigation reaches the movie search section')}
