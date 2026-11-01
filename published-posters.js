@@ -48,6 +48,17 @@
  }
  const normalizeSearch=value=>String(value).normalize('NFKD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase().replace(/[^\p{L}\p{N}]+/gu,' ').trim();
  const search=document.querySelector('[data-published-movie-search]');
+ // A public ?search= link can reopen the same movie lookup without a login.
+ // Only the visitor's search text enters the URL; never HQ or catalog fields.
+ const initialSearch=new URL(location.href).searchParams.get('search');
+ if(search&&initialSearch)search.value=initialSearch.trim().slice(0,120);
+ function syncSearchUrl(){
+  const url=new URL(location.href);
+  const term=(search?.value||'').trim().slice(0,120);
+  if(term)url.searchParams.set('search',term);
+  else url.searchParams.delete('search');
+  if(url.href!==location.href)history.replaceState(history.state,'',url);
+ }
  const expand=document.querySelector('[data-published-movie-expand]');
  const status=document.querySelector('[data-published-movie-status]');
  let allMovies=[];
@@ -151,7 +162,7 @@
   root.replaceChildren(fragment);
   if(expand){
    expand.hidden=matches.length<=visibleLimit;
-   expand.textContent=expanded?'Show featured movies':'Show all '+matches.length+' matching movies';
+   expand.textContent=expanded?(term||selectedSeason?'Show fewer matching movies':'Show featured movies'):'Show all '+matches.length+' matching movies';
    expand.setAttribute('aria-expanded',String(expanded));
   }
   if(status){
@@ -171,7 +182,7 @@
  function updateFullCatalogLink(){
   if(fullCatalogLink)fullCatalogLink.href=bingoSearchUrl();
  }
- search?.addEventListener('input',()=>{expanded=false;updateFullCatalogLink();render()});
+ search?.addEventListener('input',()=>{expanded=false;syncSearchUrl();updateFullCatalogLink();render()});
  updateFullCatalogLink();
  expand?.addEventListener('click',()=>{expanded=!expanded;render()});
  async function refresh(){
