@@ -78,7 +78,7 @@
   const map=new Map();
   // Match accent variants from independently sourced catalog and published HQ rows,
   // without merging different release years or exposing any private HQ fields.
-  const movieKey=m=>m.title.normalize('NFKD').replace(/\p{M}/gu,'').trim().replace(/\s+/g,' ').toLowerCase()+'|'+m.release_year;
+  // Public feeds sometimes differ only in punctuation or accents (e.g.,\n  // "Love, Classified" vs "Love Classified"). Treat these as one exact-year\n  // movie while keeping different release years separate.\n  const movieKey=m=>normalizeSearch(m.title)+'|'+m.release_year;
   for(const m of cachedRows){
    if(typeof m?.title!=='string'||!m.title.trim()||!Number.isInteger(m.release_year))continue;
    if(m.season==='Horror')continue;
