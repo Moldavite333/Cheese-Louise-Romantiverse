@@ -128,7 +128,7 @@
   const tokens=term.split(' ').filter(Boolean);
   // Match title/year terms in any order, as in the standalone Bingo search.
   // Never broaden a non-Latin query into an empty, match-everything search.
-  const matches=allMovies.filter(m=>(tokens.length||!m.catalog_only)&& (tokens.length||normalizeSearch(m.title)!=='christmas in the rockies')&&(!selectedSeason||m.season===selectedSeason)&&(!tokens.length||tokens.every(token=>normalizeSearch([m.title,m.release_year,m.network,m.studio].filter(Boolean).join(' ')).includes(token))));
+  const matches=allMovies.filter(m=>(tokens.length||selectedSeason||!m.catalog_only)&& (tokens.length||normalizeSearch(m.title)!=='christmas in the rockies')&&(!selectedSeason||m.season===selectedSeason)&&(!tokens.length||tokens.every(token=>normalizeSearch([m.title,m.release_year,m.network,m.studio].filter(Boolean).join(' ')).includes(token))));
   // Keep the homepage's three featured picks, but show more useful results
   // immediately when someone searches or selects a season.
   const visibleLimit=term||selectedSeason?9:3;
