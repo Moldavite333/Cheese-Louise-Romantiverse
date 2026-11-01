@@ -5,6 +5,9 @@
  if(!root)return;
  const endpoint='https://wgvsnmukiaobcbyqhkkt.supabase.co/rest/v1/rpc/published_movie_posters';
  const posterEndpoint='https://wgvsnmukiaobcbyqhkkt.supabase.co/functions/v1/bingo-public-posters';
+ // The standalone game's static catalog is public and contains titles only;
+ // never query private HQ tables or import unverified story claims.
+ const catalogEndpoint='https://bingo.cheeselouisepod.com/catalog/movies.json';
  const key='sb_publishable_3xcqfNu-mJPuDWivmlBXug_3Tw60QoM';
  const bingo='https://bingo.cheeselouisepod.com/';
  // Same public v3 invitation contract as the standalone Bingo game. Generate
@@ -28,7 +31,7 @@
  }
 
  let controller=null;
- let lastHqRows=[],lastCachedRows=[];
+ let lastHqRows=[],lastCachedRows=[],lastCatalogRows=[];
  function approvedPoster(value){
   if(typeof value!=='string')return null;
   try{
@@ -48,7 +51,7 @@
  let selectedSeason='';
  const filters=[...document.querySelectorAll('[data-season]')];
  filters.forEach(button=>button.addEventListener('click',()=>{selectedSeason=button.dataset.season;expanded=false;filters.forEach(b=>b.setAttribute('aria-pressed',String(b===button)));render()}));
- function show(hqRows,cachedRows){
+ function show(hqRows,cachedRows,catalogRows){
   // Automatic artwork fills gaps; only a deliberately HQ-locked poster can
   // replace a verified automatic image for an exact title and release year.
   const map=new Map();
@@ -74,6 +77,18 @@
    if(prior)movie.poster_url=movie.poster_locked&&movie.poster_url?movie.poster_url:prior.poster_url||movie.poster_url;
    map.set(key,movie);
   }
+  // Search-only listings make every public Bingo title discoverable even when
+  // the poster cache has not resolved artwork. Import only title/year/season;
+  // reject demos and horror, and never surface catalog story facts or notes.
+  for(const m of catalogRows){
+   if(typeof m?.title!=='string'||!m.title.trim()||m.is_demo===true||m.season==='Horror')continue;
+   if(!Number.isInteger(m.release_year)||m.release_year<1900||m.release_year>2100)continue;
+   const movie={title:m.title.trim().slice(0,250),release_year:m.release_year,
+    season:['Christmas','Fall'].includes(m.season)?m.season:'Unspecified',
+    poster_url:null,poster_locked:false,is_hq:false,catalog_only:true};
+   const key=movieKey(movie);
+   if(!map.has(key))map.set(key,movie);
+  }
   allMovies=[...map.values()].sort((a,b)=>Number(b.is_hq)-Number(a.is_hq)||
    String(b.published_at||'').localeCompare(String(a.published_at||''))||a.title.localeCompare(b.title));
   render();
@@ -83,7 +98,7 @@
   const tokens=term.split(' ').filter(Boolean);
   // Match title/year terms in any order, as in the standalone Bingo search.
   // Never broaden a non-Latin query into an empty, match-everything search.
-  const matches=allMovies.filter(m=>(tokens.length||normalizeSearch(m.title)!=='christmas in the rockies')&&(!selectedSeason||m.season===selectedSeason)&&(!tokens.length||tokens.every(token=>normalizeSearch(m.title+' '+(m.release_year||'')).includes(token))));
+  const matches=allMovies.filter(m=>(tokens.length||!m.catalog_only)&& (tokens.length||normalizeSearch(m.title)!=='christmas in the rockies')&&(!selectedSeason||m.season===selectedSeason)&&(!tokens.length||tokens.every(token=>normalizeSearch(m.title+' '+(m.release_year||'')).includes(token))));
   // Keep the homepage's three featured picks, but show more useful results
   // immediately when someone searches or selects a season.
   const visibleLimit=term||selectedSeason?9:3;
@@ -106,7 +121,7 @@
    }
    const info=document.createElement('div');
    const title=document.createElement('strong');title.textContent=movie.title.slice(0,250);
-   const detail=document.createElement('small');detail.textContent=[movie.release_year,movie.season==='Unspecified'?'':movie.season].filter(Boolean).join(' · ')||(movie.is_hq?'Published Bingo selection':'Verified Bingo catalog poster');
+   const detail=document.createElement('small');const metadata=[movie.release_year,movie.season==='Unspecified'?'':movie.season].filter(Boolean).join(' · ');detail.textContent=movie.catalog_only?'Bingo catalog · '+metadata:metadata||(movie.is_hq?'Published Bingo selection':'Verified Bingo catalog poster');
    const link=document.createElement('a');link.href=movieInvitation(movie);link.textContent='Play Bingo →';link.setAttribute('aria-label','Play Romantiverse Bingo for '+movie.title+' with your own randomized card');
    link.addEventListener('click',()=>{link.href=movieInvitation(movie)});
    info.append(title,detail,link);row.append(info);fragment.append(row);
@@ -144,20 +159,22 @@
    if(retry)retry.hidden=true;
    const accept=(kind,rows)=>{
     if(request!==controller||request.signal.aborted)return rows;
-    if(kind==='hq')lastHqRows=rows;else lastCachedRows=rows;
-    show(lastHqRows,lastCachedRows);
+    if(kind==='hq')lastHqRows=rows;else if(kind==='cache')lastCachedRows=rows;else lastCatalogRows=rows;
+    show(lastHqRows,lastCachedRows,lastCatalogRows);
     return rows;
    };
-   const [hq,cache]=await Promise.allSettled([
+   const [hq,cache,catalog]=await Promise.allSettled([
     fetch(endpoint,{headers:{apikey:key,Accept:'application/json'},cache:'no-store',signal:request.signal})
      .then(async response=>{if(!response.ok)throw Error('Published HQ feed '+response.status);const rows=await response.json();if(!Array.isArray(rows))throw Error('Invalid published HQ feed');return rows}).then(rows=>accept('hq',rows)),
     fetch(posterEndpoint,{headers:{Accept:'application/json'},cache:'no-store',signal:request.signal})
-     .then(async response=>{if(!response.ok)throw Error('Public poster cache '+response.status);const body=await response.json();if(body?.version!==1||!Array.isArray(body.movies))throw Error('Invalid public poster cache');return body.movies}).then(rows=>accept('cache',rows))
+     .then(async response=>{if(!response.ok)throw Error('Public poster cache '+response.status);const body=await response.json();if(body?.version!==1||!Array.isArray(body.movies))throw Error('Invalid public poster cache');return body.movies}).then(rows=>accept('cache',rows)),
+    fetch(catalogEndpoint,{headers:{Accept:'application/json'},cache:'no-store',signal:request.signal})
+     .then(async response=>{if(!response.ok)throw Error('Public Bingo catalog '+response.status);const body=await response.json();if(body?.version!==1||!Array.isArray(body.movies))throw Error('Invalid public Bingo catalog');return body.movies.slice(0,3000)}).then(rows=>accept('catalog',rows))
    ]);
    if(request!==controller||(request.signal.aborted&&request.signal.reason!=='timeout'))return;
-   if(hq.status==='rejected'&&cache.status==='rejected')throw Error('Both public movie feeds unavailable');
-   show(lastHqRows,lastCachedRows);
-   if(retry)retry.hidden=hq.status==='fulfilled'&&cache.status==='fulfilled';
+   if(hq.status==='rejected'&&cache.status==='rejected'&&catalog.status==='rejected')throw Error('All public movie feeds unavailable');
+   show(lastHqRows,lastCachedRows,lastCatalogRows);
+   if(retry)retry.hidden=hq.status==='fulfilled'&&cache.status==='fulfilled'&&catalog.status==='fulfilled';
   }catch(error){
    if(request!==controller||(request.signal.aborted&&request.signal.reason!=='timeout'))return;
    console.warn('Public Bingo poster feeds unavailable',error);
