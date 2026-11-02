@@ -1,0 +1,16 @@
+/* Keep public navigation available on phones when JavaScript is disabled or fails. */
+@media (max-width: 760px) {
+  .site-header { flex-wrap: wrap; }
+  .menu-button { display: none; }
+  .main-nav {
+    display: flex;
+    position: static;
+    flex-wrap: wrap;
+    width: 100%;
+    gap: 4px 16px;
+    padding: 4px 0 0;
+    border: 0;
+    box-shadow: none;
+  }
+  .main-nav a { padding: 8px 0; }
+}
