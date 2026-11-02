@@ -13,6 +13,10 @@ assert.ok(!/One Rule at a Time|Cheese Rating/i.test(html),'Retired terminology')
 assert.match(html,/Brought to you by the <strong>Cheese Louise Podcast<\/strong>/,'Attribution must read as one exact phrase');
 assert.match(html,/rel="canonical" href="https:\/\/cheeselouisepod.com\//);
 assert.match(css,/prefers-reduced-motion/);
+assert.match(html,/<noscript><link rel="stylesheet" href="nojs\.css"><\/noscript>/,'Mobile navigation must have a no-JavaScript fallback');
+const noJsCss=readFileSync('nojs.css','utf8');
+assert.match(noJsCss,/\.main-nav\s*\{[^}]*display:\s*flex/s,'No-JS navigation must remain visible on phones');
+assert.match(noJsCss,/\.menu-button\s*\{\s*display:\s*none/,'Inert menu button must be hidden without JavaScript');
 assert.ok(!/service_role|\/rest\/v1\/movies|workspace_id/.test(posters),'Public code must not access private HQ records');
 assert.match(posters,/textContent/);
 assert.match(posters,/poster_locked/);
