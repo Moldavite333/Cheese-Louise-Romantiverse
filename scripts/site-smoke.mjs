@@ -25,6 +25,14 @@ assert.match(html,/A listing does not guarantee current streaming availability/,
 assert.match(html,/Movie, network, studio, or listing/,'Homepage must advertise verified network, studio and listing search');
 assert.match(html,/data-movie-clear-filters hidden aria-label="Clear movie search and season filters"/,'Movie search and season filters need an accessible reset action');
 assert.match(posters,/getRandomValues/);
+const homepage=readFileSync('homepage.js','utf8');
+const publicTropeMatch=homepage.match(/const tropes=(\\[[^;]+\\]);const input=/);
+assert.ok(publicTropeMatch,'Public trope field guide must have a static, testable inventory');
+const publicTropes=JSON.parse(publicTropeMatch[1]);
+assert.equal(publicTropes.length,130,'Public field guide must cover all 130 romance, Christmas and Fall tropes');
+assert.equal(new Set(publicTropes).size,publicTropes.length,'Public field guide must not repeat tropes');
+for(const title of ['Snow angels','A romantic gesture','Apple-picking date','Meddling Santas'])assert.ok(publicTropes.includes(title),'Missing live Bingo trope: '+title);
+for(const title of ['A jump scare','A creepy doll','CHEESE LOUISE POD'])assert.ok(!publicTropes.includes(title),'Horror or free-space artwork must not appear in public trope guide');
 assert.equal((html.match(/<audio /g)||[]).length,2);
 for(const m of css.matchAll(/url\("([^"]+)"\)/g))assert.ok(existsSync(m[1]),'Missing CSS artwork '+m[1]);
 console.log('Navigation, local assets, branded links, public data boundaries, and audio sources verified.');
