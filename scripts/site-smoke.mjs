@@ -26,7 +26,7 @@ assert.match(html,/Movie, network, studio, or listing/,'Homepage must advertise 
 assert.match(html,/data-movie-clear-filters hidden aria-label="Clear movie search and season filters"/,'Movie search and season filters need an accessible reset action');
 assert.match(posters,/getRandomValues/);
 const homepage=readFileSync('homepage.js','utf8');
-const publicTropeMatch=homepage.match(/const tropes=(\\[[^;]+\\]);const input=/);
+const publicTropeMatch=homepage.match(/const tropes=(\[[^;]+\]);const input=/);
 assert.ok(publicTropeMatch,'Public trope field guide must have a static, testable inventory');
 const publicTropes=JSON.parse(publicTropeMatch[1]);
 assert.equal(publicTropes.length,130,'Public field guide must cover all 130 romance, Christmas and Fall tropes');
