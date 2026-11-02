@@ -14,6 +14,14 @@ try{for(const width of [320,390,768,1440]){const page=await browser.newPage({vie
  {title:'Horror Catalog',release_year:2026,season:'Horror'},
  {title:'Demo Catalog',release_year:2026,season:'Fall',is_demo:true}
 ]}}));await page.goto(origin);await page.locator('[data-published-posters] strong').first().waitFor();
+await page.locator('.suggestion details summary').click();
+assert.equal(await page.locator('#cheese-trope-count').innerText(),'130 tropes found','Public field guide must include the current non-horror Bingo trope inventory');
+await page.locator('#cheese-trope-search').fill('snow angels');
+assert.deepEqual(await page.locator('#cheese-trope-results li').allTextContents(),['Snow angels'],'Visitors must be able to find seasonal Bingo tropes');
+await page.locator('#cheese-trope-search').fill('creepy');
+assert.equal(await page.locator('#cheese-trope-results li').count(),0,'Paused Horror content must not leak into the romance field guide');
+await page.locator('#cheese-trope-search').fill('');
+
 assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));assert.ok(!(await page.locator('body').innerText()).includes('PRIVATE NOTES'));assert.ok(!(await page.locator('[data-published-posters]').innerText()).includes('Horror Test'));assert.ok((await page.locator('[data-published-posters]').innerText()).includes('Christmas Test'),'Movie without poster must remain playable');
 
 // Refresh failures must keep the last usable catalog instead of dropping its titles.
