@@ -1,0 +1,47 @@
+/* Shared with the illustrated Romantiverse Bingo palette. */
+:root{--cream:#f7f0e2;--paper:#fffaf0;--forest:#193f35;--cranberry:#873b4b;--coral:#e8a18b;--gold:#c49b52;--ink:#253d34;--muted:#667064;--line:#d8ccb6;--teal:var(--forest);--burgundy:var(--cranberry);--serif:'DM Sans',system-ui,sans-serif;--display:'Playfair Display',Georgia,serif}
+body{background:var(--cream);font-size:16px;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:var(--display);font-weight:600}
+.site-header{max-width:1440px;margin:auto;min-height:110px;padding:16px 36px;gap:24px;border-color:var(--line)}
+.brand{display:inline-flex;align-items:center;gap:12px;font-size:30px;font-weight:600;letter-spacing:-1px;color:var(--forest);white-space:normal;text-decoration:none}
+.brand-emblem{width:76px;height:76px;object-fit:contain;flex:none}
+.brand-copy{display:flex;flex-direction:column;gap:7px}
+.brand-copy small{font:700 9px/1.4 var(--serif);letter-spacing:1.7px;text-transform:uppercase;color:var(--cranberry)}
+.main-nav{gap:20px;flex-wrap:wrap;justify-content:flex-end}.main-nav a{font-size:13px;font-weight:700;padding:12px 0;color:var(--forest)}
+.main-nav a:hover,.guide-nav a:hover{color:var(--cranberry)}
+.hero{max-width:1440px;margin:auto;border-block:1px solid var(--line);background:var(--forest)}
+.page-wrap{max-width:1280px;padding-top:0}
+.routes-intro{text-align:center;padding:38px 16px 26px}.routes-intro .eyebrow,.section-eyebrow{font:800 10px/1.5 var(--serif);letter-spacing:2px;color:var(--cranberry);text-transform:uppercase;margin-bottom:10px}
+.routes-intro h2{font-size:clamp(32px,4vw,48px);color:var(--forest)}.routes-intro>p:last-child{color:var(--muted);font-size:15px;margin-top:12px}
+.homepage-features{grid-template-columns:repeat(5,minmax(0,1fr));gap:14px}
+.homepage-tile{padding:8px 8px 18px;border:1px solid var(--line);border-radius:10px;background:var(--paper);overflow:hidden;gap:0}
+.homepage-tile:hover{box-shadow:0 8px 24px #193f3514;transform:translateY(-3px);border-color:var(--gold)}
+.route-art{display:block;width:100%;height:auto;aspect-ratio:1;object-fit:cover;border-radius:5px}
+.homepage-tile h2{font-size:23px;letter-spacing:-.5px;margin:18px 0 10px;color:var(--forest)}
+.homepage-tile p{font:400 13px/1.6 var(--serif);padding:0 5px;color:var(--muted);margin-bottom:14px}
+.homepage-tile .text-link{display:inline-block;color:var(--cranberry);font-size:12px;font-weight:800;padding:10px 5px 0;white-space:normal;overflow-wrap:normal}
+.welcome{padding:64px 18px;grid-template-columns:1.2fr 1fr;gap:48px}.welcome h2{font-size:clamp(38px,4.5vw,58px);letter-spacing:-1.7px;color:var(--forest)}
+.welcome p:not(.ornament){font-size:17px;line-height:1.7}.welcome-mountains{display:none}
+.podcast-scene{width:100%;max-width:380px;justify-self:center;border:8px solid var(--paper);outline:1px solid var(--line);border-radius:9px;transform:rotate(2deg)}
+.welcome-actions{gap:12px}.launch-label{font-size:13px;background:#eee3d1;color:var(--forest)}
+.button,.published-poster-row a{border-radius:6px;background:var(--forest);border:1px solid var(--forest);color:var(--paper);font:700 13px/1.5 var(--serif);min-height:46px;padding:12px 18px;box-shadow:none}
+.button:hover,.published-poster-row a:hover{background:#285445;box-shadow:none}
+.button-outline{background:transparent;border-color:var(--line);color:var(--forest)}.button-outline:hover{background:#eee3d1}
+.panel,.track{background:var(--paper);border-color:var(--line);border-radius:10px}.panel h2{color:var(--forest)}
+.movie-section{padding:36px 28px}.section-intro{font-size:15px;line-height:1.7;max-width:800px;margin:14px auto 0}
+.published-poster-row{border:1px solid var(--line);border-radius:8px;padding:10px;background:var(--cream)}
+.published-poster-row>div{gap:10px}.published-poster-row strong{font-family:var(--display);color:var(--forest);font-size:22px;font-weight:600}
+.season-filters button,.tray-period-buttons button{font-size:12px;font-weight:700}button[aria-pressed=true]{background:var(--forest);border-color:var(--forest)}
+.two-columns{margin-top:28px;gap:24px}.two-columns h2{font-size:32px}.about-content p,.cocktail-content p{font-size:15px;line-height:1.7}
+.cocktail-art{background-image:url('assets/routes/drink.webp');background-size:cover;background-position:center;width:180px;height:auto;aspect-ratio:1;border-radius:8px}
+.community-section{padding-top:42px;scroll-margin-top:24px}.community-section>.section-heading{text-align:center;margin-bottom:24px}.community-section>.section-heading h2{font-size:clamp(30px,4vw,42px);color:var(--forest)}.community-section>.section-heading>p:last-child{font-size:15px;color:var(--muted);margin-top:12px}
+.community-row{margin-top:0;gap:24px}.tray-heading p,.suggestion>p{line-height:1.7}.tray h2,.suggestion h2{font-size:29px}
+.music-section{margin-top:28px;padding:36px}.music-copy>h3{font-size:26px;margin:18px 0}.music-copy>p{font-size:15px;line-height:1.7}.track{text-align:left;background:var(--cream)}.track h3{font-size:24px}
+.footer-main{align-items:flex-start}.footer-main nav{flex-wrap:wrap;justify-content:center;max-width:380px;gap:14px 22px}.footer-main nav a{font-size:13px}.footer-main .brand{color:var(--paper)}
+footer{margin-top:24px;background:var(--forest);color:var(--paper);border-top:2px solid var(--gold);padding-top:36px}.footer-fine{border-color:#647565;color:#e0dfd1}.footer-main p{line-height:1.7}.footer-fine a{color:inherit}
+.guide-banner{max-width:1280px}.guide h1,.guide h2{color:var(--forest)}.guide{line-height:1.8}.guide-nav{font-size:13px;font-weight:700}
+@media(max-width:1100px){.site-header{padding:14px 24px;gap:18px}.main-nav{gap:14px}.brand{font-size:27px}.brand-emblem{width:65px;height:65px}.brand-copy small{font-size:8px}.homepage-tile h2{font-size:20px}}
+@media(max-width:900px){.site-header{flex-wrap:wrap}.main-nav{width:100%;justify-content:center}.homepage-features{grid-template-columns:repeat(3,minmax(0,1fr))}.welcome{gap:28px}.homepage-tile h2{font-size:24px}}
+@media(max-width:760px){.site-header{min-height:88px;flex-wrap:nowrap;padding:12px 18px}.brand{font-size:26px;gap:9px}.brand-emblem{width:59px;height:59px}.brand-copy small{font-size:7px;letter-spacing:1.4px}.menu-button{background:var(--paper);border-radius:6px;color:var(--forest);font-size:13px;font-weight:700;min-height:44px}.main-nav{background:var(--paper);width:100%;padding:14px 20px}.main-nav a{padding:12px;font-size:14px}.routes-intro{padding:30px 0 24px}.routes-intro>p:last-child{font-size:14px}.homepage-features{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.homepage-tile{padding:7px 7px 16px}.homepage-tile h2{font-size:23px;margin-top:14px}.homepage-tile p{font-size:12px;padding:0 3px}.homepage-tile .text-link{font-size:12px}.homepage-tile:last-child{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;column-gap:18px;padding:8px 16px 8px 8px;align-items:center}.homepage-tile:last-child .route-art{grid-row:1/4}.homepage-tile:last-child h2{margin:10px 0 0}.homepage-tile:last-child p{margin:8px 0}.homepage-tile:last-child .text-link{margin:0;padding:6px 0 10px}.welcome{grid-template-columns:1fr;padding:42px 8px;gap:28px}.welcome h2{font-size:44px}.welcome p:not(.ornament){font-size:16px}.podcast-scene{max-width:280px}.welcome-actions .button{flex:1}.movie-section,.music-section{padding:24px 18px}.two-columns{gap:20px}.community-row{gap:20px}.community-section{padding-top:34px}.footer-main nav{max-width:none}.guide-nav{font-size:13px}}
+@media(max-width:359px){.brand{font-size:23px}.brand-emblem{width:50px;height:50px}.brand-copy small{font-size:6px}.site-header{padding-inline:12px;gap:8px}.homepage-tile h2{font-size:20px}.homepage-tile .text-link{font-size:11px}.homepage-features{gap:10px}.homepage-tile:last-child{column-gap:10px}.welcome h2{font-size:38px}}
+@media(prefers-reduced-motion:reduce){.homepage-tile:hover{transform:none}.podcast-scene{transform:none}}
