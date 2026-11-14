@@ -25,6 +25,25 @@ document.querySelectorAll('audio').forEach(watchAudio);
 fetch('podcast-promo.json',{signal:AbortSignal.timeout(8000)})
 .then(r=>{if(!r.ok)throw Error();return r.json()})
 .then(p=>{
+  const primary=document.getElementById('listen-first');
+  const episodeUrl=safeHttps(p.episode?.listen);
+  if(episodeUrl && typeof p.episode.movie==='string' && p.episode.movie.trim()){
+    primary.href=episodeUrl;
+    primary.textContent='Listen to the Latest Episode';
+    primary.dataset.episodeLink='';
+    document.getElementById('featured-night-movie').textContent=p.episode.movie;
+    const actions=document.getElementById('featured-night-actions');
+    for(const [label,url] of [['Listen to the Episode',episodeUrl],['Get Your Bingo Card',safeHttps(p.episode.bingo)],['Make '+(p.episode.drinkName||'the Drink'),safeHttps(p.episode.recipe)]]){
+      if(!url)continue;
+      const link=document.createElement('a');
+      link.className='button';
+      link.href=url;
+      link.textContent=label;
+      if(url===episodeUrl)link.dataset.episodeLink='';
+      actions.append(link);
+    }
+    document.getElementById('featured-night').hidden=false;
+  }
   if(typeof p.audio!=='string'||!/^audio\/[a-zA-Z0-9_-]+\.(mp3|m4a|wav)$/.test(p.audio))return;
   const slot=document.getElementById('podcast-promo');
   const title=document.createElement('h3'),player=document.createElement('audio');
@@ -39,4 +58,29 @@ fetch('podcast-promo.json',{signal:AbortSignal.timeout(8000)})
     details.append(summary,copy);slot.append(details);
   }
   slot.hidden=false;
+  if(!episodeUrl && primary){primary.href='#podcast-promo';primary.textContent='Hear the Trailer';}
 }).catch(()=>{});
+
+function safeHttps(value){
+  if(typeof value!=='string'||!value.trim())return null;
+  try{const url=new URL(value,location.href);return url.protocol==='https:'?url.href:null;}catch{return null;}
+}
+
+const suggestion = document.getElementById('trope-suggestion');
+suggestion?.addEventListener('submit', async event => {
+  event.preventDefault();
+  const button = suggestion.querySelector('button');
+  const status = suggestion.querySelector('[role="status"]');
+  const fields = new FormData(suggestion);
+  button.disabled = true;
+  status.textContent = 'Sending…';
+  try {
+    await window.clSubmitTrope(fields.get('trope'),fields.get('movie'));
+    suggestion.reset();
+    status.textContent = 'Thanks! Your idea went to Nick and Jenny.';
+  } catch {
+    status.textContent = 'Couldn’t send your suggestion. Please try again.';
+  } finally {
+    button.disabled = false;
+  }
+});
