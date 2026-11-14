@@ -14,3 +14,9 @@
   }
   .main-nav a { padding: 8px 0; }
 }
+
+@media (max-width:760px) {
+  body .site-header { flex-wrap:wrap; }
+  body .site-header .header-bingo { display:none; }
+  body .site-header .main-nav { position:static;flex-wrap:wrap;max-width:100%;padding-inline:0; }
+}
