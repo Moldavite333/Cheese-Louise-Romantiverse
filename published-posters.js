@@ -43,6 +43,7 @@
  }
 
  let controller=null;
+ let catalogState='loading';
  let lastHqRows=[],lastCachedRows=[],lastCatalogRows=[];
  function approvedPoster(value){
   if(typeof value!=='string')return null;
@@ -149,16 +150,21 @@
   const visibleLimit=term||selectedSeason?9:3;
   const movies=expanded?matches:matches.slice(0,visibleLimit);
   const fragment=document.createDocumentFragment();
+  if(!allMovies.length && catalogState==='loading'){
+   root.textContent='Loading movies…';
+   if(status)status.textContent='';
+   return;
+  }
   if(!movies.length){
    const note=document.createElement('p');
-   note.textContent=term||selectedSeason?'No Bingo movies match that search. Try another title or season.':'Movie selections are temporarily unavailable. You can still open Romantiverse Bingo above.';
+   note.textContent=catalogState==='error'&&!allMovies.length?'Movie selections are temporarily unavailable.':'No Bingo movies match that search. Try another title or season.';
    fragment.append(note);
-   if(term){
+   if(term || catalogState==='error'){
     const action=document.createElement('p');
     action.className='movie-empty-action';
     const link=document.createElement('a');
     link.href=bingoSearchUrl();
-    link.textContent='Try this search in the full Bingo catalog';
+    link.textContent=term?'Try this search in the full Bingo catalog':'Open Bingo Catalog';
     action.append(link);
     fragment.append(action);
    }
@@ -235,12 +241,14 @@
    ]);
    if(request!==controller||(request.signal.aborted&&request.signal.reason!=='timeout'))return;
    if(hq.status==='rejected'&&cache.status==='rejected'&&catalog.status==='rejected')throw Error('All public movie feeds unavailable');
+   catalogState='ready';
    show(lastHqRows,lastCachedRows,lastCatalogRows);
    if(retry)retry.hidden=hq.status==='fulfilled'&&cache.status==='fulfilled'&&catalog.status==='fulfilled';
   }catch(error){
    if(request!==controller||(request.signal.aborted&&request.signal.reason!=='timeout'))return;
    console.warn('Public Bingo poster feeds unavailable',error);
-   if(!root.querySelector('.published-poster-row'))root.textContent='Movie selections are temporarily unavailable. You can still play Romantiverse Bingo above.';
+   catalogState='error';
+   render();
    const retry=document.querySelector('[data-movie-retry]');if(retry)retry.hidden=false;
   }finally{clearTimeout(timeout)}
  }
