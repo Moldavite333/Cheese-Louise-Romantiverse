@@ -26,14 +26,15 @@ fetch('podcast-promo.json',{signal:AbortSignal.timeout(8000)})
 .then(r=>{if(!r.ok)throw Error();return r.json()})
 .then(p=>{
   const primary=document.getElementById('listen-first');
-  const episodeUrl=safeHttps(p.episode?.listen);
-  if(episodeUrl && typeof p.episode.movie==='string' && p.episode.movie.trim()){
+  const featured=renderEpisodes(p.episodes) || p.episode;
+  const episodeUrl=safeHttps(featured?.listen);
+  if(episodeUrl && typeof featured.movie==='string' && featured.movie.trim()){
     primary.href=episodeUrl;
     primary.textContent='Listen to the Latest Episode';
     primary.dataset.episodeLink='';
-    document.getElementById('featured-night-movie').textContent=p.episode.movie;
+    document.getElementById('featured-night-movie').textContent=featured.movie;
     const actions=document.getElementById('featured-night-actions');
-    for(const [label,url] of [['Listen to the Episode',episodeUrl],['Get Your Bingo Card',safeHttps(p.episode.bingo)],['Make '+(p.episode.drinkName||'the Drink'),safeHttps(p.episode.recipe)]]){
+    for(const [label,url] of [['Listen to the Episode',episodeUrl],['Get Your Bingo Card',safeHttps(featured.bingo)],['Make '+(featured.drinkName||'the Drink'),safeHttps(featured.recipe)]]){
       if(!url)continue;
       const link=document.createElement('a');
       link.className='button';
@@ -84,3 +85,108 @@ suggestion?.addEventListener('submit', async event => {
     button.disabled = false;
   }
 });
+
+function renderEpisodes(episodes) {
+  const episodeList = document.querySelector('[data-episode-list]');
+  const recipeList = document.querySelector('[data-recipe-list]');
+  if (!episodeList || !recipeList || !Array.isArray(episodes)) return null;
+
+  let featured = null;
+  for (const episode of episodes) {
+    if (!episode || typeof episode.id !== 'string' ||
+        !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(episode.id) ||
+        typeof episode.movie !== 'string' || !episode.movie.trim()) continue;
+
+    const listen = safeHttps(episode.listen);
+    if (!listen || document.getElementById('episode-' + episode.id)) continue;
+
+    const card = document.createElement('article');
+    card.className = 'track';
+    card.id = 'episode-' + episode.id;
+    appendEpisodeText(card, 'h3', episode.movie);
+    if (episode.description) appendEpisodeText(card, 'p', episode.description);
+
+    const audio = safeHttps(episode.audio);
+    if (audio) {
+      const player = document.createElement('audio');
+      player.controls = true;
+      player.preload = 'none';
+      player.src = audio;
+      player.setAttribute('aria-label', 'Play ' + episode.movie);
+      card.append(player);
+      watchAudio(player);
+    }
+
+    const bingo = safeHttps(episode.bingo) || 'https://bingo.cheeselouisepod.com/';
+    const actions = document.createElement('div');
+    actions.className = 'welcome-actions';
+    const listenLink = appendEpisodeLink(actions, 'Listen to the Episode', listen);
+    listenLink.dataset.episodeLink = '';
+    appendEpisodeLink(actions, 'Play Bingo', bingo);
+
+    const drink = episode.drink;
+    let recipeUrl;
+    if (drink?.name && Array.isArray(drink.ingredients) && drink.ingredients.length &&
+        Array.isArray(drink.steps) && drink.steps.length) {
+      const recipe = document.createElement('article');
+      recipe.className = 'track';
+      recipe.id = 'recipe-' + episode.id;
+      recipeUrl = '#' + recipe.id;
+      appendEpisodeText(recipe, 'h3', drink.name);
+      appendEpisodeText(recipe, 'p', 'From ' + episode.movie + ' · Makes 1 cocktail');
+      appendEpisodeText(recipe, 'h4', 'Ingredients');
+      appendRecipeList(recipe, 'ul', drink.ingredients);
+      if (drink.prep) {
+        appendEpisodeText(recipe, 'h4', drink.prep.title);
+        appendEpisodeText(recipe, 'p', drink.prep.text);
+      }
+      appendEpisodeText(recipe, 'h4', 'Directions');
+      appendRecipeList(recipe, 'ol', drink.steps);
+      appendEpisodeLink(recipe, 'Go to the Episode', '#' + card.id);
+      recipeList.append(recipe);
+      appendEpisodeLink(actions, 'Make ' + drink.name, recipeUrl);
+    }
+
+    card.append(actions);
+    episodeList.append(card);
+    featured = { movie: episode.movie, listen, bingo, recipe: recipeUrl, drinkName: drink?.name };
+  }
+
+  if (featured) {
+    episodeList.closest('section').hidden = false;
+    const launchLabel = document.querySelector('.launch-label');
+    if (launchLabel) {
+      const episodeLink = document.createElement('a');
+      episodeLink.className = 'button';
+      episodeLink.href = '#episodes';
+      episodeLink.textContent = 'Browse Episodes';
+      launchLabel.replaceWith(episodeLink);
+    }
+    document.querySelector('[data-recipe-placeholder]').hidden = recipeList.childElementCount > 0;
+    // The first render can happen after the browser has already tried the fragment.
+    const target = document.getElementById(location.hash.slice(1));
+    if (target && (episodeList.contains(target) || recipeList.contains(target))) target.scrollIntoView();
+  }
+  return featured;
+}
+
+function appendEpisodeText(parent, tag, value) {
+  const element = document.createElement(tag);
+  element.textContent = value;
+  parent.append(element);
+}
+
+function appendEpisodeLink(parent, label, url) {
+  const link = document.createElement('a');
+  link.className = 'button';
+  link.href = url;
+  link.textContent = label;
+  parent.append(link);
+  return link;
+}
+
+function appendRecipeList(parent, tag, items) {
+  const list = document.createElement(tag);
+  for (const item of items) appendEpisodeText(list, 'li', item);
+  parent.append(list);
+}
