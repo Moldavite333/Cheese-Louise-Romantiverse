@@ -1,4 +1,59 @@
 {
   "title": "Meet Cheese Louise",
-  "audio": null
+  "audio": null,
+  "episodes": [
+    {
+      "id": "birdwatching",
+      "movie": "Adventures in Love and Birdwatching",
+      "listen": null,
+      "audio": null,
+      "bingo": null,
+      "drink": {
+        "name": "The Birder",
+        "ingredients": [
+          "1½ oz spiced rum",
+          "¾ oz apple cider",
+          "3 oz Goslings Stormy Ginger Beer",
+          "¼ oz lemon juice",
+          "3 to 4 cranberries macerated with sugar and lemon"
+        ],
+        "steps": [
+          "Add the macerated cranberries, spiced rum, apple cider, and lemon juice to a glass with ice.",
+          "Top with ginger beer and stir gently."
+        ]
+      }
+    },
+    {
+      "id": "pumpkin-regatta-romance",
+      "movie": "Pumpkin Regatta Romance",
+      "listen": null,
+      "audio": null,
+      "bingo": null,
+      "drink": {
+        "name": "Punkin Cream",
+        "ingredients": [
+          "1½ oz brandy",
+          "1½ oz oat milk",
+          "2 tbsp prepared pumpkin butter",
+          "Ice"
+        ],
+        "prep": {
+          "title": "Prepare the Pumpkin Butter",
+          "text": "Stir ¼ tsp pumpkin pie spice, 1½ tsp maple syrup, and ¼ tsp vanilla paste or extract into approximately ¼ can of pumpkin purée. Cook over medium low heat for 5 to 10 minutes, then let cool."
+        },
+        "steps": [
+          "Add the prepared pumpkin butter and oat milk to a shaker. Stir until combined.",
+          "Add ice, then the brandy. Shake for 15 to 20 seconds.",
+          "Strain into a rocks glass over fresh ice."
+        ]
+      }
+    },
+    {
+      "id": "the-nights-before-christmas",
+      "movie": "The Nights Before Christmas",
+      "listen": null,
+      "audio": null,
+      "bingo": null
+    }
+  ]
 }
