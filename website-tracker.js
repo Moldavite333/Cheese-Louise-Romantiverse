@@ -11,7 +11,7 @@
     if (!response.ok) throw new Error('Request failed');
   }
 
-  window.clSubmitTrope = (trope, movie) => send('submit_website_trope', {p_trope:trope,p_movie:movie});
+  window.clSubmitTrope = (trope, movie) => send('submit_website_trope', {p_trope:trope,p_movie:movie});\n  window.clSubmitCocktail = (name, movie, ingredients, method) => send('submit_website_cocktail', {p_name:name,p_movie:movie,p_ingredients:ingredients,p_method:method});
   if (navigator.globalPrivacyControl || navigator.doNotTrack === '1') return;
 
   function cookie(name) {

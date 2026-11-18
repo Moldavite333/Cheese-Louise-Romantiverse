@@ -190,3 +190,27 @@ function appendRecipeList(parent, tag, items) {
   for (const item of items) appendEpisodeText(list, 'li', item);
   parent.append(list);
 }
+
+document.querySelectorAll('[data-submission-tab]').forEach(button=>button.addEventListener('click',()=>{
+ const target=button.dataset.submissionTab;
+ document.querySelectorAll('[data-submission-tab]').forEach(tab=>tab.setAttribute('aria-pressed',String(tab===button)));
+ document.querySelectorAll('[data-submission-panel]').forEach(panel=>panel.hidden=panel.dataset.submissionPanel!==target);
+}));
+const cocktailForm=document.getElementById('cocktail-suggestion');
+cocktailForm?.addEventListener('submit',async event=>{
+ event.preventDefault();
+ const button=cocktailForm.querySelector('button[type="submit"]');
+ const status=cocktailForm.querySelector('[role="status"]');
+ const fields=new FormData(cocktailForm);
+ button.disabled=true;
+ status.textContent='Sending…';
+ try{
+  await window.clSubmitCocktail(fields.get('name'),fields.get('movie'),fields.get('ingredients'),fields.get('method'));
+  cocktailForm.reset();
+  status.textContent='Thanks! Your drink idea went to Nick and Jenny for review.';
+ }catch{
+  status.textContent='Couldn’t send the drink idea. Please try again.';
+ }finally{
+  button.disabled=false;
+ }
+});
