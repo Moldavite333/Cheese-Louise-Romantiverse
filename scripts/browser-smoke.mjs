@@ -165,7 +165,7 @@ assert.equal(await page.locator('[data-published-posters] strong').count(),3,'Cl
 assert.equal(await page.locator('[data-published-movie-search]').evaluate(el=>el===document.activeElement),true,'Keyboard focus returns to movie search');
 await page.getByRole('link',{name:'Get the recipe',exact:true}).click();assert.ok(await page.locator('#mule-tide').getAttribute('open')!==null);
 if(width<=760){const menu=page.locator('[data-menu-button]');await menu.click();assert.equal(await menu.getAttribute('aria-expanded'),'true');await page.locator('#movie-title').click();assert.equal(await menu.getAttribute('aria-expanded'),'false','Outside tap closes mobile menu');await menu.click();await page.keyboard.press('Escape');assert.equal(await menu.getAttribute('aria-expanded'),'false','Escape closes mobile menu');await menu.click();await page.locator('#main-nav a[href="#movies"]').click();assert.equal(await menu.getAttribute('aria-expanded'),'false','Movie navigation closes the mobile menu');assert.equal(new URL(page.url()).hash,'#movies','Mobile navigation reaches the movie search section')}
-assert.equal(await page.locator('audio source').count(),4);
+assert.equal(await page.locator('audio source').count(),6);
 const audio=page.locator('audio').first();
 const originalSource=await audio.locator('source').getAttribute('src');
 await audio.evaluate(el=>{el.querySelector('source').src='/missing-test-audio.mp3';el.load()});
