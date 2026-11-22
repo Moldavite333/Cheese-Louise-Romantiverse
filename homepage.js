@@ -27,6 +27,7 @@ fetch('podcast-promo.json',{signal:AbortSignal.timeout(8000)})
 .then(p=>{
   const primary=document.getElementById('listen-first');
   const featured=renderEpisodes(p.episodes) || p.episode;
+  renderNextWeek(p.episodes);
   const episodeUrl=safeHttps(featured?.listen);
   if(episodeUrl && typeof featured.movie==='string' && featured.movie.trim()){
     primary.href=episodeUrl;
@@ -61,6 +62,51 @@ fetch('podcast-promo.json',{signal:AbortSignal.timeout(8000)})
   slot.hidden=false;
   if(!episodeUrl && primary){primary.href='#podcast-promo';primary.textContent='Hear the Trailer';}
 }).catch(()=>{});
+
+function renderNextWeek(episodes) {
+  const section = document.getElementById('next-week');
+  if (!section || !Array.isArray(episodes)) return;
+  // Only the editorially approved upcoming entry appears here. A Yes vote or
+  // Bingo-list flag alone never authorizes a public podcast announcement.
+  const upcoming = episodes.find(episode =>
+    episode && episode.upcoming === true &&
+    typeof episode.movie === 'string' && episode.movie.trim() &&
+    !safeHttps(episode.listen)
+  );
+  if (!upcoming) return;
+  const movie = upcoming.movie.trim().slice(0,180);
+  document.getElementById('next-week-movie').textContent = movie;
+  document.getElementById('next-week-movie-copy').textContent =
+    typeof upcoming.teaser === 'string' && upcoming.teaser.trim()
+      ? upcoming.teaser.trim().slice(0,500)
+      : 'Nick and Jenny are getting ready to give this movie the full Romantiverse treatment.';
+
+  const drink = upcoming.drinkPreview;
+  const drinkName = typeof drink?.name === 'string' && drink.name.trim()
+    ? drink.name.trim().slice(0,100) : 'The reveal is coming';
+  document.getElementById('next-week-drink').textContent = drinkName;
+  document.getElementById('next-week-drink-copy').textContent =
+    typeof drink?.description === 'string' && drink.description.trim()
+      ? drink.description.trim().slice(0,400)
+      : 'The next original Cheesy Concoction is in development. The full recipe will arrive with the episode.';
+
+  // The Bingo app accepts ?search= as a public, title-only movie handoff.
+  // This finds the right movie without fabricating a saved/generated card.
+  const bingoSearch = new URL('https://bingo.cheeselouisepod.com/');
+  bingoSearch.searchParams.set('search', movie);
+  document.getElementById('next-week-bingo').href =
+    safeHttps(upcoming.bingo) || bingoSearch.href;
+
+  const footnote = document.getElementById('next-week-date');
+  if (/^\d{4}-\d{2}-\d{2}$/.test(upcoming.releaseDate || '')) {
+    const date = new Date(upcoming.releaseDate + 'T12:00:00Z');
+    footnote.textContent = Number.isNaN(date.getTime())
+      ? '' : 'Expected ' + new Intl.DateTimeFormat('en-US', {month:'long', day:'numeric', year:'numeric', timeZone:'UTC'}).format(date);
+  } else {
+    footnote.textContent = 'Coming up next · Movie, cocktail, and Bingo in one place';
+  }
+  section.hidden = false;
+}
 
 function safeHttps(value){
   if(typeof value!=='string'||!value.trim())return null;
