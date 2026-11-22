@@ -53,7 +53,13 @@
       "movie": "The Nights Before Christmas",
       "listen": null,
       "audio": null,
-      "bingo": null
+      "bingo": null,
+      "upcoming": true,
+      "teaser": "One Christmas Eve, a time loop, and a whole lot of questions about how romance works when tomorrow refuses to arrive.",
+      "drinkPreview": {
+        "name": null,
+        "description": "The next original Cheesy Concoction is still in the mixology lab. The name and full recipe will be revealed when the episode drops."
+      }
     }
   ]
 }
