@@ -24,6 +24,12 @@ try{
  {title:'Horror Catalog',release_year:2026,season:'Horror'},
  {title:'Demo Catalog',release_year:2026,season:'Fall',is_demo:true}
 ]}}));await page.goto(origin);await page.locator('[data-published-posters] strong').first().waitFor();
+ await page.locator('#next-week').waitFor({state:'visible'});
+ assert.equal(await page.locator('#next-week-movie').textContent(),'The Nights Before Christmas','Next-week preview must show the approved upcoming movie');
+ assert.equal(await page.locator('#next-week-drink').textContent(),'The Pearberry Ginger Press','Next-week cocktail name must match the approved drink');
+ assert.equal(new URL(await page.locator('#next-week-bingo').getAttribute('href')).searchParams.get('search'),'The Nights Before Christmas','Upcoming Bingo link must search the correct movie');
+ assert.ok(!(await page.locator('#next-week').innerText()).includes('A Cherry Pie Christmas'),'Unapproved movies must not be featured');
+
 await page.locator('.suggestion details summary').click();
 assert.equal(await page.locator('#cheese-trope-count').innerText(),'130 tropes found','Public field guide must include the current non-horror Bingo trope inventory');
 await page.locator('#cheese-trope-search').fill('snow angels');
@@ -132,7 +138,7 @@ assert.equal(new URL(page.url()).searchParams.has('search'),false,'Clearing sear
 const tile=page.locator('.homepage-tile[href="https://bingo.cheeselouisepod.com/"]');
 assert.equal(await page.locator('.homepage-tile').count(),5,'All five visitor routes must be equally accessible');
 await page.waitForFunction(()=>[...document.querySelectorAll('.route-art')].every(im=>im.complete&&im.naturalWidth>0));
-for(const target of ['#podcast','#community','#music','#cocktails']){const link=page.locator('.homepage-tile[href="'+target+'"]');await link.click();assert.equal(new URL(page.url()).hash,target);assert.equal(await page.locator(target).isVisible(),true)}
+for(const target of ['#episodes','#community','#music','#cocktails']){const link=page.locator('.homepage-tile[href="'+target+'"]');await link.click();assert.equal(new URL(page.url()).hash,target);assert.equal(await page.locator(target).isVisible(),true)}
 assert.ok(await tile.evaluate(el=>el.scrollWidth<=el.clientWidth),'Bingo label must fit inside its tile');
 const href=await page.locator('[data-published-posters] a').first().getAttribute('href');assert.ok(href.startsWith('https://bingo.cheeselouisepod.com/#invite='));const payload=JSON.parse(Buffer.from(new URL(href).hash.slice(8),'base64url'));assert.equal(payload.movie.title,'HQ Test Movie');assert.equal(payload.v,3);assert.ok(!JSON.stringify(payload).includes('PRIVATE NOTES'));
 await page.locator('[data-season="Christmas"]').click();
