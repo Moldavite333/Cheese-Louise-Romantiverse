@@ -51,14 +51,23 @@
     {
       "id": "the-nights-before-christmas",
       "movie": "The Nights Before Christmas",
-      "listen": null,
+      "listen": "https://www.buzzsprout.com/2561358",
       "audio": null,
-      "bingo": null,
-      "upcoming": true,
-      "teaser": "One Christmas Eve, a time loop, and a whole lot of questions about how romance works when tomorrow refuses to arrive.",
-      "drinkPreview": {
+      "bingo": "https://bingo.cheeselouisepod.com/?search=The%20Nights%20Before%20Christmas",
+      "drink": {
         "name": "The Pearberry Ginger Press",
-        "description": "Fresh pear, tart cranberry, ginger beer, and a splash of soda. The full Cheesy Concoction recipe comes with the episode."
+        "ingredients": [
+          "¾ oz fresh pear juice",
+          "A splash of fresh, unsweetened cranberry juice",
+          "3 oz ginger beer",
+          "1 oz club soda",
+          "Maple syrup to taste",
+          "Ice"
+        ],
+        "steps": [
+          "Add the pear juice, cranberry juice, and maple syrup to a glass filled with ice. Stir to combine.",
+          "Top with ginger beer and club soda, then stir gently."
+        ]
       }
     }
   ]
