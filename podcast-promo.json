@@ -57,6 +57,7 @@
       "drink": {
         "name": "The Pearberry Ginger Press",
         "ingredients": [
+          "1½ oz brandy",
           "¾ oz fresh pear juice",
           "A splash of fresh, unsweetened cranberry juice",
           "3 oz ginger beer",
@@ -65,7 +66,7 @@
           "Ice"
         ],
         "steps": [
-          "Add the pear juice, cranberry juice, and maple syrup to a glass filled with ice. Stir to combine.",
+          "Add the brandy, pear juice, cranberry juice, and maple syrup to an ice-filled shaker. Shake briefly, then strain into a highball glass filled with fresh ice.",
           "Top with ginger beer and club soda, then stir gently."
         ]
       }
