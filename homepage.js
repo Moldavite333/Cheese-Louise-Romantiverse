@@ -29,22 +29,10 @@ fetch('podcast-promo.json?v=pearberry-brandy-1',{signal:AbortSignal.timeout(8000
   const featured=renderEpisodes(p.episodes) || p.episode;
   renderNextWeek(p.episodes);
   const episodeUrl=safeHttps(featured?.listen);
-  if(episodeUrl && typeof featured.movie==='string' && featured.movie.trim()){
+  if(episodeUrl){
     primary.href=episodeUrl;
     primary.textContent='Listen to the Latest Episode';
     primary.dataset.episodeLink='';
-    document.getElementById('featured-night-movie').textContent=featured.movie;
-    const actions=document.getElementById('featured-night-actions');
-    for(const [label,url] of [['Listen to the Episode',episodeUrl],['Get Your Bingo Card',safeHttps(featured.bingo)],['Make '+(featured.drinkName||'the Drink'),safeHttps(featured.recipe)]]){
-      if(!url)continue;
-      const link=document.createElement('a');
-      link.className='button';
-      link.href=url;
-      link.textContent=label;
-      if(url===episodeUrl)link.dataset.episodeLink='';
-      actions.append(link);
-    }
-    document.getElementById('featured-night').hidden=false;
   }
   if(typeof p.audio!=='string'||!/^audio\/[a-zA-Z0-9_-]+\.(mp3|m4a|wav)$/.test(p.audio))return;
   const slot=document.getElementById('podcast-promo');
