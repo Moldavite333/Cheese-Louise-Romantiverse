@@ -25,9 +25,9 @@ try{
  {title:'Demo Catalog',release_year:2026,season:'Fall',is_demo:true}
 ]}}));await page.goto(origin);await page.locator('[data-published-posters] strong').first().waitFor();
  await page.locator('#next-week').waitFor({state:'visible'});
- assert.equal(await page.locator('#next-week-movie').textContent(),'The Nights Before Christmas','Next-week preview must show the approved upcoming movie');
- assert.equal(await page.locator('#next-week-drink').textContent(),'The Pearberry Ginger Press','Next-week cocktail name must match the approved drink');
- assert.equal(new URL(await page.locator('#next-week-bingo').getAttribute('href')).searchParams.get('search'),'The Nights Before Christmas','Upcoming Bingo link must search the correct movie');
+ assert.equal(await page.locator('#next-week-movie').textContent(),'Hot Frosty','Next-week preview must show the upcoming recorded movie');
+ assert.equal(await page.locator('#next-week-drink').textContent(),'Cocktail details coming soon','Next-week preview must show when a cocktail is still in development');
+ assert.equal(new URL(await page.locator('#next-week-bingo').getAttribute('href')).searchParams.get('search'),'Hot Frosty','Upcoming Bingo link must search the correct movie');
  assert.ok(!(await page.locator('#next-week').innerText()).includes('A Cherry Pie Christmas'),'Unapproved movies must not be featured');
 
 await page.locator('.suggestion details summary').click();
@@ -171,7 +171,7 @@ assert.equal(await page.locator('[data-published-posters] strong').count(),3,'Cl
 assert.equal(await page.locator('[data-published-movie-search]').evaluate(el=>el===document.activeElement),true,'Keyboard focus returns to movie search');
 await page.getByRole('link',{name:'Get the recipe',exact:true}).click();assert.ok(await page.locator('#mule-tide').getAttribute('open')!==null);
 if(width<=760){const menu=page.locator('[data-menu-button]');await menu.click();assert.equal(await menu.getAttribute('aria-expanded'),'true');await page.locator('#movie-title').click();assert.equal(await menu.getAttribute('aria-expanded'),'false','Outside tap closes mobile menu');await menu.click();await page.keyboard.press('Escape');assert.equal(await menu.getAttribute('aria-expanded'),'false','Escape closes mobile menu');await menu.click();await page.locator('#main-nav a[href="#movies"]').click();assert.equal(await menu.getAttribute('aria-expanded'),'false','Movie navigation closes the mobile menu');assert.equal(new URL(page.url()).hash,'#movies','Mobile navigation reaches the movie search section')}
-assert.equal(await page.locator('audio source').count(),6);
+assert.equal(await page.locator('audio source').count(),7);
 const audio=page.locator('audio').first();
 const originalSource=await audio.locator('source').getAttribute('src');
 await audio.evaluate(el=>{el.querySelector('source').src='/missing-test-audio.mp3';el.load()});
