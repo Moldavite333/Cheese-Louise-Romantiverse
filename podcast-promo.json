@@ -70,6 +70,18 @@
           "Top with ginger beer and club soda, then stir gently."
         ]
       }
+    },
+    {
+      "id": "hot-frosty",
+      "movie": "Hot Frosty",
+      "listen": null,
+      "audio": null,
+      "bingo": null,
+      "upcoming": true,
+      "drinkPreview": {
+        "name": "Cocktail details coming soon",
+        "description": "A new Cheesy Concoction is in development and will be revealed with the episode."
+      }
     }
   ]
 }
