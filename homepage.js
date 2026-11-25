@@ -22,7 +22,7 @@ function watchAudio(player) {
   player.addEventListener('loadeddata',()=>{notice.hidden=true;notice.replaceChildren()});
 }
 document.querySelectorAll('audio').forEach(watchAudio);
-fetch('podcast-promo.json?v=pearberry-brandy-1',{signal:AbortSignal.timeout(8000),cache:'no-store'})
+fetch('podcast-promo.json?v=hot-frosty-1',{signal:AbortSignal.timeout(8000),cache:'no-store'})
 .then(r=>{if(!r.ok)throw Error();return r.json()})
 .then(p=>{
   const primary=document.getElementById('listen-first');
