@@ -151,7 +151,9 @@ function renderEpisodes(episodes) {
       watchAudio(player);
     }
 
-    const bingo = safeHttps(episode.bingo) || 'https://bingo.cheeselouisepod.com/';
+    const bingoSearch = new URL('https://bingo.cheeselouisepod.com/');
+    bingoSearch.searchParams.set('search', episode.movie.trim());
+    const bingo = safeHttps(episode.bingo) || bingoSearch.href;
     const actions = document.createElement('div');
     actions.className = 'welcome-actions';
     const listenLink = appendEpisodeLink(actions, 'Listen to the Episode', listen);
