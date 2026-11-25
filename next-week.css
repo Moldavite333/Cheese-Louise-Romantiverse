@@ -13,3 +13,6 @@
 .next-week-feature .button{align-self:flex-start;margin-top:auto;font-size:14px;min-height:43px;padding:10px 14px}
 .next-week-date{position:relative;z-index:1;margin:19px 0 0;text-align:center;color:#f4deac;font:600 13px/1.5 "DM Sans",sans-serif}
 @media(max-width:760px){.next-week-showcase{padding:23px 18px}.next-week-grid{grid-template-columns:1fr;gap:11px}.next-week-feature{padding:18px}.next-week-feature h3{font-size:27px}.next-week-showcase h2{font-size:33px}.next-week-feature .button{align-self:stretch}.next-week-showcase .next-week-heading{margin-bottom:19px}}
+
+/* Episode archive recipe block sits directly inside Previously on Cheese Louise. */
+.episode-recipes-title{margin:30px 0 14px;padding-top:24px;border-top:1px solid rgba(200,164,100,.48);color:#7d2032;font-size:clamp(22px,2.4vw,29px)}
